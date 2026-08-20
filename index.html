@@ -827,6 +827,67 @@ tbody tr:last-child td{
     border-bottom:none;
 }
 
+/* Brochure image */
+.brochure-image-cell{
+    width:82px;
+    text-align:center;
+}
+
+.brochure-thumb{
+    width:86px;
+    height:86px;
+    object-fit:contain;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--card2);
+    display:block;
+    margin:auto;
+    cursor:zoom-in;
+    transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.brochure-thumb:hover{
+    transform:scale(1.04);
+    box-shadow:0 6px 16px rgba(0,0,0,.15);
+}
+
+.brochure-placeholder{
+    width:86px;
+    height:86px;
+    border-radius:10px;
+    border:1px dashed var(--border);
+    background:var(--card2);
+    color:var(--text-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:auto;
+    font-size:20px;
+}
+
+.image-preview-wrap{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:8px;
+}
+
+.image-preview{
+    width:78px;
+    height:78px;
+    object-fit:cover;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--card2);
+    display:none;
+}
+
+.image-help{
+    font-size:11px;
+    color:var(--text-soft);
+    line-height:1.5;
+}
+
 .unit{
     font-weight:700;
 
@@ -860,10 +921,88 @@ tbody tr:last-child td{
     color:var(--primary);
 }
 
+.action-btn.withdraw:hover{
+    background:var(--gold-light);
+    color:var(--primary-dark);
+}
+
 .action-btn.delete:hover{
     background:var(--danger-light);
 
     color:var(--danger);
+}
+
+/* =========================
+   FULL SIZE IMAGE VIEWER
+========================= */
+
+.image-lightbox{
+    position:fixed;
+    inset:0;
+    z-index:3000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    background:rgba(0,0,0,.86);
+    backdrop-filter:blur(4px);
+}
+
+.image-lightbox.show{
+    display:flex;
+}
+
+.image-lightbox-content{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.image-lightbox img{
+    max-width:96vw;
+    max-height:90vh;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+    border-radius:10px;
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+    background:white;
+}
+
+.image-lightbox-title{
+    position:absolute;
+    left:50%;
+    bottom:10px;
+    transform:translateX(-50%);
+    max-width:90vw;
+    color:white;
+    font-size:14px;
+    text-align:center;
+    background:rgba(0,0,0,.55);
+    padding:7px 14px;
+    border-radius:8px;
+}
+
+.image-lightbox-close{
+    position:absolute;
+    top:15px;
+    right:15px;
+    width:44px;
+    height:44px;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    z-index:2;
+}
+
+.image-lightbox-close:hover{
+    background:var(--danger);
 }
 
 /* =========================
@@ -1077,6 +1216,37 @@ body.dark .year-card h3{
 .switch input:checked + .slider:before{
     transform:translateX(23px);
 }
+
+/* =========================
+   STOCK OUT / DEPARTMENT
+========================= */
+.page-hint{margin-top:4px;color:var(--text-soft);font-size:11px;}
+.btn-secondary{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;font-family:'Kantumruy Pro';font-weight:700;transition:.25s;}
+.btn-secondary:hover{background:var(--primary-light);color:var(--primary);transform:translateY(-2px);}
+.stockout-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:18px 20px 0;}
+.stockout-summary-card{background:var(--primary-light);border:1px solid var(--border);border-radius:10px;padding:13px 15px;}
+.stockout-summary-card small{color:var(--text-soft);font-size:11px;}
+.stockout-summary-card strong{display:block;color:var(--primary);font-size:20px;margin-top:3px;}
+.data-table-wrap{overflow-x:auto;padding:18px 20px 20px;}
+.data-table-wrap table{min-width:900px;}
+.department-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;padding:20px;}
+.department-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow);}
+.department-card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.department-card-head h3{margin:0;color:var(--primary-dark);font-size:15px;}
+body.dark .department-card-head h3{color:#B8D8C7;}
+.department-card-head span{font-size:11px;color:var(--text-soft);}
+.employee-list{list-style:none;padding:12px 0 0;margin:0;}
+.employee-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--border);font-size:13px;}
+.employee-list li:last-child{border-bottom:none;}
+.employee-name{display:flex;align-items:center;gap:8px;}
+.employee-name i{color:var(--primary);}
+.employee-delete{color:var(--danger);border:none;background:transparent;cursor:pointer;padding:5px 7px;border-radius:6px;}
+.employee-delete:hover{background:var(--danger-light);}
+.department-empty{font-size:12px;color:var(--text-soft);padding:10px 0;}
+.modal select,.modal input[type="date"],.modal input[type="number"]{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'Kantumruy Pro';outline:none;}
+.modal select:focus,.modal input[type="date"]:focus,.modal input[type="number"]:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(47,109,76,.12);}
+.stock-info-box{background:var(--primary-light);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:13px;font-size:12px;}
+.stock-info-box strong{color:var(--primary);}
 
 /* =========================
    MODAL
@@ -1459,6 +1629,20 @@ body.dark .empty h3{
 
 
         <button class="menu-item"
+                data-page="stockout">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <span>Stock Out</span>
+        </button>
+
+
+        <button class="menu-item"
+                data-page="departments">
+            <i class="fa-solid fa-building"></i>
+            <span>Department</span>
+        </button>
+
+
+        <button class="menu-item"
                 data-page="years">
 
             <i class="fa-solid fa-calendar-days"></i>
@@ -1816,6 +2000,45 @@ body.dark .empty h3{
 
 
 <!-- =====================================================
+     STOCK OUT PAGE
+===================================================== -->
+<section class="page" id="stockout">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3><i class="fa-solid fa-arrow-up-from-bracket"></i> ប្រវត្តិការដកស្តុក (Stock Out)</h3>
+                <div class="page-hint">ថ្ងៃយកចេញ • Brochure • ឆ្នាំ • ផ្នែក • ឈ្មោះអ្នកយក • ចំនួនយកចេញ</div>
+            </div>
+            <div class="search">
+                <input type="text" id="stockOutSearch" placeholder="ស្វែងរក Stock Out...">
+                <button class="btn-add" id="btnAddStockOut"><i class="fa-solid fa-plus"></i> បន្ថែម Stock Out</button>
+            </div>
+        </div>
+        <div id="stockOutContent"><div class="empty">កំពុងផ្ទុកទិន្នន័យ...</div></div>
+    </div>
+</section>
+
+<!-- =====================================================
+     DEPARTMENT PAGE
+===================================================== -->
+<section class="page" id="departments">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3><i class="fa-solid fa-building"></i> គ្រប់គ្រង Department និងបុគ្គលិក</h3>
+                <div class="page-hint">បញ្ចូលផ្នែក និងឈ្មោះបុគ្គលិកសម្រាប់ប្រើពេលដក Brochure</div>
+            </div>
+            <div class="search">
+                <button class="btn-secondary" id="btnAddDepartment"><i class="fa-solid fa-building-circle-plus"></i> បន្ថែមផ្នែក</button>
+                <button class="btn-add" id="btnAddEmployee"><i class="fa-solid fa-user-plus"></i> បន្ថែមបុគ្គលិក</button>
+            </div>
+        </div>
+        <div id="departmentContent"><div class="empty">កំពុងផ្ទុកទិន្នន័យ...</div></div>
+    </div>
+</section>
+
+
+<!-- =====================================================
      YEARS
 ===================================================== -->
 
@@ -2002,6 +2225,76 @@ body.dark .empty h3{
 
 
 <!-- =====================================================
+     FULL SIZE IMAGE VIEWER
+===================================================== -->
+
+<div class="image-lightbox" id="imageLightbox">
+
+    <div class="image-lightbox-content">
+
+        <button
+            type="button"
+            class="image-lightbox-close"
+            id="imageLightboxClose"
+            title="បិទ">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <img
+            id="fullSizeImage"
+            src=""
+            alt="Full size Brochure">
+
+        <div
+            class="image-lightbox-title"
+            id="fullSizeImageTitle">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     STOCK OUT MODAL
+===================================================== -->
+<div class="overlay" id="stockOutOverlay">
+    <div class="modal">
+        <h2>បន្ថែម Stock Out</h2>
+        <div class="field"><label>ថ្ងៃយកចេញ</label><input type="date" id="soDate"></div>
+        <div class="field"><label>ឈ្មោះ Brochure</label><select id="soBrochure"><option value="">-- ជ្រើសរើស Brochure --</option></select></div>
+        <div class="field"><label>ឆ្នាំ</label><input type="text" id="soYear" readonly placeholder="ឆ្នាំនឹងបង្ហាញដោយស្វ័យប្រវត្តិ"></div>
+        <div class="stock-info-box" id="soStockInfo">សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។</div>
+        <div class="field"><label>ផ្នែក (Department)</label><select id="soDepartment"><option value="">-- ជ្រើសរើសផ្នែក --</option></select></div>
+        <div class="field"><label>ឈ្មោះអ្នកយក</label><select id="soEmployee" disabled><option value="">-- ជ្រើសរើសអ្នកយក --</option></select></div>
+        <div class="field"><label>ចំនួនយកចេញ</label><input type="number" id="soQuantity" min="1" step="1" placeholder="ឧ. 100"></div>
+        <div class="err" id="stockOutErr"></div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="btnCancelStockOut">បោះបង់</button>
+            <button class="btn-save" id="btnSaveStockOut"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Stock Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     DEPARTMENT MODAL
+===================================================== -->
+<div class="overlay" id="departmentOverlay">
+    <div class="modal">
+        <h2 id="departmentModalTitle">បន្ថែមផ្នែក</h2>
+        <div class="field" id="departmentNameField"><label>ឈ្មោះផ្នែក</label><input type="text" id="departmentName" placeholder="ឧ. IT Department"></div>
+        <div class="field" id="employeeDepartmentField" style="display:none"><label>ផ្នែក</label><select id="employeeDepartment"><option value="">-- ជ្រើសរើសផ្នែក --</option></select></div>
+        <div class="field" id="employeeNameField" style="display:none"><label>ឈ្មោះបុគ្គលិក</label><input type="text" id="employeeName" placeholder="ឧ. សុខ ដារ៉ា"></div>
+        <div class="err" id="departmentErr"></div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="btnCancelDepartment">បោះបង់</button>
+            <button class="btn-save" id="btnSaveDepartment"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុក</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================
      MODAL
 ===================================================== -->
 
@@ -2039,6 +2332,34 @@ body.dark .empty h3{
                 type="text"
                 id="fYear"
                 placeholder="ឧ. 2026">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                រូបភាព Brochure
+            </label>
+
+            <input
+                type="file"
+                id="fImage"
+                accept="image/*">
+
+            <div class="image-preview-wrap">
+
+                <img
+                    id="imagePreview"
+                    class="image-preview"
+                    alt="Brochure preview">
+
+                <div class="image-help">
+                    ជ្រើសរើសរូបភាព Brochure របស់អ្នក។<br>
+                    ប្រព័ន្ធនឹងបង្រួមរូបភាពដោយស្វ័យប្រវត្តិ។
+                </div>
+
+            </div>
 
         </div>
 
@@ -2167,6 +2488,10 @@ let yearChart = null;
 
 let pieChart = null;
 
+let departments = [];
+let stockOuts = [];
+let departmentModalMode = "department";
+
 
 /* =====================================================
    PAGE NAVIGATION
@@ -2187,6 +2512,8 @@ const titles = {
     dashboard:"Dashboard",
 
     stock:"ស្តុក Brochure",
+    stockout:"Stock Out",
+    departments:"Department",
 
     years:"តាមឆ្នាំ",
 
@@ -2244,6 +2571,9 @@ function goPage(page){
         updateDashboard();
 
     }
+
+    if(page === "stockout") renderStockOut();
+    if(page === "departments") renderDepartments();
 
 }
 
@@ -2384,6 +2714,8 @@ function listenItems(){
 
         updateReports();
 
+        populateStockOutBrochures();
+
     }, error => {
 
         console.error(error);
@@ -2410,6 +2742,24 @@ function listenItems(){
 
     });
 
+}
+
+
+/* =====================================================
+   DEPARTMENTS + STOCK OUT LISTENERS
+===================================================== */
+function listenDepartments(){
+    db.collection("departments").orderBy("createdAt","asc").onSnapshot(snapshot=>{
+        departments=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+        renderDepartments();
+        populateDepartmentSelects();
+    },error=>console.error("Department listener error:",error));
+}
+function listenStockOuts(){
+    db.collection("stockOuts").orderBy("createdAt","desc").onSnapshot(snapshot=>{
+        stockOuts=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+        renderStockOut();
+    },error=>console.error("Stock Out listener error:",error));
 }
 
 
@@ -2543,6 +2893,20 @@ function openModal(item=null){
         item?.unit ?? "";
 
 
+    document.getElementById("fImage").value = "";
+
+    const imagePreview =
+        document.getElementById("imagePreview");
+
+    if(item?.image){
+        imagePreview.src = item.image;
+        imagePreview.style.display = "block";
+    }else{
+        imagePreview.removeAttribute("src");
+        imagePreview.style.display = "none";
+    }
+
+
     document.getElementById("fOther").value =
         item?.other || "";
 
@@ -2580,6 +2944,82 @@ function closeModal(){
 
 
 /* =====================================================
+   IMAGE HELPERS
+===================================================== */
+
+function compressImage(file){
+
+    return new Promise((resolve,reject) => {
+
+        if(!file){
+            resolve(null);
+            return;
+        }
+
+        if(!file.type.startsWith("image/")){
+            reject(new Error("INVALID_IMAGE"));
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = event => {
+
+            const img = new Image();
+
+            img.onload = () => {
+
+                const maxSize = 700;
+                let width = img.width;
+                let height = img.height;
+
+                if(width > maxSize || height > maxSize){
+                    const ratio = Math.min(
+                        maxSize / width,
+                        maxSize / height
+                    );
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+
+                const canvas = document.createElement("canvas");
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img,0,0,width,height);
+
+                let quality = 0.82;
+                let dataUrl = canvas.toDataURL("image/jpeg",quality);
+
+                // Keep Firestore document size reasonably small.
+                while(dataUrl.length > 700000 && quality > 0.35){
+                    quality -= 0.08;
+                    dataUrl = canvas.toDataURL("image/jpeg",quality);
+                }
+
+                if(dataUrl.length > 700000){
+                    reject(new Error("IMAGE_TOO_LARGE"));
+                    return;
+                }
+
+                resolve(dataUrl);
+
+            };
+
+            img.onerror = () => reject(new Error("IMAGE_LOAD_ERROR"));
+            img.src = event.target.result;
+
+        };
+
+        reader.onerror = () => reject(new Error("IMAGE_READ_ERROR"));
+        reader.readAsDataURL(file);
+
+    });
+}
+
+
+/* =====================================================
    SAVE FORM
 ===================================================== */
 
@@ -2606,6 +3046,26 @@ async function saveForm(){
         document
         .getElementById("fOther")
         .value.trim();
+
+    const imageFile =
+        document.getElementById("fImage").files[0];
+
+    let image = null;
+
+    try{
+        image = await compressImage(imageFile);
+    }catch(error){
+
+        console.error(error);
+
+        if(error.message === "IMAGE_TOO_LARGE"){
+            alert("រូបភាពធំពេក។ សូមជ្រើសរើសរូបភាពតូចជាងនេះ។");
+        }else{
+            alert("មិនអាចអានរូបភាពបានទេ។ សូមជ្រើសរើសរូបភាពម្តងទៀត។");
+        }
+
+        return;
+    }
 
     const unit =
         parseInt(unitRaw);
@@ -2634,7 +3094,8 @@ async function saveForm(){
                 name,
                 year,
                 unit,
-                other
+                other,
+                ...(image ? {image} : {})
             }
         );
 
@@ -2685,7 +3146,8 @@ async function saveForm(){
                 existingItem.id,
                 {
                     unit:newTotal,
-                    other: other || existingItem.other || ""
+                    other: other || existingItem.other || "",
+                    ...(image ? {image} : {})
                 }
             );
 
@@ -2696,7 +3158,8 @@ async function saveForm(){
                 name,
                 year,
                 unit,
-                other
+                other,
+                ...(image ? {image} : {})
             });
 
         }
@@ -2889,6 +3352,10 @@ function renderStock(){
                                 </th>
 
                                 <th>
+                                    រូបភាព
+                                </th>
+
+                                <th>
                                     ឈ្មោះ Brochure
                                 </th>
 
@@ -2923,6 +3390,22 @@ function renderStock(){
                                         ${index+1}
                                     </td>
 
+                                    <td class="brochure-image-cell">
+
+                                        ${item.image
+                                            ? `<img
+                                                class="brochure-thumb"
+                                                src="${escapeHtml(item.image)}"
+                                                alt="${escapeHtml(item.name)}"
+                                                title="ចុចដើម្បីមើលរូប Full Size"
+                                                onclick='viewImage(${JSON.stringify(item.image)}, ${JSON.stringify(item.name)})'>`
+                                            : `<div class="brochure-placeholder" title="មិនទាន់មានរូបភាព">
+                                                <i class="fa-solid fa-image"></i>
+                                              </div>`
+                                        }
+
+                                    </td>
+
                                     <td>
                                         <strong>
                                             ${escapeHtml(item.name)}
@@ -2954,6 +3437,17 @@ function renderStock(){
 
 
                                         <button
+                                            class="action-btn withdraw"
+                                            onclick="openStockOutModal('${item.id}')"
+                                            title="ដកស្តុក">
+
+                                            <i class="fa-solid fa-arrow-down"></i>
+                                            ដកស្តុក
+
+                                        </button>
+
+
+                                        <button
                                             class="action-btn delete"
                                             onclick="deleteItem('${item.id}')">
 
@@ -2977,6 +3471,293 @@ function renderStock(){
             `;
 
         }).join("");
+
+}
+
+
+/* =====================================================
+   WITHDRAW / REMOVE STOCK
+===================================================== */
+
+async function withdrawStock(id){
+
+    const item = items.find(x => x.id === id);
+
+    if(!item) return;
+
+    const currentStock = Number(item.unit || 0);
+
+    if(currentStock <= 0){
+        alert("Not enough stock!\nស្តុករបស់ Brochure នេះអស់ហើយ។");
+        return;
+    }
+
+    const input = prompt(
+        `ដកស្តុកចេញពី \"${item.name}\"\nស្តុកបច្ចុប្បន្ន: ${currentStock.toLocaleString()} ក្បាល\n\nសូមបញ្ចូលចំនួនដែលត្រូវដក:`
+    );
+
+    if(input === null) return;
+
+    const quantity = parseInt(
+        String(input).replace(/,/g, '').trim(),
+        10
+    );
+
+    if(!Number.isInteger(quantity) || quantity <= 0){
+        alert("សូមបញ្ចូលចំនួនស្តុកដែលត្រឹមត្រូវ។");
+        return;
+    }
+
+    try{
+
+        const docRef =
+            db.collection(COLLECTION).doc(id);
+
+        const result = await db.runTransaction(
+            async transaction => {
+
+                const snapshot =
+                    await transaction.get(docRef);
+
+                if(!snapshot.exists){
+                    throw new Error("ITEM_NOT_FOUND");
+                }
+
+                const freshStock =
+                    Number(snapshot.data().unit || 0);
+
+                if(quantity > freshStock){
+                    const error =
+                        new Error("NOT_ENOUGH_STOCK");
+                    error.available = freshStock;
+                    throw error;
+                }
+
+                const remaining =
+                    freshStock - quantity;
+
+                transaction.update(
+                    docRef,
+                    {unit: remaining}
+                );
+
+                return {
+                    remaining,
+                    withdrawn: quantity
+                };
+
+            }
+        );
+
+        alert(
+            `ដកស្តុកបានជោគជ័យ\n\nBrochure: ${item.name}\nដកចេញ: ${result.withdrawn.toLocaleString()} ក្បាល\nស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        if(error.message === "NOT_ENOUGH_STOCK"){
+            alert(
+                `Not enough stock!\nស្តុកមិនគ្រប់សម្រាប់ការដកចេញទេ។\n\nស្តុកដែលមាន: ${Number(error.available || 0).toLocaleString()} ក្បាល\nចំនួនដែលស្នើដក: ${quantity.toLocaleString()} ក្បាល`
+            );
+            return;
+        }
+
+        if(error.message === "ITEM_NOT_FOUND"){
+            alert("មិនអាចរកឃើញ Brochure នេះទេ។");
+            return;
+        }
+
+        alert("មិនអាចដកស្តុកបានទេ។ សូមព្យាយាមម្តងទៀត។");
+
+    }
+
+}
+
+
+/* =====================================================
+   DEPARTMENT MANAGEMENT
+===================================================== */
+function populateDepartmentSelects(){
+    const selects=[document.getElementById("soDepartment"),document.getElementById("employeeDepartment")];
+    selects.forEach(select=>{
+        if(!select) return;
+        const current=select.value;
+        select.innerHTML=`<option value="">-- ជ្រើសរើសផ្នែក --</option>`+departments.map(dep=>`<option value="${escapeHtml(dep.id)}">${escapeHtml(dep.name)}</option>`).join("");
+        if(departments.some(dep=>dep.id===current)) select.value=current;
+    });
+    updateStockOutEmployees();
+}
+function updateStockOutEmployees(){
+    const depId=document.getElementById("soDepartment")?.value;
+    const select=document.getElementById("soEmployee");
+    if(!select) return;
+    const dep=departments.find(x=>x.id===depId);
+    const employees=Array.isArray(dep?.employees)?dep.employees:[];
+    select.innerHTML=`<option value="">-- ជ្រើសរើសអ្នកយក --</option>`+employees.map(emp=>`<option value="${escapeHtml(emp.id)}">${escapeHtml(emp.name)}</option>`).join("");
+    select.disabled=!depId || !employees.length;
+}
+function openDepartmentModal(mode="department"){
+    departmentModalMode=mode;
+    const title=document.getElementById("departmentModalTitle");
+    const nameField=document.getElementById("departmentNameField");
+    const depField=document.getElementById("employeeDepartmentField");
+    const empField=document.getElementById("employeeNameField");
+    const save=document.getElementById("btnSaveDepartment");
+    const err=document.getElementById("departmentErr");
+    err.classList.remove("show");err.textContent="";
+    if(mode==="department"){
+        title.textContent="បន្ថែមផ្នែក";nameField.style.display="block";depField.style.display="none";empField.style.display="none";
+        document.getElementById("departmentName").value="";save.innerHTML=`<i class="fa-solid fa-building-circle-plus"></i> រក្សាទុកផ្នែក`;
+    }else{
+        title.textContent="បន្ថែមបុគ្គលិក";nameField.style.display="none";depField.style.display="block";empField.style.display="block";
+        document.getElementById("employeeDepartment").value="";document.getElementById("employeeName").value="";save.innerHTML=`<i class="fa-solid fa-user-plus"></i> រក្សាទុកបុគ្គលិក`;
+    }
+    document.getElementById("departmentOverlay").classList.add("show");
+}
+function closeDepartmentModal(){document.getElementById("departmentOverlay").classList.remove("show");}
+async function saveDepartmentForm(){
+    const err=document.getElementById("departmentErr");err.classList.remove("show");err.textContent="";
+    try{
+        if(departmentModalMode==="department"){
+            const name=document.getElementById("departmentName").value.trim();
+            if(!name) throw new Error("សូមបញ្ចូលឈ្មោះផ្នែក។");
+            if(departments.some(d=>String(d.name||"").trim().toLowerCase()===name.toLowerCase())) throw new Error("ផ្នែកនេះមានរួចហើយ។");
+            await db.collection("departments").add({name,employees:[],createdAt:Date.now()});
+            alert("បានបន្ថែមផ្នែកដោយជោគជ័យ។");
+        }else{
+            const depId=document.getElementById("employeeDepartment").value;
+            const name=document.getElementById("employeeName").value.trim();
+            if(!depId) throw new Error("សូមជ្រើសរើសផ្នែក។");
+            if(!name) throw new Error("សូមបញ្ចូលឈ្មោះបុគ្គលិក។");
+            const dep=departments.find(d=>d.id===depId); if(!dep) throw new Error("មិនអាចរកឃើញផ្នែក។");
+            const employees=Array.isArray(dep.employees)?dep.employees:[];
+            if(employees.some(e=>String(e.name||"").trim().toLowerCase()===name.toLowerCase())) throw new Error("បុគ្គលិកឈ្មោះនេះមានរួចហើយក្នុងផ្នែកនេះ។");
+            await db.collection("departments").doc(depId).update({employees:firebase.firestore.FieldValue.arrayUnion({id:`${Date.now()}_${Math.random().toString(36).slice(2,8)}`,name})});
+            alert("បានបន្ថែមបុគ្គលិកដោយជោគជ័យ។");
+        }
+        closeDepartmentModal();
+    }catch(e){console.error(e);err.textContent=e.message||"មិនអាចរក្សាទុកបានទេ។";err.classList.add("show");}
+}
+async function deleteEmployee(departmentId,employeeId){
+    const dep=departments.find(d=>d.id===departmentId);if(!dep)return;
+    const emp=(dep.employees||[]).find(e=>e.id===employeeId);if(!emp)return;
+    if(!confirm(`តើអ្នកចង់លុបបុគ្គលិក "${emp.name}" ពីផ្នែក "${dep.name}" មែនទេ?`))return;
+    try{await db.collection("departments").doc(departmentId).update({employees:firebase.firestore.FieldValue.arrayRemove(emp)});}catch(e){console.error(e);alert("មិនអាចលុបបុគ្គលិកបានទេ។");}
+}
+async function deleteDepartment(id){
+    const dep=departments.find(d=>d.id===id);if(!dep)return;
+    if(!confirm(`តើអ្នកចង់លុបផ្នែក "${dep.name}" មែនទេ?`))return;
+    try{await db.collection("departments").doc(id).delete();}catch(e){console.error(e);alert("មិនអាចលុបផ្នែកបានទេ។");}
+}
+function renderDepartments(){
+    const c=document.getElementById("departmentContent");if(!c)return;
+    if(!departments.length){c.innerHTML=`<div class="empty"><i class="fa-solid fa-building"></i><h3>មិនទាន់មានផ្នែក</h3><p>ចុច "បន្ថែមផ្នែក" ដើម្បីបង្កើត Department។</p></div>`;return;}
+    c.innerHTML=`<div class="department-grid">${departments.map(dep=>{const es=Array.isArray(dep.employees)?dep.employees:[];return `<div class="department-card"><div class="department-card-head"><div><h3><i class="fa-solid fa-building"></i> ${escapeHtml(dep.name)}</h3><span>${es.length.toLocaleString()} នាក់</span></div><button class="action-btn delete" onclick="deleteDepartment('${dep.id}')"><i class="fa-solid fa-trash"></i></button></div><ul class="employee-list">${es.length?es.map(emp=>`<li><span class="employee-name"><i class="fa-solid fa-user"></i>${escapeHtml(emp.name)}</span><button class="employee-delete" onclick="deleteEmployee('${dep.id}','${emp.id}')"><i class="fa-solid fa-trash"></i></button></li>`).join(""):`<li class="department-empty">មិនទាន់មានបុគ្គលិកក្នុងផ្នែកនេះ</li>`}</ul></div>`;}).join("")}</div>`;
+}
+
+/* =====================================================
+   STOCK OUT MANAGEMENT
+===================================================== */
+function todayISO(){const d=new Date(),o=d.getTimezoneOffset();return new Date(d.getTime()-o*60000).toISOString().slice(0,10);}
+function formatDateDisplay(v){if(!v)return "-";const p=String(v).split("-");return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:v;}
+function populateStockOutBrochures(selectedId=""){
+    const s=document.getElementById("soBrochure");if(!s)return;const current=selectedId||s.value;
+    s.innerHTML=`<option value="">-- ជ្រើសរើស Brochure --</option>`+[...items].sort((a,b)=>String(a.name).localeCompare(String(b.name))).map(i=>`<option value="${escapeHtml(i.id)}">${escapeHtml(i.name)} — ${escapeHtml(i.year)} (ស្តុក ${Number(i.unit||0).toLocaleString()})</option>`).join("");
+    if(items.some(i=>i.id===current))s.value=current;updateStockOutBrochureInfo();
+}
+function updateStockOutBrochureInfo(){
+    const id=document.getElementById("soBrochure")?.value,item=items.find(i=>i.id===id),year=document.getElementById("soYear"),info=document.getElementById("soStockInfo");
+    if(!item){if(year)year.value="";if(info)info.textContent="សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។";return;}
+    year.value=item.year||"";info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
+}
+function openStockOutModal(brochureId=""){
+    if(!items.length){alert("មិនទាន់មាន Brochure ក្នុងស្តុកទេ។");return;}
+    document.getElementById("soDate").value=todayISO();document.getElementById("soQuantity").value="";document.getElementById("soDepartment").value="";document.getElementById("soEmployee").value="";document.getElementById("soEmployee").disabled=true;
+    document.getElementById("stockOutErr").classList.remove("show");document.getElementById("stockOutErr").textContent="";
+    populateStockOutBrochures(brochureId);populateDepartmentSelects();
+    if(brochureId){document.getElementById("soBrochure").value=brochureId;updateStockOutBrochureInfo();}
+    document.getElementById("stockOutOverlay").classList.add("show");
+}
+function closeStockOutModal(){document.getElementById("stockOutOverlay").classList.remove("show");}
+async function saveStockOut(){
+    const err=document.getElementById("stockOutErr");err.classList.remove("show");err.textContent="";
+    const date=document.getElementById("soDate").value,brochureId=document.getElementById("soBrochure").value,departmentId=document.getElementById("soDepartment").value,employeeId=document.getElementById("soEmployee").value,quantity=parseInt(document.getElementById("soQuantity").value,10);
+    if(!date||!brochureId||!departmentId||!employeeId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃយកចេញ, Brochure, ផ្នែក, ឈ្មោះអ្នកយក និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+    const item=items.find(i=>i.id===brochureId),dep=departments.find(d=>d.id===departmentId),emp=dep?.employees?.find(e=>e.id===employeeId);
+    if(!item||!dep||!emp){err.textContent="ទិន្នន័យ Brochure ឬ Department/បុគ្គលិក មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
+    const stockRef=db.collection(COLLECTION).doc(brochureId),outRef=db.collection("stockOuts").doc();
+    try{
+        const result=await db.runTransaction(async tx=>{
+            const stockSnap=await tx.get(stockRef);if(!stockSnap.exists)throw new Error("ITEM_NOT_FOUND");
+            const fresh=stockSnap.data(),available=Number(fresh.unit||0);
+            if(quantity>available){const e=new Error("NOT_ENOUGH_STOCK");e.available=available;throw e;}
+            const depSnap=await tx.get(db.collection("departments").doc(departmentId));if(!depSnap.exists)throw new Error("DEPARTMENT_NOT_FOUND");
+            const latest=(depSnap.data().employees||[]).find(e=>e.id===employeeId);if(!latest)throw new Error("EMPLOYEE_NOT_FOUND");
+            const remaining=available-quantity;
+            tx.update(stockRef,{unit:remaining});
+            tx.set(outRef,{date,brochureId,brochureName:fresh.name||item.name,year:fresh.year||item.year,departmentId,departmentName:depSnap.data().name||dep.name,employeeId,employeeName:latest.name,quantity,createdAt:Date.now()});
+            return {remaining};
+        });
+        closeStockOutModal();alert(`ដកស្តុកបានជោគជ័យ!\n\nBrochure: ${item.name}\nអ្នកយក: ${emp.name}\nផ្នែក: ${dep.name}\nចំនួនយកចេញ: ${quantity.toLocaleString()} ក្បាល\nស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);goPage("stockout");
+    }catch(e){
+        console.error(e);
+        if(e.message==="NOT_ENOUGH_STOCK")err.textContent=`Not enough stock! ស្តុកមិនគ្រប់សម្រាប់ការដកចេញទេ។ ស្តុកដែលមាន: ${Number(e.available||0).toLocaleString()} ក្បាល | ស្នើដក: ${quantity.toLocaleString()} ក្បាល`;
+        else if(e.message==="EMPLOYEE_NOT_FOUND")err.textContent="បុគ្គលិកនេះលែងស្ថិតនៅក្នុងផ្នែកនេះទៀតហើយ។ សូមជ្រើសរើសម្តងទៀត។";
+        else if(e.message==="DEPARTMENT_NOT_FOUND")err.textContent="ផ្នែកនេះលែងមានទៀតហើយ។ សូមជ្រើសរើសម្តងទៀត។";
+        else if(e.message==="ITEM_NOT_FOUND")err.textContent="Brochure នេះលែងមានក្នុងស្តុកទៀតហើយ។";
+        else err.textContent="មិនអាចរក្សាទុក Stock Out បានទេ។ សូមព្យាយាមម្តងទៀត។";
+        err.classList.add("show");
+    }
+}
+function renderStockOut(){
+    const c=document.getElementById("stockOutContent");if(!c)return;
+    const q=(document.getElementById("stockOutSearch")?.value||"").toLowerCase().trim();
+    const list=q?stockOuts.filter(x=>[x.date,x.brochureName,x.year,x.departmentName,x.employeeName].some(v=>String(v||"").toLowerCase().includes(q))):stockOuts;
+    const total=list.reduce((a,x)=>a+Number(x.quantity||0),0);
+    if(!list.length){c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ស្ថានភាព</small><strong>—</strong></div></div><div class="empty"><i class="fa-solid fa-arrow-up-from-bracket"></i><h3>មិនទាន់មាន Stock Out</h3><p>ចុច "បន្ថែម Stock Out" ដើម្បីកត់ត្រាការយក Brochure ចេញ។</p></div>`;return;}
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>ថ្ងៃយកចេញ</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ផ្នែក</th><th>ឈ្មោះអ្នកយក</th><th>ចំនួនយកចេញ</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+
+/* =====================================================
+   FULL SIZE IMAGE VIEWER
+===================================================== */
+
+function viewImage(image, title = "Brochure"){
+
+    if(!image) return;
+
+    const lightbox =
+        document.getElementById("imageLightbox");
+
+    const imageElement =
+        document.getElementById("fullSizeImage");
+
+    const titleElement =
+        document.getElementById("fullSizeImageTitle");
+
+    imageElement.src = image;
+    imageElement.alt = title;
+    titleElement.textContent = title;
+
+    lightbox.classList.add("show");
+    document.body.style.overflow = "hidden";
+
+}
+
+function closeImageViewer(){
+
+    const lightbox =
+        document.getElementById("imageLightbox");
+
+    lightbox.classList.remove("show");
+
+    document.getElementById("fullSizeImage").src = "";
+    document.getElementById("fullSizeImageTitle").textContent = "";
+
+    document.body.style.overflow = "";
 
 }
 
@@ -3557,6 +4338,30 @@ function escapeHtml(value){
    EVENTS
 ===================================================== */
 
+const fImage = document.getElementById("fImage");
+const imagePreview = document.getElementById("imagePreview");
+
+if(fImage){
+    fImage.addEventListener("change", event => {
+
+        const file = event.target.files[0];
+
+        if(!file){
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = e => {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+}
+
 document
 .getElementById("btnAdd")
 .addEventListener(
@@ -3607,6 +4412,38 @@ document
 );
 
 
+const imageLightbox =
+    document.getElementById("imageLightbox");
+
+const imageLightboxClose =
+    document.getElementById("imageLightboxClose");
+
+if(imageLightboxClose){
+    imageLightboxClose.addEventListener("click", closeImageViewer);
+}
+
+if(imageLightbox){
+    imageLightbox.addEventListener("click", e => {
+        if(e.target === imageLightbox){
+            closeImageViewer();
+        }
+    });
+}
+
+
+document.getElementById("btnAddStockOut")?.addEventListener("click",()=>openStockOutModal());
+document.getElementById("btnCancelStockOut")?.addEventListener("click",closeStockOutModal);
+document.getElementById("btnSaveStockOut")?.addEventListener("click",saveStockOut);
+document.getElementById("soBrochure")?.addEventListener("change",updateStockOutBrochureInfo);
+document.getElementById("soDepartment")?.addEventListener("change",updateStockOutEmployees);
+document.getElementById("stockOutSearch")?.addEventListener("input",renderStockOut);
+document.getElementById("stockOutOverlay")?.addEventListener("click",e=>{if(e.target.id==="stockOutOverlay")closeStockOutModal();});
+document.getElementById("btnAddDepartment")?.addEventListener("click",()=>openDepartmentModal("department"));
+document.getElementById("btnAddEmployee")?.addEventListener("click",()=>{if(!departments.length){alert("សូមបន្ថែម Department ជាមុនសិន។");return;}openDepartmentModal("employee");});
+document.getElementById("btnCancelDepartment")?.addEventListener("click",closeDepartmentModal);
+document.getElementById("btnSaveDepartment")?.addEventListener("click",saveDepartmentForm);
+document.getElementById("departmentOverlay")?.addEventListener("click",e=>{if(e.target.id==="departmentOverlay")closeDepartmentModal();});
+
 /* ESC CLOSE MODAL */
 
 document.addEventListener(
@@ -3616,6 +4453,9 @@ document.addEventListener(
         if(e.key === "Escape"){
 
             closeModal();
+            closeImageViewer();
+            closeStockOutModal();
+            closeDepartmentModal();
 
         }
 
@@ -3628,6 +4468,8 @@ document.addEventListener(
 ===================================================== */
 
 listenItems();
+listenDepartments();
+listenStockOuts();
 
 </script>
 
