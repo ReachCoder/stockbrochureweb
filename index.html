@@ -1576,6 +1576,215 @@ body.dark .empty h3{
     }
 }
 
+/* =========================
+   PRINT STYLES
+========================= */
+/* =========================
+   PRINT STYLES FIX
+========================= */
+/* =========================
+   PRINT STYLES FIX & ENHANCED UI
+========================= */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 12mm 10mm 15mm 10mm;
+    }
+
+    /* ១. លាក់ Element ទាំងអស់ជាមុនសិន (ប៉ុន្តែមិនលាក់ Parent container ដែលនាំឲ្យបាត់ child ទេ) */
+    body * {
+        visibility: hidden !important;
+    }
+
+    /* ២. បើកបង្ហាញតែ print-area និង Element ទាំងអស់ដែលនៅក្នុងវា */
+    .print-area, .print-area * {
+        visibility: visible !important;
+    }
+
+    /* ៣. រក្សាទីតាំង print-area ឲ្យនៅខាងលើគេបង្អស់នៃទំព័រ */
+    .print-area {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #1a1a1a !important;
+        font-family: 'Kantumruy Pro', sans-serif !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Header Design សម្រាប់ទំព័របោះពុម្ព */
+    .print-header-container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-bottom: 2px solid #2F6D4C !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .print-header-left h1 {
+        font-family: 'Moul', serif !important;
+        font-size: 18px !important;
+        color: #2F6D4C !important;
+        margin: 0 0 4px 0 !important;
+    }
+
+    .print-header-left p {
+        font-size: 11px !important;
+        color: #555 !important;
+        margin: 0 !important;
+    }
+
+    .print-header-right {
+        text-align: right !important;
+        font-size: 10px !important;
+        color: #666 !important;
+        line-height: 1.5 !important;
+    }
+
+    .print-header-right strong {
+        color: #2F6D4C !important;
+    }
+
+    /* ស្ទាយ Group & Table */
+    .print-area .group {
+        margin: 0 0 16px 0 !important;
+        border: 1px solid #dcdcdc !important;
+        border-radius: 6px !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .print-area .group-band {
+        background: #2F6D4C !important;
+        color: #ffffff !important;
+        padding: 8px 14px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .print-area .group-year {
+        font-family: 'Moul', serif !important;
+        font-size: 13px !important;
+    }
+
+    .print-area .group-sub {
+        font-size: 10px !important;
+        color: #e0f2e9 !important;
+    }
+
+    .print-area table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    .print-area thead th {
+        background: #f4f6f5 !important;
+        color: #204C36 !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        padding: 8px 10px !important;
+        border-bottom: 1.5px solid #c2d6cb !important;
+    }
+
+    .print-area tbody td {
+        padding: 7px 10px !important;
+        font-size: 11px !important;
+        border-bottom: 1px solid #eee !important;
+        color: #222 !important;
+        vertical-align: middle !important;
+    }
+
+    .print-area tbody tr:nth-child(even) {
+        background-color: #fafbfc !important;
+    }
+
+    .print-area .brochure-image-cell {
+        width: 55px !important;
+        padding: 4px !important;
+    }
+
+    .print-area .brochure-thumb {
+        width: 46px !important;
+        height: 46px !important;
+        object-fit: contain !important;
+        border-radius: 4px !important;
+        border: 1px solid #ddd !important;
+    }
+
+    .print-area .brochure-placeholder {
+        width: 46px !important;
+        height: 46px !important;
+        border-radius: 4px !important;
+        font-size: 14px !important;
+    }
+
+    .print-area .unit {
+        font-weight: 700 !important;
+        color: #2F6D4C !important;
+    }
+
+    /* Print Footer / Summary & Signatures */
+    .print-footer-summary {
+        margin-top: 18px !important;
+        padding: 10px 14px !important;
+        background: #f8faf9 !important;
+        border: 1px solid #c2d6cb !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        page-break-inside: avoid;
+    }
+
+    .print-footer-summary .sum-item {
+        font-size: 11px !important;
+        color: #444 !important;
+    }
+
+    .print-footer-summary .sum-item strong {
+        color: #2F6D4C !important;
+        font-size: 13px !important;
+    }
+
+    .print-sign-section {
+        margin-top: 35px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        text-align: center !important;
+        font-size: 11px !important;
+        color: #444 !important;
+        page-break-inside: avoid;
+    }
+
+    .print-sign-box {
+        width: 200px !important;
+    }
+
+    .print-sign-box .sign-title {
+        font-weight: 700 !important;
+        margin-bottom: 55px !important;
+    }
+
+    .print-sign-box .sign-line {
+        border-bottom: 1px dashed #777 !important;
+    }
+}
+
+
+
 </style>
 </head>
 
@@ -1971,6 +2180,11 @@ body.dark .empty h3{
                     placeholder="ស្វែងរក Brochure..."
                 >
 
+                <button class="btn-secondary" id="btnPrintStock" title="បោះពុម្ពស្តុក">
+                    <i class="fa-solid fa-print"></i>
+                    Print
+                </button>
+
                 <button
                     class="btn-add"
                     id="btnAdd">
@@ -2221,6 +2435,18 @@ body.dark .empty h3{
 
 </main>
 
+</div>
+
+
+<!-- =====================================================
+     PRINT AREA (visible only when printing)
+===================================================== -->
+
+<div class="print-area" id="printArea">
+    <div class="print-title">បញ្ជីស្តុក Brochure</div>
+    <div class="print-subtitle" id="printDateStamp"></div>
+    <div id="printTableContent"></div>
+    <div class="print-footer" id="printFooter"></div>
 </div>
 
 
@@ -3722,6 +3948,153 @@ function renderStockOut(){
 
 
 /* =====================================================
+   PRINT STOCK FUNCTION (ENHANCED PRINT PREVIEW)
+===================================================== */
+function buildPrintTable(){
+    const search = document.getElementById("search")?.value.toLowerCase().trim() || "";
+
+    let filtered = search
+        ? items.filter(item =>
+            String(item.name).toLowerCase().includes(search) ||
+            String(item.year).toLowerCase().includes(search))
+        : items;
+
+    if(!filtered.length){
+        document.getElementById("printFooter").innerHTML = "";
+        return `<div style="text-align:center;padding:30px;color:#666">មិនមានទិន្នន័យសម្រាប់បោះពុម្ព</div>`;
+    }
+
+    const groups = {};
+
+    filtered.forEach(item => {
+        const year = extractYear(item.year) || "ផ្សេងៗ";
+        if(!groups[year]) groups[year] = [];
+        groups[year].push(item);
+    });
+
+    const keys = Object.keys(groups).sort((a,b) => {
+        if(a === "ផ្សេងៗ") return 1;
+        if(b === "ផ្សេងៗ") return -1;
+        return b - a;
+    });
+
+    let grandTotalItems = 0;
+    let grandTotalUnits = 0;
+
+    const tableHtml = keys.map(year => {
+        const rows = groups[year];
+        const subtotal = rows.reduce((s,i) => s + Number(i.unit || 0), 0);
+
+        grandTotalItems += rows.length;
+        grandTotalUnits += subtotal;
+
+        return `
+            <div class="group">
+                <div class="group-band">
+                    <div>
+                        <div class="group-year">${escapeHtml(String(year))}</div>
+                        <div class="group-sub">${rows.length} មុខ</div>
+                    </div>
+                    <div style="color:white;font-weight:700;font-size:13px">
+                        សរុប៖ ${subtotal.toLocaleString()} ក្បាល
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40px; text-align:center;">ល.រ</th>
+                            <th style="width: 60px; text-align:center;">រូបភាព</th>
+                            <th>ឈ្មោះ Brochure</th>
+                            <th style="width: 80px; text-align:center;">ឆ្នាំ</th>
+                            <th style="width: 100px; text-align:right;">ចំនួនស្តុក</th>
+                            <th>ចំណាំ / ផ្សេងៗ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map((item,index) => `
+                            <tr>
+                                <td style="text-align:center;">${index+1}</td>
+                                <td class="brochure-image-cell">
+                                    ${item.image
+                                        ? `<img class="brochure-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">`
+                                        : `<div class="brochure-placeholder"><i class="fa-solid fa-image"></i></div>`}
+                                </td>
+                                <td><strong>${escapeHtml(item.name)}</strong></td>
+                                <td style="text-align:center;">${escapeHtml(item.year)}</td>
+                                <td class="unit" style="text-align:right;">${Number(item.unit || 0).toLocaleString()}</td>
+                                <td>${escapeHtml(item.other || "-")}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }).join("");
+
+    const footerHtml = `
+        <div class="print-footer-summary">
+            <div class="sum-item">មុខទំនិញសរុប៖ <strong>${grandTotalItems.toLocaleString()} មុខ</strong></div>
+            <div class="sum-item">ចំនួនក្បាលសរុប៖ <strong>${grandTotalUnits.toLocaleString()} ក្បាល</strong></div>
+            <div class="sum-item">ប្រព័ន្ធ៖ <strong>Brochure Stock Management</strong></div>
+        </div>
+
+        <div class="print-sign-section">
+            <div class="print-sign-box">
+                <div class="sign-title">អ្នករៀបចំ (Prepared By)</div>
+                <div class="sign-line"></div>
+            </div>
+            <div class="print-sign-box">
+                <div class="sign-title">អ្នកពិនិត្យ (Approved By)</div>
+                <div class="sign-line"></div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("printFooter").innerHTML = footerHtml;
+    return tableHtml;
+}
+
+function printStock(){
+    if(!items || !items.length){
+        alert("មិនទាន់មានទិន្នន័យស្តុកសម្រាប់បោះពុម្ពទេ។");
+        return;
+    }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("km-KH", {year:"numeric",month:"long",day:"numeric"});
+    const timeStr = now.toLocaleTimeString("km-KH", {hour:'2-digit', minute:'2-digit'});
+
+    const printArea = document.getElementById("printArea");
+    if(printArea){
+        // ១. បង្កើត Structure ទាំងអស់ជាមុនសិន
+        printArea.innerHTML = `
+            <div class="print-header-container">
+                <div class="print-header-left">
+                    <h1>របាយការណ៍ស្តុក BROCHURE</h1>
+                    <p>ប្រព័ន្ធគ្រប់គ្រងស្តុក Brochure (Brochure Stock Management)</p>
+                </div>
+                <div class="print-header-right">
+                    <div>កាលបរិច្ឆេទបោះពុម្ព៖ <strong>${dateStr}</strong></div>
+                    <div>ម៉ោង៖ <strong>${timeStr}</strong></div>
+                </div>
+            </div>
+            <div id="printTableContent"></div>
+            <div id="printFooter"></div>
+        `;
+
+        // ២. បញ្ចូល Table content ទៅក្នុង Element ដែលទើបបង្កើត
+        const tableHtml = buildPrintTable();
+        document.getElementById("printTableContent").innerHTML = tableHtml;
+
+        // ៣. បើក Print Window
+        setTimeout(() => {
+            window.print();
+        }, 100);
+    }
+}
+
+
+/* =====================================================
    FULL SIZE IMAGE VIEWER
 ===================================================== */
 
@@ -4443,6 +4816,7 @@ document.getElementById("btnAddEmployee")?.addEventListener("click",()=>{if(!dep
 document.getElementById("btnCancelDepartment")?.addEventListener("click",closeDepartmentModal);
 document.getElementById("btnSaveDepartment")?.addEventListener("click",saveDepartmentForm);
 document.getElementById("departmentOverlay")?.addEventListener("click",e=>{if(e.target.id==="departmentOverlay")closeDepartmentModal();});
+document.getElementById("btnPrintStock")?.addEventListener("click",printStock);
 
 /* ESC CLOSE MODAL */
 
