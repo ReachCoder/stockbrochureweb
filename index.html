@@ -15,6 +15,12 @@
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+<!-- Logo App -->
+ <!-- បន្ថែមក្នុងប្លុក <head> -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<link rel="apple-touch-icon" href="logo.png">
+
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -4966,6 +4972,13 @@ document.addEventListener(
     }
 );
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('PWA Service Worker Registered!'))
+        .catch(err => console.log('Service Worker Error: ', err));
+    });
+  }
 
 /* =====================================================
    START
