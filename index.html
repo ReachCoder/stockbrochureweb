@@ -3170,10 +3170,18 @@ function closeModal(){
 
 
 /* =====================================================
-   IMAGE HELPERS
+   IMAGE HELPERS — CLOUDINARY UPLOAD
 ===================================================== */
 
-function compressImage(file){
+const CLOUDINARY_CLOUD_NAME = "vjzwnmb6";
+const CLOUDINARY_UPLOAD_PRESET = "my_images_brochures";
+const CLOUDINARY_UPLOAD_URL =
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+
+// បង្រួមទំហំរូបភាពនៅលើ browser មុននឹង upload ទៅ Cloudinary
+// (ជួយឲ្យ upload លឿន និងសន្សំ bandwidth)
+function resizeImageToBlob(file){
 
     return new Promise((resolve,reject) => {
 
@@ -3195,7 +3203,7 @@ function compressImage(file){
 
             img.onload = () => {
 
-                const maxSize = 700;
+                const maxSize = 1000;
                 let width = img.width;
                 let height = img.height;
 
@@ -3215,21 +3223,20 @@ function compressImage(file){
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img,0,0,width,height);
 
-                let quality = 0.82;
-                let dataUrl = canvas.toDataURL("image/jpeg",quality);
+                canvas.toBlob(
+                    blob => {
 
-                // Keep Firestore document size reasonably small.
-                while(dataUrl.length > 700000 && quality > 0.35){
-                    quality -= 0.08;
-                    dataUrl = canvas.toDataURL("image/jpeg",quality);
-                }
+                        if(!blob){
+                            reject(new Error("IMAGE_COMPRESS_ERROR"));
+                            return;
+                        }
 
-                if(dataUrl.length > 700000){
-                    reject(new Error("IMAGE_TOO_LARGE"));
-                    return;
-                }
+                        resolve(blob);
 
-                resolve(dataUrl);
+                    },
+                    "image/jpeg",
+                    0.85
+                );
 
             };
 
@@ -3242,6 +3249,47 @@ function compressImage(file){
         reader.readAsDataURL(file);
 
     });
+}
+
+
+// Upload រូបភាពទៅ Cloudinary ហើយត្រឡប់ជា secure_url
+// (URL នេះទេ ដែលនឹងត្រូវរក្សាទុកក្នុង Firestore មិនមែន base64)
+async function uploadImageToCloudinary(file){
+
+    if(!file){
+        return null;
+    }
+
+    const blob = await resizeImageToBlob(file);
+
+    const formData = new FormData();
+    formData.append("file", blob, file.name || "brochure.jpg");
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    let response;
+
+    try{
+        response = await fetch(CLOUDINARY_UPLOAD_URL, {
+            method:"POST",
+            body:formData
+        });
+    }catch(error){
+        console.error(error);
+        throw new Error("UPLOAD_NETWORK_ERROR");
+    }
+
+    if(!response.ok){
+        throw new Error("UPLOAD_FAILED");
+    }
+
+    const data = await response.json();
+
+    if(!data.secure_url){
+        throw new Error("UPLOAD_FAILED");
+    }
+
+    return data.secure_url;
+
 }
 
 
@@ -3278,19 +3326,44 @@ async function saveForm(){
 
     let image = null;
 
-    try{
-        image = await compressImage(imageFile);
-    }catch(error){
+    const btnSave = document.getElementById("btnSave");
+    const btnSaveOriginalHtml = btnSave ? btnSave.innerHTML : "";
 
-        console.error(error);
+    if(imageFile){
 
-        if(error.message === "IMAGE_TOO_LARGE"){
-            alert("រូបភាពធំពេក។ សូមជ្រើសរើសរូបភាពតូចជាងនេះ។");
-        }else{
-            alert("មិនអាចអានរូបភាពបានទេ។ សូមជ្រើសរើសរូបភាពម្តងទៀត។");
+        if(btnSave){
+            btnSave.disabled = true;
+            btnSave.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> កំពុង Upload រូបភាព...';
         }
 
-        return;
+        try{
+            image = await uploadImageToCloudinary(imageFile);
+        }catch(error){
+
+            console.error(error);
+
+            if(btnSave){
+                btnSave.disabled = false;
+                btnSave.innerHTML = btnSaveOriginalHtml;
+            }
+
+            if(error.message === "INVALID_IMAGE"){
+                alert("ឯកសារនេះមិនមែនជារូបភាពទេ។ សូមជ្រើសរើសរូបភាពម្តងទៀត។");
+            }else if(error.message === "UPLOAD_NETWORK_ERROR"){
+                alert("Upload មិនជោគជ័យ។ សូមពិនិត្យការភ្ជាប់អ៊ីនធឺណិត ហើយសាកល្បងម្តងទៀត។");
+            }else{
+                alert("Upload រូបភាពមិនជោគជ័យទេ។ សូមសាកល្បងម្តងទៀត។");
+            }
+
+            return;
+        }
+
+        if(btnSave){
+            btnSave.disabled = false;
+            btnSave.innerHTML = btnSaveOriginalHtml;
+        }
+
     }
 
     const unit =
