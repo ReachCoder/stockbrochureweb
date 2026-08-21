@@ -134,6 +134,24 @@ body{
 
 /* logo */
 
+/* កំណត់ទំហំ Logo លើ Sidebar */
+.app-logo-img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    margin-right: 12px;
+    border-radius: 8px;
+}
+
+/* កំណត់ទំហំ Logo ពេល Print */
+@media print {
+    .print-logo-img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
+}
+
 .logo{
     height:75px;
 
@@ -1816,17 +1834,11 @@ body.dark .empty h3{
 <aside class="sidebar" id="sidebar">
 
     <div class="logo">
-
-        <div class="logo-icon">
-            <i class="fa-solid fa-book-open"></i>
-        </div>
-
+        <img src="logo_NU.png" alt="Logo" class="app-logo-img">
         <div class="logo-text">
             Brochure Stock
         </div>
-
     </div>
-
 
     <div class="menu">
 
@@ -4181,20 +4193,24 @@ function printStock(){
     const printArea = document.getElementById("printArea");
     if(printArea){
         // ១. បង្កើត Structure ទាំងអស់ជាមុនសិន
-        printArea.innerHTML = `
-            <div class="print-header-container">
-                <div class="print-header-left">
-                    <h1>របាយការណ៍ស្តុក BROCHURE</h1>
-                    <p>ប្រព័ន្ធគ្រប់គ្រងស្តុក Brochure (Brochure Stock Management)</p>
-                </div>
-                <div class="print-header-right">
-                    <div>កាលបរិច្ឆេទបោះពុម្ព៖ <strong>${dateStr}</strong></div>
-                    <div>ម៉ោង៖ <strong>${timeStr}</strong></div>
-                </div>
+       // កូដនៅក្នុង function printStock()
+printArea.innerHTML = `
+    <div class="print-header-container">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="logo_NU.png" class="print-logo-img" alt="Logo">
+            <div class="print-header-left">
+                <h1>របាយការណ៍ស្តុក BROCHURE</h1>
+                <p>ប្រព័ន្ធគ្រប់គ្រងស្តុក Brochure (Brochure Stock Management)</p>
             </div>
-            <div id="printTableContent"></div>
-            <div id="printFooter"></div>
-        `;
+        </div>
+        <div class="print-header-right">
+            <div>កាលបរិច្ឆេទបោះពុម្ព៖ <strong>${dateStr}</strong></div>
+            <div>ម៉ោង៖ <strong>${timeStr}</strong></div>
+        </div>
+    </div>
+    <div id="printTableContent"></div>
+    <div id="printFooter"></div>
+`;
 
         // ២. បញ្ចូល Table content ទៅក្នុង Element ដែលទើបបង្កើត
         const tableHtml = buildPrintTable();
