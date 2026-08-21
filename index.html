@@ -1659,10 +1659,10 @@ body.dark .empty h3{
         margin: 0 0 16px 0 !important;
         border: 1px solid #dcdcdc !important;
         border-radius: 6px !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background: #fff !important;
-        page-break-inside: avoid;
-        break-inside: avoid;
+        page-break-inside: auto;
+        break-inside: auto;
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
@@ -1675,6 +1675,10 @@ body.dark .empty h3{
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     .print-area .group-year {
@@ -1690,6 +1694,11 @@ body.dark .empty h3{
     .print-area table {
         width: 100% !important;
         border-collapse: collapse !important;
+        page-break-inside: auto;
+    }
+
+    .print-area thead {
+        display: table-header-group !important;
     }
 
     .print-area thead th {
@@ -1700,6 +1709,11 @@ body.dark .empty h3{
         text-transform: uppercase;
         padding: 8px 10px !important;
         border-bottom: 1.5px solid #c2d6cb !important;
+    }
+
+    .print-area tbody tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     .print-area tbody td {
