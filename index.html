@@ -1663,6 +1663,9 @@ body.dark .empty h3{
         background: #fff !important;
         page-break-inside: avoid;
         break-inside: avoid;
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
     }
 
     .print-area .group-band {
@@ -2442,7 +2445,7 @@ body.dark .empty h3{
      PRINT AREA (visible only when printing)
 ===================================================== -->
 
-<div class="print-area" id="printArea">
+<div class="print-area" id="printArea" style="display:none;">
     <div class="print-title">បញ្ជីស្តុក Brochure</div>
     <div class="print-subtitle" id="printDateStamp"></div>
     <div id="printTableContent"></div>
@@ -3384,88 +3387,112 @@ async function saveForm(){
 
     }
 
-    if(editingId){
+    if(btnSave){
+        btnSave.disabled = true;
+        btnSave.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក...';
+    }
 
-        // ករណីកែប្រែទិន្នន័យចាស់
-        await updateItem(
-            editingId,
-            {
-                name,
-                year,
-                unit,
-                other,
-                ...(image ? {image} : {})
-            }
-        );
+    try{
 
-    }else{
+        if(editingId){
 
-        // =====================================================
-        // បើឈ្មោះ Brochure និងឆ្នាំដូចគ្នា
-        // នឹងបូកចំនួនថ្មីបន្ថែមទៅស្តុកចាស់
-        // មិនបង្កើត row ថ្មីទេ
-        // =====================================================
-
-        const normalizedName =
-            name.replace(/\s+/g," ").trim().toLowerCase();
-
-        const normalizedYear =
-            year.replace(/\s+/g,"").trim().toLowerCase();
-
-        const existingItem = items.find(item => {
-
-            const existingName =
-                String(item.name || "")
-                .replace(/\s+/g," ")
-                .trim()
-                .toLowerCase();
-
-            const existingYear =
-                String(item.year || "")
-                .replace(/\s+/g,"")
-                .trim()
-                .toLowerCase();
-
-            return (
-                existingName === normalizedName &&
-                existingYear === normalizedYear
-            );
-
-        });
-
-        if(existingItem){
-
-            const oldUnit =
-                Number(existingItem.unit || 0);
-
-            const newTotal =
-                oldUnit + unit;
-
+            // ករណីកែប្រែទិន្នន័យចាស់
             await updateItem(
-                existingItem.id,
+                editingId,
                 {
-                    unit:newTotal,
-                    other: other || existingItem.other || "",
+                    name,
+                    year,
+                    unit,
+                    other,
                     ...(image ? {image} : {})
                 }
             );
 
         }else{
 
-            // បើមិនទាន់មានឈ្មោះ + ឆ្នាំនេះ ទើបបង្កើតធាតុថ្មី
-            await addItem({
-                name,
-                year,
-                unit,
-                other,
-                ...(image ? {image} : {})
+            // =====================================================
+            // បើឈ្មោះ Brochure និងឆ្នាំដូចគ្នា
+            // នឹងបូកចំនួនថ្មីបន្ថែមទៅស្តុកចាស់
+            // មិនបង្កើត row ថ្មីទេ
+            // =====================================================
+
+            const normalizedName =
+                name.replace(/\s+/g," ").trim().toLowerCase();
+
+            const normalizedYear =
+                year.replace(/\s+/g,"").trim().toLowerCase();
+
+            const existingItem = items.find(item => {
+
+                const existingName =
+                    String(item.name || "")
+                    .replace(/\s+/g," ")
+                    .trim()
+                    .toLowerCase();
+
+                const existingYear =
+                    String(item.year || "")
+                    .replace(/\s+/g,"")
+                    .trim()
+                    .toLowerCase();
+
+                return (
+                    existingName === normalizedName &&
+                    existingYear === normalizedYear
+                );
+
             });
+
+            if(existingItem){
+
+                const oldUnit =
+                    Number(existingItem.unit || 0);
+
+                const newTotal =
+                    oldUnit + unit;
+
+                await updateItem(
+                    existingItem.id,
+                    {
+                        unit:newTotal,
+                        other: other || existingItem.other || "",
+                        ...(image ? {image} : {})
+                    }
+                );
+
+            }else{
+
+                // បើមិនទាន់មានឈ្មោះ + ឆ្នាំនេះ ទើបបង្កើតធាតុថ្មី
+                await addItem({
+                    name,
+                    year,
+                    unit,
+                    other,
+                    ...(image ? {image} : {})
+                });
+
+            }
 
         }
 
-    }
+        // ជោគជ័យ — លាក់ popup ភ្លាមៗ
+        closeModal();
 
-    closeModal();
+    }catch(error){
+
+        console.error(error);
+
+        alert("មិនអាចរក្សាទុកទិន្នន័យបានទេ។ សូមព្យាយាមម្តងទៀត។");
+
+    }finally{
+
+        if(btnSave){
+            btnSave.disabled = false;
+            btnSave.innerHTML = btnSaveOriginalHtml;
+        }
+
+    }
 
 }
 /* =====================================================
@@ -4162,7 +4189,7 @@ function printStock(){
         // ៣. បើក Print Window
         setTimeout(() => {
             window.print();
-        }, 100);
+        }, 250);
     }
 }
 
