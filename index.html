@@ -1780,6 +1780,48 @@ body.dark .empty h3{
 }
 
 /* =========================
+   AUDIT LOG
+========================= */
+.audit-filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    margin-bottom:16px;
+}
+.audit-filters select,
+.audit-filters input{
+    padding:8px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--card);
+    color:var(--text);
+    font-family:'Kantumruy Pro';
+    outline:none;
+}
+.audit-badge{
+    display:inline-block;
+    padding:3px 8px;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:700;
+}
+.audit-badge.create{ background:#E4F0E9; color:#2F6D4C; }
+.audit-badge.update{ background:#FFF3CD; color:#856404; }
+.audit-badge.delete{ background:#F8E3E1; color:#B94A48; }
+body.dark .audit-badge.create{ background:#263B31; color:#B8D8C7; }
+body.dark .audit-badge.update{ background:#3A3520; color:#E6C876; }
+body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
+.audit-detail{
+    font-size:12px;
+    color:var(--text-soft);
+    max-width:320px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* =========================
    PRINT STYLES
 ========================= */
 /* =========================
@@ -2095,6 +2137,16 @@ body.dark .empty h3{
         <div class="menu-title">
             SYSTEM
         </div>
+
+
+        <button class="menu-item"
+                data-page="audit">
+
+            <i class="fa-solid fa-clipboard-list"></i>
+
+            <span>Audit Log</span>
+
+        </button>
 
 
         <button class="menu-item"
@@ -2443,16 +2495,6 @@ body.dark .empty h3{
                     Print
                 </button>
 
-                <button
-                    class="btn-add"
-                    id="btnAdd">
-
-                    <i class="fa-solid fa-plus"></i>
-
-                    បន្ថែម
-
-                </button>
-
             </div>
 
         </div>
@@ -2706,8 +2748,71 @@ body.dark .empty h3{
 
         </div>
 
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-title">
+                    ឈ្មោះអ្នកប្រើ (Operator)
+                </div>
+
+                <div class="setting-desc">
+                    ឈ្មោះនេះនឹងត្រូវកត់ត្រាក្នុង Audit Log ពេលកែ/លុបទិន្នន័យ
+                </div>
+
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="operatorNameInput" placeholder="ឧ. សុខ ដារ៉ា" style="width:160px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'Kantumruy Pro';outline:none;">
+                <button class="btn-secondary" id="btnSaveOperator" style="padding:8px 12px;">រក្សាទុក</button>
+            </div>
+
+        </div>
+
     </div>
 
+</section>
+
+
+<!-- =====================================================
+     AUDIT LOG
+===================================================== -->
+<section class="page" id="audit">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3><i class="fa-solid fa-clipboard-list"></i> Audit Log — ប្រវត្តិសកម្មភាព</h3>
+                <div class="page-hint">កត់ត្រាអ្នកដែលបង្កើត / កែ / លុប ទិន្នន័យ (ប្រើឈ្មោះអ្នកប្រើពីការកំណត់)</div>
+            </div>
+            <div class="search">
+                <input type="text" id="auditSearch" placeholder="ស្វែងរក...">
+            </div>
+        </div>
+
+        <div style="padding:18px 20px 0;">
+            <div class="audit-filters">
+                <select id="auditActionFilter">
+                    <option value="">គ្រប់សកម្មភាព</option>
+                    <option value="create">បង្កើត</option>
+                    <option value="update">កែប្រែ</option>
+                    <option value="delete">លុប</option>
+                </select>
+                <select id="auditEntityFilter">
+                    <option value="">គ្រប់ប្រភេទ</option>
+                    <option value="brochure">Brochure</option>
+                    <option value="stockIn">Stock In</option>
+                    <option value="stockOut">Stock Out</option>
+                    <option value="department">Department</option>
+                    <option value="employee">Employee</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="auditContent">
+            <div class="empty">កំពុងផ្ទុក...</div>
+        </div>
+    </div>
 </section>
 
 </main>
@@ -3083,6 +3188,8 @@ const titles = {
 
     reports:"របាយការណ៍",
 
+    audit:"Audit Log",
+
     settings:"ការកំណត់"
 
 };
@@ -3139,6 +3246,7 @@ function goPage(page){
     if(page === "stockout") renderStockOut();
     if(page === "stockin") renderStockIn();
     if(page === "departments") renderDepartments();
+    if(page === "audit") renderAuditLog();
 
 }
 
@@ -3424,6 +3532,14 @@ async function deleteItem(id){
             .collection(COLLECTION)
             .doc(id)
             .delete();
+
+        await writeAuditLog({
+            action: "delete",
+            entity: "brochure",
+            entityId: id,
+            entityName: item.name,
+            details: `លុប Brochure | ឆ្នាំ ${item.year || ""} | ស្តុកដែលមាន ${Number(item.unit||0).toLocaleString()} ក្បាល`
+        });
 
     }catch(error){
 
@@ -3755,6 +3871,14 @@ async function saveForm(){
                 }
             );
 
+            await writeAuditLog({
+                action: "update",
+                entity: "brochure",
+                entityId: editingId,
+                entityName: name,
+                details: `កែ Brochure: ${name} | ឆ្នាំ ${year} | ចំនួន ${unit.toLocaleString()}`
+            });
+
         }else{
 
             // =====================================================
@@ -3807,6 +3931,14 @@ async function saveForm(){
                     }
                 );
 
+                await writeAuditLog({
+                    action: "update",
+                    entity: "brochure",
+                    entityId: existingItem.id,
+                    entityName: name,
+                    details: `បូកស្តុកបន្ថែម ${unit.toLocaleString()} ក្បាល (សរុបថ្មី ${newTotal.toLocaleString()})`
+                });
+
             }else{
 
                 // បើមិនទាន់មានឈ្មោះ + ឆ្នាំនេះ ទើបបង្កើតធាតុថ្មី
@@ -3816,6 +3948,13 @@ async function saveForm(){
                     unit,
                     other,
                     ...(image ? {image} : {})
+                });
+
+                await writeAuditLog({
+                    action: "create",
+                    entity: "brochure",
+                    entityName: name,
+                    details: `បង្កើត Brochure ថ្មី | ឆ្នាំ ${year} | ចំនួន ${unit.toLocaleString()}`
                 });
 
             }
@@ -4309,6 +4448,12 @@ async function saveDepartmentForm(){
             if(!name) throw new Error("សូមបញ្ចូលឈ្មោះផ្នែក។");
             if(departments.some(d=>String(d.name||"").trim().toLowerCase()===name.toLowerCase())) throw new Error("ផ្នែកនេះមានរួចហើយ។");
             await db.collection("departments").add({name,employees:[],createdAt:Date.now()});
+            await writeAuditLog({
+                action: "create",
+                entity: "department",
+                entityName: name,
+                details: `បន្ថែមផ្នែក ${name}`
+            });
             alert("បានបន្ថែមផ្នែកដោយជោគជ័យ។");
         }else{
             const depId=document.getElementById("employeeDepartment").value;
@@ -4319,6 +4464,12 @@ async function saveDepartmentForm(){
             const employees=Array.isArray(dep.employees)?dep.employees:[];
             if(employees.some(e=>String(e.name||"").trim().toLowerCase()===name.toLowerCase())) throw new Error("បុគ្គលិកឈ្មោះនេះមានរួចហើយក្នុងផ្នែកនេះ។");
             await db.collection("departments").doc(depId).update({employees:firebase.firestore.FieldValue.arrayUnion({id:`${Date.now()}_${Math.random().toString(36).slice(2,8)}`,name})});
+            await writeAuditLog({
+                action: "create",
+                entity: "employee",
+                entityName: name,
+                details: `បន្ថែមបុគ្គលិក ${name} ទៅផ្នែក ${dep.name}`
+            });
             alert("បានបន្ថែមបុគ្គលិកដោយជោគជ័យ។");
         }
         closeDepartmentModal();
@@ -4328,12 +4479,30 @@ async function deleteEmployee(departmentId,employeeId){
     const dep=departments.find(d=>d.id===departmentId);if(!dep)return;
     const emp=(dep.employees||[]).find(e=>e.id===employeeId);if(!emp)return;
     if(!confirm(`តើអ្នកចង់លុបបុគ្គលិក "${emp.name}" ពីផ្នែក "${dep.name}" មែនទេ?`))return;
-    try{await db.collection("departments").doc(departmentId).update({employees:firebase.firestore.FieldValue.arrayRemove(emp)});}catch(e){console.error(e);alert("មិនអាចលុបបុគ្គលិកបានទេ។");}
+    try{
+        await db.collection("departments").doc(departmentId).update({employees:firebase.firestore.FieldValue.arrayRemove(emp)});
+        await writeAuditLog({
+            action: "delete",
+            entity: "employee",
+            entityId: employeeId,
+            entityName: emp.name,
+            details: `លុបបុគ្គលិក ${emp.name} ពីផ្នែក ${dep.name}`
+        });
+    }catch(e){console.error(e);alert("មិនអាចលុបបុគ្គលិកបានទេ។");}
 }
 async function deleteDepartment(id){
     const dep=departments.find(d=>d.id===id);if(!dep)return;
     if(!confirm(`តើអ្នកចង់លុបផ្នែក "${dep.name}" មែនទេ?`))return;
-    try{await db.collection("departments").doc(id).delete();}catch(e){console.error(e);alert("មិនអាចលុបផ្នែកបានទេ។");}
+    try{
+        await db.collection("departments").doc(id).delete();
+        await writeAuditLog({
+            action: "delete",
+            entity: "department",
+            entityId: id,
+            entityName: dep.name,
+            details: `លុបផ្នែក ${dep.name}`
+        });
+    }catch(e){console.error(e);alert("មិនអាចលុបផ្នែកបានទេ។");}
 }
 function renderDepartments(){
     const c=document.getElementById("departmentContent");if(!c)return;
@@ -4426,6 +4595,13 @@ async function createStockOut(data,err,item,dep,emp){
             tx.set(outRef,{date,brochureId,brochureName:fresh.name||item.name,year:fresh.year||item.year,departmentId,departmentName:depSnap.data().name||dep.name,employeeId,employeeName:latest.name,quantity,createdAt:Date.now()});
             return {remaining};
         });
+        await writeAuditLog({
+            action: "create",
+            entity: "stockOut",
+            entityId: outRef.id,
+            entityName: item.name,
+            details: `ដក ${quantity.toLocaleString()} ក្បាល | អ្នកយក: ${emp.name} | ផ្នែក: ${dep.name}`
+        });
         closeStockOutModal();alert(`ដកស្តុកបានជោគជ័យ!\n\nBrochure: ${item.name}\nអ្នកយក: ${emp.name}\nផ្នែក: ${dep.name}\nចំនួនយកចេញ: ${quantity.toLocaleString()} ក្បាល\nស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);goPage("stockout");
     }catch(e){
         console.error(e);
@@ -4468,6 +4644,13 @@ async function updateStockOut(recordId,data,err,item,dep,emp){
                 return {remaining};
             }
         });
+        await writeAuditLog({
+            action: "update",
+            entity: "stockOut",
+            entityId: recordId,
+            entityName: item.name,
+            details: `កែ Stock Out → ចំនួន ${quantity.toLocaleString()} | អ្នកយក: ${emp.name} | ផ្នែក: ${dep.name}`
+        });
         closeStockOutModal();alert(`កែប្រែ Stock Out បានជោគជ័យ!\n\nBrochure: ${item.name}\nអ្នកយក: ${emp.name}\nផ្នែក: ${dep.name}\nចំនួនយកចេញ: ${quantity.toLocaleString()} ក្បាល\nស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);goPage("stockout");
     }catch(e){
         console.error(e);
@@ -4495,6 +4678,13 @@ async function deleteStockOut(id){
                 tx.update(stockRef,{unit:Number(fresh.unit||0)+Number(record.quantity||0)});
             }
             tx.delete(outRef);
+        });
+        await writeAuditLog({
+            action: "delete",
+            entity: "stockOut",
+            entityId: id,
+            entityName: record.brochureName,
+            details: `លុប Stock Out | ចំនួន ${Number(record.quantity||0).toLocaleString()} | ផ្នែក ${record.departmentName} | អ្នកយក ${record.employeeName}`
         });
     }catch(error){
         console.error(error);
@@ -4637,6 +4827,13 @@ async function createStockIn(data,err,item){
             tx.set(inRef,{date,brochureId,brochureName:fresh.name||item.name,year:fresh.year||item.year,quantity,note:note||"",createdAt:Date.now()});
             return {remaining};
         });
+        await writeAuditLog({
+            action: "create",
+            entity: "stockIn",
+            entityId: inRef.id,
+            entityName: item.name,
+            details: `បញ្ចូល ${quantity.toLocaleString()} ក្បាល | ស្តុកសរុបថ្មី ${result.remaining.toLocaleString()}${note ? " | ចំណាំ: "+note : ""}`
+        });
         closeStockInModal();alert(`បញ្ចូលស្តុកបានជោគជ័យ!\n\nBrochure: ${item.name}\nចំនួនបញ្ចូល: ${quantity.toLocaleString()} ក្បាល\nស្តុកសរុបថ្មី: ${result.remaining.toLocaleString()} ក្បាល`);goPage("stockin");
     }catch(e){
         console.error(e);
@@ -4677,6 +4874,22 @@ async function createStockInNewBrochure(data,err){
             return {remaining};
         });
 
+        await writeAuditLog({
+            action: "create",
+            entity: "stockIn",
+            entityId: inRef.id,
+            entityName: name,
+            details: `បញ្ចូល ${quantity.toLocaleString()} ក្បាល${existingItem?" (បន្ថែមទៅស្តុកមានស្រាប់)":" (Brochure ថ្មី)"} | ស្តុកសរុបថ្មី ${result.remaining.toLocaleString()}${note ? " | ចំណាំ: "+note : ""}`
+        });
+        if(!existingItem){
+            await writeAuditLog({
+                action: "create",
+                entity: "brochure",
+                entityId: brochureId,
+                entityName: name,
+                details: `បង្កើត Brochure ថ្មីតាម Stock In | ឆ្នាំ ${year}`
+            });
+        }
         closeStockInModal();
         alert(`បញ្ចូលស្តុកបានជោគជ័យ!\n\nBrochure: ${name}${existingItem?" (បញ្ចូលបន្ថែមទៅស្តុកមានស្រាប់)":" (Brochure ថ្មី)"}\nចំនួនបញ្ចូល: ${quantity.toLocaleString()} ក្បាល\nស្តុកសរុបថ្មី: ${result.remaining.toLocaleString()} ក្បាល`);
         goPage("stockin");
@@ -4717,6 +4930,13 @@ async function updateStockIn(recordId,data,err,item){
                 return {remaining};
             }
         });
+        await writeAuditLog({
+            action: "update",
+            entity: "stockIn",
+            entityId: recordId,
+            entityName: item.name,
+            details: `កែ Stock In → ចំនួន ${quantity.toLocaleString()} | ស្តុកសរុបថ្មី ${result.remaining.toLocaleString()}${note ? " | ចំណាំ: "+note : ""}`
+        });
         closeStockInModal();alert(`កែប្រែ Stock In បានជោគជ័យ!\n\nBrochure: ${item.name}\nចំនួនបញ្ចូល: ${quantity.toLocaleString()} ក្បាល\nស្តុកសរុបថ្មី: ${result.remaining.toLocaleString()} ក្បាល`);goPage("stockin");
     }catch(e){
         console.error(e);
@@ -4743,6 +4963,13 @@ async function deleteStockIn(id){
                 tx.update(stockRef,{unit:remaining});
             }
             tx.delete(inRef);
+        });
+        await writeAuditLog({
+            action: "delete",
+            entity: "stockIn",
+            entityId: id,
+            entityName: record.brochureName,
+            details: `លុប Stock In | ចំនួន ${Number(record.quantity||0).toLocaleString()} ក្បាល`
         });
     }catch(error){
         console.error(error);
@@ -5590,12 +5817,12 @@ if(fImage){
     });
 }
 
-document
-.getElementById("btnAdd")
-.addEventListener(
-    "click",
-    () => openModal()
-);
+// document
+// .getElementById("btnAdd")
+// .addEventListener(
+//     "click",
+//     () => openModal()
+// );
 
 
 document
@@ -5683,6 +5910,156 @@ document.getElementById("btnSaveDepartment")?.addEventListener("click",saveDepar
 document.getElementById("departmentOverlay")?.addEventListener("click",e=>{if(e.target.id==="departmentOverlay")closeDepartmentModal();});
 document.getElementById("btnPrintStock")?.addEventListener("click",printStock);
 
+/* =====================================================
+   AUDIT LOG
+===================================================== */
+const AUDIT_COLLECTION = "auditLogs";
+let auditLogs = [];
+
+function getOperatorName(){
+    return (localStorage.getItem("operatorName") || "").trim() || "មិនស្គាល់";
+}
+
+function setOperatorName(name){
+    const n = (name || "").trim();
+    localStorage.setItem("operatorName", n);
+    const input = document.getElementById("operatorNameInput");
+    if(input) input.value = n;
+}
+
+async function writeAuditLog({ action, entity, entityId = "", entityName = "", details = "", extra = {} }){
+    try{
+        await db.collection(AUDIT_COLLECTION).add({
+            action,
+            entity,
+            entityId: String(entityId || ""),
+            entityName: String(entityName || ""),
+            details: String(details || ""),
+            operator: getOperatorName(),
+            createdAt: Date.now(),
+            ...extra
+        });
+    }catch(e){
+        console.error("Audit log error:", e);
+    }
+}
+
+function listenAuditLogs(){
+    db.collection(AUDIT_COLLECTION)
+      .orderBy("createdAt","desc")
+      .limit(300)
+      .onSnapshot(snapshot => {
+          auditLogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          if(document.getElementById("audit")?.classList.contains("active")){
+              renderAuditLog();
+          }
+      }, err => console.error("Audit listener error:", err));
+}
+
+function actionLabel(a){
+    if(a === "create") return "បង្កើត";
+    if(a === "update") return "កែប្រែ";
+    if(a === "delete") return "លុប";
+    return a || "-";
+}
+
+function entityLabel(e){
+    const map = {
+        brochure: "Brochure",
+        stockIn: "Stock In",
+        stockOut: "Stock Out",
+        department: "Department",
+        employee: "Employee"
+    };
+    return map[e] || e || "-";
+}
+
+function formatAuditTime(ts){
+    if(!ts) return "-";
+    const d = new Date(ts);
+    return d.toLocaleString("km-KH", {
+        year:"numeric", month:"2-digit", day:"2-digit",
+        hour:"2-digit", minute:"2-digit", second:"2-digit"
+    });
+}
+
+function renderAuditLog(){
+    const c = document.getElementById("auditContent");
+    if(!c) return;
+
+    const q = (document.getElementById("auditSearch")?.value || "").toLowerCase().trim();
+    const actionF = document.getElementById("auditActionFilter")?.value || "";
+    const entityF = document.getElementById("auditEntityFilter")?.value || "";
+
+    let list = auditLogs;
+
+    if(actionF) list = list.filter(x => x.action === actionF);
+    if(entityF) list = list.filter(x => x.entity === entityF);
+    if(q){
+        list = list.filter(x =>
+            [x.operator, x.entityName, x.details, x.entity, x.action]
+            .some(v => String(v||"").toLowerCase().includes(q))
+        );
+    }
+
+    if(!list.length){
+        c.innerHTML = `<div class="empty"><i class="fa-solid fa-clipboard-list"></i><h3>មិនទាន់មាន Audit Log</h3><p>នៅពេលមានការកែ/លុប នឹងបង្ហាញនៅទីនេះ</p></div>`;
+        return;
+    }
+
+    c.innerHTML = `
+        <div class="data-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>ពេលវេលា</th>
+                        <th>អ្នកប្រើ</th>
+                        <th>សកម្មភាព</th>
+                        <th>ប្រភេទ</th>
+                        <th>ឈ្មោះ / វត្ថុ</th>
+                        <th>ព័ត៌មានលម្អិត</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${list.map((x,i) => `
+                        <tr>
+                            <td>${i+1}</td>
+                            <td style="white-space:nowrap;font-size:12px;">${escapeHtml(formatAuditTime(x.createdAt))}</td>
+                            <td><strong>${escapeHtml(x.operator || "មិនស្គាល់")}</strong></td>
+                            <td><span class="audit-badge ${escapeHtml(x.action||"")}">${escapeHtml(actionLabel(x.action))}</span></td>
+                            <td>${escapeHtml(entityLabel(x.entity))}</td>
+                            <td>${escapeHtml(x.entityName || "-")}</td>
+                            <td><div class="audit-detail" title="${escapeHtml(x.details||"")}">${escapeHtml(x.details || "-")}</div></td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+/* Operator name init + events */
+(function(){
+    const savedOperator = localStorage.getItem("operatorName") || "";
+    const opInput = document.getElementById("operatorNameInput");
+    if(opInput) opInput.value = savedOperator;
+
+    document.getElementById("btnSaveOperator")?.addEventListener("click", () => {
+        const name = document.getElementById("operatorNameInput")?.value.trim();
+        if(!name){
+            alert("សូមបញ្ចូលឈ្មោះអ្នកប្រើ។");
+            return;
+        }
+        setOperatorName(name);
+        alert("បានរក្សាទុកឈ្មោះអ្នកប្រើ៖ " + name);
+    });
+
+    document.getElementById("auditSearch")?.addEventListener("input", renderAuditLog);
+    document.getElementById("auditActionFilter")?.addEventListener("change", renderAuditLog);
+    document.getElementById("auditEntityFilter")?.addEventListener("change", renderAuditLog);
+})();
+
 /* ESC CLOSE MODAL */
 
 document.addEventListener(
@@ -5707,7 +6084,7 @@ if ('serviceWorker' in navigator) {
         .then(reg => console.log('PWA Service Worker Registered!'))
         .catch(err => console.log('Service Worker Error: ', err));
     });
-  }
+}
 
 /* =====================================================
    START
@@ -5717,6 +6094,7 @@ listenItems();
 listenDepartments();
 listenStockOuts();
 listenStockIns();
+listenAuditLogs();
 
 </script>
 
