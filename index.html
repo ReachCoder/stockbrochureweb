@@ -1749,15 +1749,77 @@ body.dark .empty h3{
 
     .group{
         margin:12px;
+        overflow: hidden; /* band stays fixed; table scrolls inside */
+    }
+
+    /* តារាងក្នុង group — អូសផ្តេកបាន */
+    .table-scroll{
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        width: 100%;
+    }
+
+    .table-scroll table,
+    .group table{
+        min-width: 820px;
     }
 
     table{
-        min-width:650px;
+        min-width: 720px;
     }
 
     .card{
-        overflow-x:auto;
+        overflow-x: visible;
     }
+
+    #stockContent{
+        overflow-x: visible;
+    }
+
+    .data-table-wrap{
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .data-table-wrap table{
+        min-width: 900px;
+    }
+
+    /* ណែនាំអ្នកប្រើឲ្យអូស */
+    .scroll-hint{
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--text-soft);
+        padding: 8px 12px 4px;
+        margin: 0 12px;
+        text-align: center;
+    }
+    .scroll-hint i{
+        opacity: 0.75;
+        animation: scrollHintPulse 1.6s ease-in-out infinite;
+    }
+}
+
+@keyframes scrollHintPulse {
+    0%, 100% { transform: translateX(0); opacity: 0.5; }
+    50% { transform: translateX(3px); opacity: 1; }
+}
+
+/* desktop: លាក់ hint, table-scroll មិនត្រូវការ scroll */
+.scroll-hint{
+    display: none;
+}
+.table-scroll{
+    width: 100%;
+    overflow-x: auto;
 }
 
 @media(max-width:500px){
@@ -4104,6 +4166,7 @@ function renderStock(){
 
 
     container.innerHTML =
+        `<div class="scroll-hint"><i class="fa-solid fa-hand-point-left"></i> អូសទៅឆ្វេង / ស្តាំ ដើម្បីមើលទិន្នន័យទាំងអស់ <i class="fa-solid fa-hand-point-right"></i></div>` +
         keys.map(year => {
 
             const rows =
@@ -4152,6 +4215,7 @@ function renderStock(){
                     </div>
 
 
+                    <div class="table-scroll">
                     <table>
 
                         <thead>
@@ -4288,6 +4352,7 @@ function renderStock(){
                         </tbody>
 
                     </table>
+                    </div>
 
                 </div>
 
