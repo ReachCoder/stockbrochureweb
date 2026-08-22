@@ -3,12 +3,12 @@
   "name": "Brochure Stock Management System",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "logo_NU.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "icon-512.png",
+      "src": "logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
