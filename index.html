@@ -1445,6 +1445,12 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 .stock-info-box{background:var(--primary-light);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:13px;font-size:12px;}
 .stock-info-box strong{color:var(--primary);}
 
+/* Stock In mode toggle */
+.mode-toggle{display:flex;gap:8px;margin-bottom:13px;}
+.mode-btn{flex:1;border:1px solid var(--border);background:var(--card);color:var(--text-soft);padding:10px 8px;border-radius:8px;cursor:pointer;font-family:'Kantumruy Pro';font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s;}
+.mode-btn:hover{border-color:var(--primary);color:var(--primary);}
+.mode-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 5px 12px rgba(47,109,76,.25);}
+
 /* =========================
    MODAL
 ========================= */
@@ -2780,9 +2786,42 @@ body.dark .empty h3{
     <div class="modal">
         <h2 id="stockInModalTitle">បន្ថែម Stock In</h2>
         <div class="field"><label>ថ្ងៃបញ្ចូល</label><input type="date" id="siDate"></div>
-        <div class="field"><label>ឈ្មោះ Brochure</label><select id="siBrochure"><option value="">-- ជ្រើសរើស Brochure --</option></select></div>
-        <div class="field"><label>ឆ្នាំ</label><input type="text" id="siYear" readonly placeholder="ឆ្នាំនឹងបង្ហាញដោយស្វ័យប្រវត្តិ"></div>
-        <div class="stock-info-box" id="siStockInfo">សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។</div>
+
+        <div class="field" id="siModeField">
+            <label>ប្រភេទ Brochure</label>
+            <div class="mode-toggle">
+                <button type="button" class="mode-btn active" id="siModeExisting" data-mode="existing">
+                    <i class="fa-solid fa-list-check"></i> ស្តុកមានស្រាប់
+                </button>
+                <button type="button" class="mode-btn" id="siModeNew" data-mode="new">
+                    <i class="fa-solid fa-plus"></i> Brochure ថ្មី
+                </button>
+            </div>
+        </div>
+
+        <div class="field" id="siExistingWrap">
+            <label>ឈ្មោះ Brochure</label>
+            <select id="siBrochureSelect"><option value="">-- ជ្រើសរើស Brochure --</option></select>
+        </div>
+
+        <div class="field" id="siNewNameWrap" style="display:none">
+            <label>ឈ្មោះ Brochure ថ្មី</label>
+            <input type="text" id="siBrochureNameNew" placeholder="វាយឈ្មោះ Brochure ថ្មី...">
+        </div>
+
+        <div class="field" id="siNewYearWrap" style="display:none">
+            <label>ឆ្នាំបោះពុម្ព</label>
+            <input type="text" id="siYearNew" placeholder="ឧ. 2026">
+        </div>
+
+        <div class="field" id="siExistingYearWrap">
+            <label>ឆ្នាំ</label>
+            <input type="text" id="siYear" readonly placeholder="ឆ្នាំនឹងបង្ហាញដោយស្វ័យប្រវត្តិ">
+        </div>
+
+        <div class="stock-info-box" id="siStockInfo">
+            សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។
+        </div>
         <div class="field"><label>ចំនួនបញ្ចូល</label><input type="text" id="siQuantity" min="1" step="1" placeholder="ឧ. 500"></div>
         <div class="field"><label>ចំណាំ / មូលហេតុ</label><input type="text" id="siNote" placeholder="ឧ. បោះពុម្ពថែម"></div>
         <div class="err" id="stockInErr"></div>
@@ -3012,6 +3051,7 @@ let stockOuts = [];
 let stockOutEditingId = null;
 let stockIns = [];
 let stockInEditingId = null;
+let siMode = "existing";
 const LOW_STOCK_THRESHOLD = 50;
 let departmentModalMode = "department";
 
@@ -4474,18 +4514,45 @@ function renderStockOut(){
 /* =====================================================
    STOCK IN MANAGEMENT
 ===================================================== */
+function setSiMode(mode){
+    siMode=mode;
+    const btnExisting=document.getElementById("siModeExisting");
+    const btnNew=document.getElementById("siModeNew");
+    const existingWrap=document.getElementById("siExistingWrap");
+    const existingYearWrap=document.getElementById("siExistingYearWrap");
+    const newNameWrap=document.getElementById("siNewNameWrap");
+    const newYearWrap=document.getElementById("siNewYearWrap");
+    const info=document.getElementById("siStockInfo");
+
+    btnExisting?.classList.toggle("active",mode==="existing");
+    btnNew?.classList.toggle("active",mode==="new");
+
+    if(mode==="existing"){
+        existingWrap.style.display="block";
+        existingYearWrap.style.display="block";
+        newNameWrap.style.display="none";
+        newYearWrap.style.display="none";
+        updateStockInBrochureInfo();
+    }else{
+        existingWrap.style.display="none";
+        existingYearWrap.style.display="none";
+        newNameWrap.style.display="block";
+        newYearWrap.style.display="block";
+        if(info) info.innerHTML="Brochure ថ្មីនឹងត្រូវបានបង្កើតដោយស្វ័យប្រវត្តិ ព្រមជាមួយការបញ្ចូលស្តុកលើកដំបូង។";
+    }
+}
 function populateStockInBrochures(selectedId="",fallbackLabel=""){
-    const s=document.getElementById("siBrochure");if(!s)return;const current=selectedId||s.value;
+    const s=document.getElementById("siBrochureSelect");if(!s)return;const current=selectedId||s.value;
     let html=`<option value="">-- ជ្រើសរើស Brochure --</option>`+[...items].sort((a,b)=>String(a.name).localeCompare(String(b.name))).map(i=>`<option value="${escapeHtml(i.id)}">${escapeHtml(i.name)} — ${escapeHtml(i.year)} (ស្តុក ${Number(i.unit||0).toLocaleString()})</option>`).join("");
     if(current && !items.some(i=>i.id===current)){
         html+=`<option value="${escapeHtml(current)}">${escapeHtml(fallbackLabel||"Brochure (លែងមាន/លែងស្ថិតក្នុងបញ្ជីបច្ចុប្បន្ន)")}</option>`;
     }
     s.innerHTML=html;
     if(current)s.value=current;
-    updateStockInBrochureInfo();
+    if(siMode==="existing") updateStockInBrochureInfo();
 }
 function updateStockInBrochureInfo(){
-    const id=document.getElementById("siBrochure")?.value,item=items.find(i=>i.id===id),year=document.getElementById("siYear"),info=document.getElementById("siStockInfo");
+    const id=document.getElementById("siBrochureSelect")?.value,item=items.find(i=>i.id===id),year=document.getElementById("siYear"),info=document.getElementById("siStockInfo");
     if(!item){
         if(id && stockInEditingId){
             const record=stockIns.find(x=>x.id===stockInEditingId);
@@ -4500,14 +4567,16 @@ function updateStockInBrochureInfo(){
     year.value=item.year||"";info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
 }
 function openStockInModal(brochureId=""){
-    if(!items.length){alert("មិនទាន់មាន Brochure ក្នុងស្តុកទេ។ សូមបន្ថែម Brochure ជាមុនសិន។");return;}
     stockInEditingId=null;
     document.getElementById("stockInModalTitle").textContent="បន្ថែម Stock In";
     document.getElementById("btnSaveStockIn").innerHTML=`<i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Stock In`;
     document.getElementById("siDate").value=todayISO();document.getElementById("siQuantity").value="";document.getElementById("siNote").value="";
+    document.getElementById("siBrochureNameNew").value="";document.getElementById("siYearNew").value="";
     document.getElementById("stockInErr").classList.remove("show");document.getElementById("stockInErr").textContent="";
+    document.getElementById("siModeField").style.display="block";
+    setSiMode("existing");
     populateStockInBrochures(brochureId);
-    if(brochureId){document.getElementById("siBrochure").value=brochureId;updateStockInBrochureInfo();}
+    if(brochureId){document.getElementById("siBrochureSelect").value=brochureId;updateStockInBrochureInfo();}
     document.getElementById("stockInOverlay").classList.add("show");
 }
 function openEditStockInModal(id){
@@ -4517,35 +4586,46 @@ function openEditStockInModal(id){
     document.getElementById("stockInModalTitle").textContent="កែប្រែ Stock In";
     document.getElementById("btnSaveStockIn").innerHTML=`<i class="fa-solid fa-floppy-disk"></i> កែប្រែ Stock In`;
     document.getElementById("stockInErr").classList.remove("show");document.getElementById("stockInErr").textContent="";
+    // ការកែប្រែជានិច្ចកែទៅលើ Brochure ដែលមានស្រាប់ ដូច្នេះលាក់ប៊ូតុង "Brochure ថ្មី"
+    document.getElementById("siModeField").style.display="none";
+    setSiMode("existing");
     populateStockInBrochures(record.brochureId,`${record.brochureName||""} — ${record.year||""}`);
+    document.getElementById("siBrochureSelect").value=record.brochureId;
     document.getElementById("siDate").value=record.date||todayISO();
     document.getElementById("siQuantity").value=record.quantity;
     document.getElementById("siNote").value=record.note||"";
+    updateStockInBrochureInfo();
     document.getElementById("stockInOverlay").classList.add("show");
 }
 function closeStockInModal(){document.getElementById("stockInOverlay").classList.remove("show");stockInEditingId=null;}
 async function saveStockIn(){
     const err=document.getElementById("stockInErr");err.classList.remove("show");err.textContent="";
-    const date=document.getElementById("siDate").value,brochureId=document.getElementById("siBrochure").value,quantity=parseInt(document.getElementById("siQuantity").value,10),note=document.getElementById("siNote").value.trim();
-    if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
-    const item=items.find(i=>i.id===brochureId);
-    if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
+    const date=document.getElementById("siDate").value;
+    const quantity=parseInt(String(document.getElementById("siQuantity").value).replace(/,/g,""),10);
+    const note=document.getElementById("siNote").value.trim();
+
     if(stockInEditingId){
+        const brochureId=document.getElementById("siBrochureSelect").value;
+        if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+        const item=items.find(i=>i.id===brochureId);
+        if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
         await updateStockIn(stockInEditingId,{date,brochureId,quantity,note},err,item);
+        return;
+    }
+
+    if(siMode==="new"){
+        const name=document.getElementById("siBrochureNameNew").value.trim();
+        const year=document.getElementById("siYearNew").value.trim();
+        if(!date||!name||!year||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, ឈ្មោះ Brochure ថ្មី, ឆ្នាំ និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+        await createStockInNewBrochure({date,name,year,quantity,note},err);
     }else{
+        const brochureId=document.getElementById("siBrochureSelect").value;
+        if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+        const item=items.find(i=>i.id===brochureId);
+        if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
         await createStockIn({date,brochureId,quantity,note},err,item);
     }
 }
-
-// console.log({
-//   date,
-//   brochureId,
-//   quantity,
-//   isInteger: Number.isInteger(quantity),
-//   itemsLength: items?.length
-// });
-
-
 async function createStockIn(data,err,item){
     const {date,brochureId,quantity,note}=data;
     const stockRef=db.collection(COLLECTION).doc(brochureId),inRef=db.collection("stockIns").doc();
@@ -4562,6 +4642,47 @@ async function createStockIn(data,err,item){
         console.error(e);
         if(e.message==="ITEM_NOT_FOUND")err.textContent="Brochure នេះលែងមានក្នុងស្តុកទៀតហើយ។";
         else err.textContent="មិនអាចរក្សាទុក Stock In បានទេ។ សូមព្យាយាមម្តងទៀត។";
+        err.classList.add("show");
+    }
+}
+// បញ្ចូលស្តុកសម្រាប់ Brochure ថ្មី៖ បង្កើត Brochure ថ្មី (ឬប្រើ Brochure ដែលមានឈ្មោះ+ឆ្នាំដូចគ្នារួចហើយ) រួចបញ្ចូលស្តុកភ្លាមតែម្តង
+async function createStockInNewBrochure(data,err){
+    const {date,name,year,quantity,note}=data;
+    try{
+        const normalizedName=name.replace(/\s+/g," ").trim().toLowerCase();
+        const normalizedYear=year.replace(/\s+/g,"").trim().toLowerCase();
+
+        const existingItem=items.find(item=>{
+            const en=String(item.name||"").replace(/\s+/g," ").trim().toLowerCase();
+            const ey=String(item.year||"").replace(/\s+/g,"").trim().toLowerCase();
+            return en===normalizedName && ey===normalizedYear;
+        });
+
+        let brochureId;
+
+        if(existingItem){
+            brochureId=existingItem.id;
+        }else{
+            const newDocRef=db.collection(COLLECTION).doc();
+            await newDocRef.set({name,year,unit:0,other:"",createdAt:Date.now()});
+            brochureId=newDocRef.id;
+        }
+
+        const stockRef=db.collection(COLLECTION).doc(brochureId),inRef=db.collection("stockIns").doc();
+        const result=await db.runTransaction(async tx=>{
+            const stockSnap=await tx.get(stockRef);if(!stockSnap.exists)throw new Error("ITEM_NOT_FOUND");
+            const fresh=stockSnap.data(),remaining=Number(fresh.unit||0)+quantity;
+            tx.update(stockRef,{unit:remaining});
+            tx.set(inRef,{date,brochureId,brochureName:fresh.name||name,year:fresh.year||year,quantity,note:note||"",createdAt:Date.now()});
+            return {remaining};
+        });
+
+        closeStockInModal();
+        alert(`បញ្ចូលស្តុកបានជោគជ័យ!\n\nBrochure: ${name}${existingItem?" (បញ្ចូលបន្ថែមទៅស្តុកមានស្រាប់)":" (Brochure ថ្មី)"}\nចំនួនបញ្ចូល: ${quantity.toLocaleString()} ក្បាល\nស្តុកសរុបថ្មី: ${result.remaining.toLocaleString()} ក្បាល`);
+        goPage("stockin");
+    }catch(e){
+        console.error(e);
+        err.textContent="មិនអាចរក្សាទុក Stock In សម្រាប់ Brochure ថ្មីបានទេ។ សូមព្យាយាមម្តងទៀត។";
         err.classList.add("show");
     }
 }
@@ -5548,7 +5669,9 @@ document.getElementById("stockOutOverlay")?.addEventListener("click",e=>{if(e.ta
 document.getElementById("btnAddStockIn")?.addEventListener("click",()=>openStockInModal());
 document.getElementById("btnCancelStockIn")?.addEventListener("click",closeStockInModal);
 document.getElementById("btnSaveStockIn")?.addEventListener("click",saveStockIn);
-document.getElementById("siBrochure")?.addEventListener("change",updateStockInBrochureInfo);
+document.getElementById("siModeExisting")?.addEventListener("click",()=>setSiMode("existing"));
+document.getElementById("siModeNew")?.addEventListener("click",()=>setSiMode("new"));
+document.getElementById("siBrochureSelect")?.addEventListener("change",updateStockInBrochureInfo);
 document.getElementById("stockInSearch")?.addEventListener("input",renderStockIn);
 document.getElementById("stockInOverlay")?.addEventListener("click",e=>{if(e.target.id==="stockInOverlay")closeStockInModal();});
 document.getElementById("lowStockBtn")?.addEventListener("click",e=>{e.stopPropagation();document.getElementById("lowStockPanel")?.classList.toggle("show");});
