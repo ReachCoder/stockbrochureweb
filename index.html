@@ -2264,6 +2264,61 @@ body.dark .login-field input{
     border-color:#2F6D4C;
     box-shadow:0 0 0 3px rgba(47,109,76,.15);
 }
+.password-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+.password-wrap input{
+    padding-right:44px;
+}
+.password-toggle{
+    position:absolute;
+    right:6px;
+    top:50%;
+    transform:translateY(-50%);
+    width:34px;
+    height:34px;
+    border:none;
+    background:transparent;
+    color:#68737D;
+    border-radius:8px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    transition:color .2s, background .2s;
+}
+.password-toggle:hover{
+    color:#2F6D4C;
+    background:rgba(47,109,76,.10);
+}
+body.dark .password-toggle{color:#AAB8B1;}
+body.dark .password-toggle:hover{
+    color:#B8D8C7;
+    background:rgba(184,216,199,.12);
+}
+.login-forgot-row{
+    display:flex;
+    justify-content:flex-end;
+    margin:-4px 0 12px;
+}
+.login-forgot-btn{
+    border:none;
+    background:none;
+    padding:0;
+    font-family:'Kantumruy Pro',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    color:#2F6D4C;
+    cursor:pointer;
+    text-decoration:underline;
+    text-underline-offset:2px;
+}
+.login-forgot-btn:hover{color:#204C36;}
+body.dark .login-forgot-btn{color:#B8D8C7;}
+body.dark .login-forgot-btn:hover{color:#E4F0E9;}
 .login-err{
     display:none;
     color:#B94A48;
@@ -2274,6 +2329,14 @@ body.dark .login-field input{
     border-radius:8px;
 }
 .login-err.show{display:block;}
+.login-err.ok{
+    color:#204C36;
+    background:#E4F0E9;
+}
+body.dark .login-err.ok{
+    color:#B8D8C7;
+    background:#263B31;
+}
 .login-btn{
     width:100%;
     border:none;
@@ -2409,7 +2472,15 @@ body.role-staff #btnPrintStock{
         </div>
         <div class="login-field">
             <label>ពាក្យសម្ងាត់</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+            <div class="password-wrap">
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+                <button type="button" class="password-toggle" id="btnTogglePassword" title="បង្ហាញ / លាក់ ពាក្យសម្ងាត់" aria-label="បង្ហាញពាក្យសម្ងាត់">
+                    <i class="fa-solid fa-eye" id="passwordToggleIcon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="login-forgot-row">
+            <button type="button" class="login-forgot-btn" id="btnForgotPassword">ភ្លេចពាក្យសម្ងាត់?</button>
         </div>
         <button class="login-btn" id="btnLoginEmail" type="button">
             <i class="fa-solid fa-right-to-bracket"></i> ចូលប្រើ (Email)
@@ -3591,15 +3662,58 @@ function requireAdmin(actionLabel){
     return true;
 }
 
-function showLoginError(msg){
+function showLoginError(msg, isOk){
     const el = document.getElementById("loginErr");
     if(!el) return;
     if(msg){
         el.textContent = msg;
         el.classList.add("show");
+        el.classList.toggle("ok", !!isOk);
     }else{
         el.textContent = "";
-        el.classList.remove("show");
+        el.classList.remove("show", "ok");
+    }
+}
+
+function toggleLoginPassword(){
+    const input = document.getElementById("loginPassword");
+    const icon = document.getElementById("passwordToggleIcon");
+    if(!input) return;
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    if(icon){
+        icon.classList.toggle("fa-eye", !show);
+        icon.classList.toggle("fa-eye-slash", show);
+    }
+}
+
+async function forgotPassword(){
+    showLoginError("");
+    const email = document.getElementById("loginEmail")?.value.trim();
+    if(!email){
+        showLoginError("សូមបញ្ចូលអ៊ីមែលជាមុន រួចចុច «ភ្លេចពាក្យសម្ងាត់?» ម្តងទៀត។");
+        document.getElementById("loginEmail")?.focus();
+        return;
+    }
+    const btn = document.getElementById("btnForgotPassword");
+    if(btn){ btn.disabled = true; btn.textContent = "កំពុងផ្ញើ..."; }
+    try{
+        await auth.sendPasswordResetEmail(email);
+        showLoginError("បានផ្ញើតំណកំណត់ពាក្យសម្ងាត់ថ្មីទៅ " + email + "។ សូមពិនិត្យ Inbox / Spam។", true);
+    }catch(e){
+        console.error(e);
+        const code = e.code || "";
+        if(code === "auth/user-not-found" || code === "auth/invalid-credential"){
+            showLoginError("រកមិនឃើញគណនីជាមួយអ៊ីមែលនេះ។");
+        }else if(code === "auth/invalid-email"){
+            showLoginError("ទម្រង់អ៊ីមែលមិនត្រឹមត្រូវ។");
+        }else if(code === "auth/too-many-requests"){
+            showLoginError("ព្យាយាមច្រើនពេក។ សូមរង់ចាំបន្តិច។");
+        }else{
+            showLoginError("មិនអាចផ្ញើបានទេ៖ " + (e.message || code));
+        }
+    }finally{
+        if(btn){ btn.disabled = false; btn.textContent = "ភ្លេចពាក្យសម្ងាត់?"; }
     }
 }
 
@@ -3740,6 +3854,8 @@ function startDataListenersOnce(){
 function initAuth(){
     document.getElementById("btnLoginEmail")?.addEventListener("click", loginWithEmail);
     document.getElementById("btnLoginGoogle")?.addEventListener("click", loginWithGoogle);
+    document.getElementById("btnTogglePassword")?.addEventListener("click", toggleLoginPassword);
+    document.getElementById("btnForgotPassword")?.addEventListener("click", forgotPassword);
     document.getElementById("logoutBtn")?.addEventListener("click", () => {
         if(confirm("តើអ្នកចង់ចាកចេញពីប្រព័ន្ធមែនទេ?")) logoutUser();
     });
