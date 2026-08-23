@@ -24,6 +24,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- ExcelJS (Excel Export ជាមួយ Style ពេញលេញ) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+
 <style>
 
 :root{
@@ -1058,6 +1061,69 @@ tbody tr:last-child td{
     text-align:center;
     font-size:12px;
     color:var(--text-soft);
+}
+
+/* =========================
+   EXPORT DROPDOWN
+========================= */
+
+.export-wrap{
+    position:relative;
+}
+
+.export-menu{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    width:190px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:0 12px 28px rgba(0,0,0,.18);
+    display:none;
+    z-index:60;
+    padding:6px;
+}
+
+.export-menu.show{
+    display:block;
+}
+
+.export-menu-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    width:100%;
+
+    padding:10px 12px;
+
+    border:none;
+    background:transparent;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-family:'Kantumruy Pro';
+    font-size:13px;
+    font-weight:600;
+    color:var(--text);
+
+    text-align:left;
+
+    transition:background .2s ease;
+}
+
+.export-menu-item:hover{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+.export-menu-item i{
+    width:16px;
+    text-align:center;
+    color:var(--primary);
 }
 
 /* =========================
@@ -2557,6 +2623,23 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
                     Print
                 </button>
 
+                <div class="export-wrap" id="stockExportWrap">
+                    <button class="btn-secondary" id="btnExportStock" title="នាំចេញទិន្នន័យស្តុក">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export
+                    </button>
+                    <div class="export-menu" id="stockExportMenu">
+                        <button class="export-menu-item" onclick="exportStock('xlsx')">
+                            <i class="fa-solid fa-file-excel"></i>
+                            Excel (.xlsx)
+                        </button>
+                        <button class="export-menu-item" onclick="exportStock('csv')">
+                            <i class="fa-solid fa-file-csv"></i>
+                            CSV (.csv)
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -2587,6 +2670,22 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
             </div>
             <div class="search">
                 <input type="text" id="stockOutSearch" placeholder="ស្វែងរក Stock Out...">
+                <div class="export-wrap" id="stockOutExportWrap">
+                    <button class="btn-secondary" id="btnExportStockOut" title="នាំចេញទិន្នន័យ Stock Out">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export
+                    </button>
+                    <div class="export-menu" id="stockOutExportMenu">
+                        <button class="export-menu-item" onclick="exportStockOut('xlsx')">
+                            <i class="fa-solid fa-file-excel"></i>
+                            Excel (.xlsx)
+                        </button>
+                        <button class="export-menu-item" onclick="exportStockOut('csv')">
+                            <i class="fa-solid fa-file-csv"></i>
+                            CSV (.csv)
+                        </button>
+                    </div>
+                </div>
                 <button class="btn-add" id="btnAddStockOut"><i class="fa-solid fa-plus"></i> បន្ថែម Stock Out</button>
             </div>
         </div>
@@ -2606,6 +2705,22 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
             </div>
             <div class="search">
                 <input type="text" id="stockInSearch" placeholder="ស្វែងរក Stock In...">
+                <div class="export-wrap" id="stockInExportWrap">
+                    <button class="btn-secondary" id="btnExportStockIn" title="នាំចេញទិន្នន័យ Stock In">
+                        <i class="fa-solid fa-file-export"></i>
+                        Export
+                    </button>
+                    <div class="export-menu" id="stockInExportMenu">
+                        <button class="export-menu-item" onclick="exportStockIn('xlsx')">
+                            <i class="fa-solid fa-file-excel"></i>
+                            Excel (.xlsx)
+                        </button>
+                        <button class="export-menu-item" onclick="exportStockIn('csv')">
+                            <i class="fa-solid fa-file-csv"></i>
+                            CSV (.csv)
+                        </button>
+                    </div>
+                </div>
                 <button class="btn-add" id="btnAddStockIn"><i class="fa-solid fa-plus"></i> បន្ថែម Stock In</button>
             </div>
         </div>
@@ -5242,6 +5357,319 @@ printArea.innerHTML = `
 
 
 /* =====================================================
+   EXPORT (EXCEL ស្អាតទាក់ទាញ / CSV)
+===================================================== */
+
+// ពណ៌ Theme សម្រាប់ Excel (ដូចពណ៌សំខាន់របស់កម្មវិធី)
+const EXPORT_COLORS = {
+    titleBg:   "FF204C36", // primary-dark
+    titleText: "FFFFFFFF",
+    subtitleBg:"FFE4F0E9", // primary-light
+    subtitleText:"FF2F6D4C",
+    headerBg:  "FFC89B3C", // gold
+    headerText:"FFFFFFFF",
+    stripe:    "FFF6F1E0", // ស្រាលៗ ដូច bg
+    border:    "FFD3C393",
+    lowStock:  "FFF8E3E1", // danger-light
+    lowStockText:"FFB94A48"
+};
+
+function exportFileTimestamp(){
+    const now = new Date();
+    const pad = n => String(n).padStart(2,"0");
+    return `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+}
+
+function exportGeneratedAtLabel(){
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("km-KH", {year:"numeric",month:"long",day:"numeric"});
+    const timeStr = now.toLocaleTimeString("km-KH", {hour:'2-digit', minute:'2-digit'});
+    return `បង្កើតនៅ៖ ${dateStr}, ម៉ោង ${timeStr}`;
+}
+
+function downloadAsCSV(rows, headers, filename){
+    if(!rows.length){
+        alert("មិនមានទិន្នន័យសម្រាប់នាំចេញទេ។");
+        return;
+    }
+
+    const escapeCsv = v => {
+        const s = String(v ?? "");
+        if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
+        return s;
+    };
+
+    const lines = [
+        headers.map(escapeCsv).join(","),
+        ...rows.map(row => row.map(escapeCsv).join(","))
+    ];
+
+    // \uFEFF (BOM) ដើម្បីឲ្យ Excel អាន Unicode/Khmer បានត្រឹមត្រូវ
+    const blob = new Blob(["\uFEFF" + lines.join("\r\n")], {type:"text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+/**
+ * បង្កើតឯកសារ Excel (.xlsx) ដែលមាន Style ពេញលេញ៖
+ * - ជួរចំណងជើង ពណ៌ fill + អក្សរស + ទំហំធំ
+ * - ជួរ subtitle បង្ហាញកាលបរិច្ឆេទ + ចំនួនកំណត់ត្រា
+ * - ជួរក្បាលតារាង highlight ពណ៌មាស + អក្សរដិត + border
+ * - ជួរដេកឆ្លាស់ពណ៌ (striped rows) ឲ្យអានស្រួល
+ * - ជួរឈរ "ស្តុកទាប" បន្លិចពណ៌ក្រហមស្រាល (បើមាន lowStockCol)
+ * - Number format សម្រាប់ជួរឈរជាលេខ + AutoFilter + Freeze ក្បាល
+ */
+async function downloadAsExcelStyled(rows, headers, filename, sheetName, opts = {}){
+    if(!rows.length){
+        alert("មិនមានទិន្នន័យសម្រាប់នាំចេញទេ។");
+        return;
+    }
+
+    if(typeof ExcelJS === "undefined"){
+        alert("មិនអាចផ្ទុកបណ្ណាល័យ Excel បានទេ។ សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត ហើយសាកល្បងម្តងទៀត។");
+        return;
+    }
+
+    const title = opts.title || sheetName;
+    const numberCols = opts.numberCols || [];       // 0-based index នៃជួរឈរជាលេខ
+    const lowStockCol = opts.lowStockCol;             // 0-based index នៃជួរឈរស្តុក (សម្រាប់ពិនិត្យទាប)
+    const lowStockThreshold = opts.lowStockThreshold ?? LOW_STOCK_THRESHOLD;
+    const colWidths = opts.colWidths;                 // array ជម្រើសកំណត់ទទឹងផ្ទាល់ខ្លួន
+    const lastCol = headers.length;
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = "Brochure Stock Management";
+    workbook.created = new Date();
+
+    const ws = workbook.addWorksheet(sheetName, {
+        views: [{state: "frozen", ySplit: 4}]
+    });
+
+    // ជួរទី 1: ចំណងជើងធំ
+    ws.mergeCells(1, 1, 1, lastCol);
+    const titleCell = ws.getCell(1, 1);
+    titleCell.value = title;
+    titleCell.font = {name:"Calibri", bold:true, size:16, color:{argb:EXPORT_COLORS.titleText}};
+    titleCell.fill = {type:"pattern", pattern:"solid", fgColor:{argb:EXPORT_COLORS.titleBg}};
+    titleCell.alignment = {horizontal:"center", vertical:"middle"};
+    ws.getRow(1).height = 32;
+
+    // ជួរទី 2: subtitle (កាលបរិច្ឆេទ + ចំនួនកំណត់ត្រា)
+    ws.mergeCells(2, 1, 2, lastCol);
+    const subtitleCell = ws.getCell(2, 1);
+    subtitleCell.value = `${exportGeneratedAtLabel()}   |   ចំនួនកំណត់ត្រា៖ ${rows.length.toLocaleString()}`;
+    subtitleCell.font = {name:"Calibri", italic:true, size:10, color:{argb:EXPORT_COLORS.subtitleText}};
+    subtitleCell.fill = {type:"pattern", pattern:"solid", fgColor:{argb:EXPORT_COLORS.subtitleBg}};
+    subtitleCell.alignment = {horizontal:"center", vertical:"middle"};
+    ws.getRow(2).height = 22;
+
+    // ជួរទី 3: ជួរទទេតូចមួយសម្រាប់ដកដង្ហើម
+    ws.getRow(3).height = 6;
+
+    // ជួរទី 4: ក្បាលតារាង
+    const headerRow = ws.getRow(4);
+    headers.forEach((h, i) => { headerRow.getCell(i+1).value = h; });
+    headerRow.eachCell(cell => {
+        cell.font = {name:"Calibri", bold:true, size:11, color:{argb:EXPORT_COLORS.headerText}};
+        cell.fill = {type:"pattern", pattern:"solid", fgColor:{argb:EXPORT_COLORS.headerBg}};
+        cell.alignment = {horizontal:"center", vertical:"middle"};
+        cell.border = {
+            top:{style:"thin", color:{argb:EXPORT_COLORS.border}},
+            bottom:{style:"thin", color:{argb:EXPORT_COLORS.border}},
+            left:{style:"thin", color:{argb:EXPORT_COLORS.border}},
+            right:{style:"thin", color:{argb:EXPORT_COLORS.border}}
+        };
+    });
+    headerRow.height = 24;
+
+    // ជួរទិន្នន័យ
+    rows.forEach((row, rowIdx) => {
+        const excelRow = ws.addRow(row);
+        const isLow = lowStockCol !== undefined && Number(row[lowStockCol] || 0) < lowStockThreshold;
+
+        excelRow.eachCell((cell, colNum) => {
+            cell.border = {
+                top:{style:"thin", color:{argb:EXPORT_COLORS.border}},
+                bottom:{style:"thin", color:{argb:EXPORT_COLORS.border}},
+                left:{style:"thin", color:{argb:EXPORT_COLORS.border}},
+                right:{style:"thin", color:{argb:EXPORT_COLORS.border}}
+            };
+            cell.alignment = {vertical:"middle", horizontal: numberCols.includes(colNum-1) ? "center" : "left"};
+
+            if(isLow){
+                cell.fill = {type:"pattern", pattern:"solid", fgColor:{argb:EXPORT_COLORS.lowStock}};
+                if(colNum-1 === lowStockCol) cell.font = {bold:true, color:{argb:EXPORT_COLORS.lowStockText}};
+            }else if(rowIdx % 2 === 1){
+                cell.fill = {type:"pattern", pattern:"solid", fgColor:{argb:EXPORT_COLORS.stripe}};
+            }
+        });
+
+        numberCols.forEach(colIdx => {
+            excelRow.getCell(colIdx+1).numFmt = "#,##0";
+        });
+    });
+
+    // ទទឹងជួរឈរ
+    ws.columns.forEach((col, i) => {
+        if(colWidths && colWidths[i]){
+            col.width = colWidths[i];
+        }else{
+            let maxLen = String(headers[i]).length;
+            rows.forEach(r => {
+                const len = String(r[i] ?? "").length;
+                if(len > maxLen) maxLen = len;
+            });
+            col.width = Math.min(Math.max(maxLen + 4, 10), 45);
+        }
+    });
+
+    // AutoFilter លើជួរក្បាល
+    ws.autoFilter = {
+        from: {row:4, column:1},
+        to: {row:4, column:lastCol}
+    };
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function closeAllExportMenus(except){
+    document.querySelectorAll(".export-menu.show").forEach(menu => {
+        if(menu.id !== except) menu.classList.remove("show");
+    });
+}
+
+function toggleExportMenu(menuId){
+    closeAllExportMenus(menuId);
+    document.getElementById(menuId)?.classList.toggle("show");
+}
+
+function getStockExportRows(){
+    const search = (document.getElementById("search")?.value || "").toLowerCase().trim();
+
+    const filtered = search
+        ? items.filter(item =>
+            String(item.name).toLowerCase().includes(search) ||
+            String(item.year).toLowerCase().includes(search)
+        )
+        : items;
+
+    return [...filtered]
+        .sort((a,b) => String(b.year||"").localeCompare(String(a.year||"")) || String(a.name||"").localeCompare(String(b.name||"")))
+        .map((item,index) => [
+            index+1,
+            item.name || "",
+            item.year || "",
+            Number(item.unit || 0),
+            item.other || ""
+        ]);
+}
+
+async function exportStock(type){
+    closeAllExportMenus();
+
+    const headers = ["N°", "ឈ្មោះ Brochure", "ឆ្នាំ", "ចំនួន", "ផ្សេងៗ"];
+    const rows = getStockExportRows();
+    const stamp = exportFileTimestamp();
+
+    if(type === "xlsx"){
+        await downloadAsExcelStyled(rows, headers, `Stock_Brochure_${stamp}.xlsx`, "Stock", {
+            title: "បញ្ជីស្តុក Brochure",
+            numberCols: [3],
+            lowStockCol: 3
+        });
+    }else{
+        downloadAsCSV(rows, headers, `Stock_Brochure_${stamp}.csv`);
+    }
+}
+
+function getStockOutExportRows(){
+    const q = (document.getElementById("stockOutSearch")?.value || "").toLowerCase().trim();
+
+    const list = q
+        ? stockOuts.filter(x => [x.date, x.brochureName, x.year, x.departmentName, x.employeeName]
+            .some(v => String(v||"").toLowerCase().includes(q)))
+        : stockOuts;
+
+    return list.map((x,index) => [
+        index+1,
+        formatDateDisplay(x.date),
+        x.brochureName || "",
+        x.year || "",
+        x.departmentName || "",
+        x.employeeName || "",
+        Number(x.quantity || 0)
+    ]);
+}
+
+async function exportStockOut(type){
+    closeAllExportMenus();
+
+    const headers = ["N°", "ថ្ងៃយកចេញ", "ឈ្មោះ Brochure", "ឆ្នាំ", "ផ្នែក", "ឈ្មោះអ្នកយក", "ចំនួនយកចេញ"];
+    const rows = getStockOutExportRows();
+    const stamp = exportFileTimestamp();
+
+    if(type === "xlsx"){
+        await downloadAsExcelStyled(rows, headers, `StockOut_${stamp}.xlsx`, "StockOut", {
+            title: "ប្រវត្តិការដកស្តុក (Stock Out)",
+            numberCols: [6]
+        });
+    }else{
+        downloadAsCSV(rows, headers, `StockOut_${stamp}.csv`);
+    }
+}
+
+function getStockInExportRows(){
+    const q = (document.getElementById("stockInSearch")?.value || "").toLowerCase().trim();
+
+    const list = q
+        ? stockIns.filter(x => [x.date, x.brochureName, x.year, x.note]
+            .some(v => String(v||"").toLowerCase().includes(q)))
+        : stockIns;
+
+    return list.map((x,index) => [
+        index+1,
+        formatDateDisplay(x.date),
+        x.brochureName || "",
+        x.year || "",
+        Number(x.quantity || 0),
+        x.note || ""
+    ]);
+}
+
+async function exportStockIn(type){
+    closeAllExportMenus();
+
+    const headers = ["N°", "ថ្ងៃបញ្ចូល", "ឈ្មោះ Brochure", "ឆ្នាំ", "ចំនួនបញ្ចូល", "ចំណាំ"];
+    const rows = getStockInExportRows();
+    const stamp = exportFileTimestamp();
+
+    if(type === "xlsx"){
+        await downloadAsExcelStyled(rows, headers, `StockIn_${stamp}.xlsx`, "StockIn", {
+            title: "ប្រវត្តិការបញ្ចូលស្តុក (Stock In)",
+            numberCols: [4]
+        });
+    }else{
+        downloadAsCSV(rows, headers, `StockIn_${stamp}.csv`);
+    }
+}
+
+
+/* =====================================================
    FULL SIZE IMAGE VIEWER
 ===================================================== */
 
@@ -5974,6 +6402,14 @@ document.getElementById("btnCancelDepartment")?.addEventListener("click",closeDe
 document.getElementById("btnSaveDepartment")?.addEventListener("click",saveDepartmentForm);
 document.getElementById("departmentOverlay")?.addEventListener("click",e=>{if(e.target.id==="departmentOverlay")closeDepartmentModal();});
 document.getElementById("btnPrintStock")?.addEventListener("click",printStock);
+document.getElementById("btnExportStock")?.addEventListener("click",e=>{e.stopPropagation();toggleExportMenu("stockExportMenu");});
+document.getElementById("btnExportStockOut")?.addEventListener("click",e=>{e.stopPropagation();toggleExportMenu("stockOutExportMenu");});
+document.getElementById("btnExportStockIn")?.addEventListener("click",e=>{e.stopPropagation();toggleExportMenu("stockInExportMenu");});
+document.addEventListener("click",e=>{
+    if(!document.getElementById("stockExportWrap")?.contains(e.target)) document.getElementById("stockExportMenu")?.classList.remove("show");
+    if(!document.getElementById("stockOutExportWrap")?.contains(e.target)) document.getElementById("stockOutExportMenu")?.classList.remove("show");
+    if(!document.getElementById("stockInExportWrap")?.contains(e.target)) document.getElementById("stockInExportMenu")?.classList.remove("show");
+});
 
 /* =====================================================
    AUDIT LOG
@@ -6137,6 +6573,7 @@ document.addEventListener(
             closeImageViewer();
             closeStockOutModal();
             closeDepartmentModal();
+            closeAllExportMenus();
 
         }
 
