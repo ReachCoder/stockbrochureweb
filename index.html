@@ -1674,11 +1674,13 @@ body.dark .department-card-head h3{color:#B8D8C7;}
     align-items:center;
     justify-content:center;
 
-    padding:20px;
+    padding:12px;
 
     z-index:500;
 
     backdrop-filter:blur(5px);
+
+    overflow-y:auto;
 }
 
 .overlay.show{
@@ -1701,6 +1703,7 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 .modal{
     width:100%;
     max-width:430px;
+    max-height:min(92vh, 920px);
 
     background:var(--card);
 
@@ -1708,12 +1711,17 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 
     border-radius:15px;
 
-    padding:23px;
+    padding:18px 23px 16px;
 
     box-shadow:
         0 25px 60px rgba(0,0,0,.25);
 
     animation:modalIn .35s ease;
+
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    margin:auto;
 }
 
 @keyframes modalIn{
@@ -1730,13 +1738,19 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 }
 
 .modal h2{
-    margin:0 0 18px;
+    margin:0 0 14px;
 
     font-family:'Moul';
 
     font-size:18px;
 
     color:var(--primary-dark);
+
+    position:sticky;
+    top:-18px;
+    background:var(--card);
+    padding:4px 0 10px;
+    z-index:2;
 }
 
 body.dark .modal h2{
@@ -1791,7 +1805,39 @@ body.dark .modal h2{
 
     gap:8px;
 
-    margin-top:20px;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+    background:var(--card);
+    position:sticky;
+    bottom:-16px;
+    z-index:2;
+}
+
+/* smaller thumbs in stock in/out tables */
+.table-thumb{
+    width:48px;
+    height:48px;
+    object-fit:contain;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--card2);
+    display:block;
+    cursor:zoom-in;
+    transition:transform .15s ease;
+}
+.table-thumb:hover{transform:scale(1.06);}
+.table-thumb-ph{
+    width:48px;
+    height:48px;
+    border-radius:8px;
+    border:1px dashed var(--border);
+    background:var(--card2);
+    color:var(--text-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
 }
 
 .btn-cancel{
@@ -3585,6 +3631,14 @@ body.role-staff #btnPrintStock{
         <div class="field"><label>ឈ្មោះ Brochure</label><select id="soBrochure"><option value="">-- ជ្រើសរើស Brochure --</option></select></div>
         <div class="field"><label>ឆ្នាំ</label><input type="text" id="soYear" readonly placeholder="ឆ្នាំនឹងបង្ហាញដោយស្វ័យប្រវត្តិ"></div>
         <div class="stock-info-box" id="soStockInfo">សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។</div>
+        <div class="field" id="soImageField" style="display:none;">
+            <label>រូបភាព Brochure</label>
+            <div class="image-preview-wrap">
+                <img id="soImagePreview" class="image-preview" alt="Brochure" style="display:none;cursor:zoom-in;">
+                <div class="brochure-placeholder" id="soImagePlaceholder" style="width:78px;height:78px;"><i class="fa-solid fa-image"></i></div>
+                <div class="image-help">រូបភាពនៃ Brochure ដែលបានជ្រើស (ចុចរូបដើម្បីមើល Full Size)</div>
+            </div>
+        </div>
         <div class="field"><label>ផ្នែក (Department)</label><select id="soDepartment"><option value="">-- ជ្រើសរើសផ្នែក --</option></select></div>
         <div class="field"><label>ឈ្មោះអ្នកយក</label><select id="soEmployee" disabled><option value="">-- ជ្រើសរើសអ្នកយក --</option></select></div>
         <div class="field"><label>ចំនួនយកចេញ</label><input type="number" id="soQuantity" min="1" step="1" placeholder="ឧ. 100"></div>
@@ -3639,6 +3693,21 @@ body.role-staff #btnPrintStock{
         <div class="stock-info-box" id="siStockInfo">
             សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។
         </div>
+
+        <div class="field" id="siImageWrap">
+            <label>រូបភាព Brochure <span style="font-weight:400;color:var(--text-soft);">(ស្រេចចិត្ត)</span></label>
+            <div class="image-preview-wrap">
+                <img id="siImagePreview" class="image-preview" alt="Preview" style="display:none;cursor:zoom-in;">
+                <div>
+                    <input type="file" id="siImage" accept="image/*">
+                    <div class="image-help" id="siImageHelp">
+                        Brochure មានស្រាប់៖ បង្ហាញរូបបច្ចុប្បន្ន · អាចជ្រើសរូបថ្មីដើម្បីប្តូរ<br>
+                        Brochure ថ្មី៖ អាច Upload រូបភាព
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="field"><label>ចំនួនបញ្ចូល</label><input type="text" id="siQuantity" min="1" step="1" placeholder="ឧ. 500"></div>
         <div class="field"><label>ចំណាំ / មូលហេតុ</label><input type="text" id="siNote" placeholder="ឧ. បោះពុម្ពថែម"></div>
         <div class="err" id="stockInErr"></div>
@@ -5494,18 +5563,36 @@ function populateStockOutBrochures(selectedId="",fallbackLabel=""){
 }
 function updateStockOutBrochureInfo(){
     const id=document.getElementById("soBrochure")?.value,item=items.find(i=>i.id===id),year=document.getElementById("soYear"),info=document.getElementById("soStockInfo");
+    const imgField=document.getElementById("soImageField");
+    const imgPrev=document.getElementById("soImagePreview");
+    const imgPh=document.getElementById("soImagePlaceholder");
     if(!item){
         if(id && stockOutEditingId){
             const record=stockOuts.find(x=>x.id===stockOutEditingId);
             if(record && record.brochureId===id){
                 if(year)year.value=record.year||"";
                 if(info)info.innerHTML=`Brochure នេះលែងមានក្នុងបញ្ជីស្តុកបច្ចុប្បន្នទៀតហើយ (ត្រូវបានលុប ឬប្ដូរឈ្មោះ)។`;
+                if(imgField) imgField.style.display="none";
                 return;
             }
         }
-        if(year)year.value="";if(info)info.textContent="សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។";return;
+        if(year)year.value="";
+        if(info)info.textContent="សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។";
+        if(imgField) imgField.style.display="none";
+        return;
     }
-    year.value=item.year||"";info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
+    year.value=item.year||"";
+    info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
+    if(imgField) imgField.style.display="block";
+    if(item.image && imgPrev){
+        imgPrev.src=item.image;
+        imgPrev.style.display="block";
+        imgPrev.onclick=()=>viewImage(item.image, item.name);
+        if(imgPh) imgPh.style.display="none";
+    }else{
+        if(imgPrev){ imgPrev.removeAttribute("src"); imgPrev.style.display="none"; imgPrev.onclick=null; }
+        if(imgPh) imgPh.style.display="flex";
+    }
 }
 function openStockOutModal(brochureId=""){
     if(!requireAdmin("Stock Out")) return;
@@ -5663,6 +5750,16 @@ async function deleteStockOut(id){
         alert("មិនអាចលុបប្រតិបត្តិការនេះបានទេ។ សូមព្យាយាមម្តងទៀត។");
     }
 }
+function brochureImageCellHtml(brochureId, brochureName){
+    const item = items.find(i => i.id === brochureId);
+    const img = item?.image || "";
+    const title = brochureName || item?.name || "Brochure";
+    if(img){
+        return `<td class="brochure-image-cell"><img class="table-thumb" src="${escapeHtml(img)}" alt="${escapeHtml(title)}" title="ចុចមើល Full Size" onclick='viewImage(${JSON.stringify(img)}, ${JSON.stringify(title)})'></td>`;
+    }
+    return `<td class="brochure-image-cell"><div class="table-thumb-ph" title="មិនទាន់មានរូបភាព"><i class="fa-solid fa-image"></i></div></td>`;
+}
+
 function renderStockOut(){
     const c=document.getElementById("stockOutContent");if(!c)return;
     const q=(document.getElementById("stockOutSearch")?.value||"").toLowerCase().trim();
@@ -5674,13 +5771,45 @@ function renderStockOut(){
     const pg=paginateList(list, st.page, st.pageSize);
     st.page=pg.page;
     const rows=pg.slice;
-    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th>${sortHeaderHtml("stockOut","date","ថ្ងៃយកចេញ")}${sortHeaderHtml("stockOut","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockOut","year","ឆ្នាំ")}${sortHeaderHtml("stockOut","departmentName","ផ្នែក")}${sortHeaderHtml("stockOut","employeeName","ឈ្មោះអ្នកយក")}${sortHeaderHtml("stockOut","quantity","ចំនួនយកចេញ")}<th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockOut", pg)}`;
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>រូបភាព</th>${sortHeaderHtml("stockOut","date","ថ្ងៃយកចេញ")}${sortHeaderHtml("stockOut","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockOut","year","ឆ្នាំ")}${sortHeaderHtml("stockOut","departmentName","ផ្នែក")}${sortHeaderHtml("stockOut","employeeName","ឈ្មោះអ្នកយក")}${sortHeaderHtml("stockOut","quantity","ចំនួនយកចេញ")}<th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td>${brochureImageCellHtml(x.brochureId, x.brochureName)}<td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockOut", pg)}`;
 }
 
 
 /* =====================================================
    STOCK IN MANAGEMENT
 ===================================================== */
+function clearSiImageInput(){
+    const input=document.getElementById("siImage");
+    if(input) input.value="";
+}
+function resetSiImagePreview(){
+    clearSiImageInput();
+    const prev=document.getElementById("siImagePreview");
+    if(prev){
+        prev.removeAttribute("src");
+        prev.style.display="none";
+        prev.onclick=null;
+    }
+    const help=document.getElementById("siImageHelp");
+    if(help){
+        help.innerHTML = siMode==="new"
+            ? "Upload រូបភាព Brochure ថ្មី (ស្រេចចិត្ត)"
+            : "Brochure មានស្រាប់៖ បង្ហាញរូបបច្ចុប្បន្ន · អាចជ្រើសរូបថ្មីដើម្បីប្តូរ";
+    }
+}
+function setSiImagePreviewFromUrl(url, title){
+    const prev=document.getElementById("siImagePreview");
+    if(!prev) return;
+    if(url){
+        prev.src=url;
+        prev.style.display="block";
+        prev.onclick=()=>viewImage(url, title||"Brochure");
+    }else{
+        prev.removeAttribute("src");
+        prev.style.display="none";
+        prev.onclick=null;
+    }
+}
 function setSiMode(mode){
     siMode=mode;
     const btnExisting=document.getElementById("siModeExisting");
@@ -5699,6 +5828,7 @@ function setSiMode(mode){
         existingYearWrap.style.display="block";
         newNameWrap.style.display="none";
         newYearWrap.style.display="none";
+        resetSiImagePreview();
         updateStockInBrochureInfo();
     }else{
         existingWrap.style.display="none";
@@ -5706,6 +5836,7 @@ function setSiMode(mode){
         newNameWrap.style.display="block";
         newYearWrap.style.display="block";
         if(info) info.innerHTML="Brochure ថ្មីនឹងត្រូវបានបង្កើតដោយស្វ័យប្រវត្តិ ព្រមជាមួយការបញ្ចូលស្តុកលើកដំបូង។";
+        resetSiImagePreview();
     }
 }
 function populateStockInBrochures(selectedId="",fallbackLabel=""){
@@ -5720,18 +5851,29 @@ function populateStockInBrochures(selectedId="",fallbackLabel=""){
 }
 function updateStockInBrochureInfo(){
     const id=document.getElementById("siBrochureSelect")?.value,item=items.find(i=>i.id===id),year=document.getElementById("siYear"),info=document.getElementById("siStockInfo");
+    // កុំលុប file input បើអ្នកប្រើកំពុងជ្រើសរូប — តែពេលប្តូរ brochure
+    const fileInput=document.getElementById("siImage");
+    const hasNewFile=fileInput && fileInput.files && fileInput.files[0];
     if(!item){
         if(id && stockInEditingId){
             const record=stockIns.find(x=>x.id===stockInEditingId);
             if(record && record.brochureId===id){
                 if(year)year.value=record.year||"";
                 if(info)info.innerHTML=`Brochure នេះលែងមានក្នុងបញ្ជីស្តុកបច្ចុប្បន្នទៀតហើយ (ត្រូវបានលុប ឬប្ដូរឈ្មោះ)។`;
+                if(!hasNewFile) setSiImagePreviewFromUrl("", "");
                 return;
             }
         }
-        if(year)year.value="";if(info)info.textContent="សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។";return;
+        if(year)year.value="";
+        if(info)info.textContent="សូមជ្រើសរើស Brochure ដើម្បីមើលស្តុកបច្ចុប្បន្ន។";
+        if(!hasNewFile) setSiImagePreviewFromUrl("", "");
+        return;
     }
-    year.value=item.year||"";info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
+    year.value=item.year||"";
+    info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
+    if(!hasNewFile){
+        setSiImagePreviewFromUrl(item.image || "", item.name);
+    }
 }
 function openStockInModal(brochureId=""){
     if(!requireAdmin("Stock In")) return;
@@ -5742,6 +5884,7 @@ function openStockInModal(brochureId=""){
     document.getElementById("siBrochureNameNew").value="";document.getElementById("siYearNew").value="";
     document.getElementById("stockInErr").classList.remove("show");document.getElementById("stockInErr").textContent="";
     document.getElementById("siModeField").style.display="block";
+    clearSiImageInput();
     setSiMode("existing");
     populateStockInBrochures(brochureId);
     if(brochureId){document.getElementById("siBrochureSelect").value=brochureId;updateStockInBrochureInfo();}
@@ -5758,6 +5901,7 @@ function openEditStockInModal(id){
     document.getElementById("stockInErr").classList.remove("show");document.getElementById("stockInErr").textContent="";
     // ការកែប្រែជានិច្ចកែទៅលើ Brochure ដែលមានស្រាប់ ដូច្នេះលាក់ប៊ូតុង "Brochure ថ្មី"
     document.getElementById("siModeField").style.display="none";
+    clearSiImageInput();
     setSiMode("existing");
     populateStockInBrochures(record.brochureId,`${record.brochureName||""} — ${record.year||""}`);
     document.getElementById("siBrochureSelect").value=record.brochureId;
@@ -5767,33 +5911,72 @@ function openEditStockInModal(id){
     updateStockInBrochureInfo();
     document.getElementById("stockInOverlay").classList.add("show");
 }
-function closeStockInModal(){document.getElementById("stockInOverlay").classList.remove("show");stockInEditingId=null;}
+function closeStockInModal(){
+    document.getElementById("stockInOverlay").classList.remove("show");
+    stockInEditingId=null;
+    resetSiImagePreview();
+}
+async function getSiUploadedImageUrl(err){
+    const file=document.getElementById("siImage")?.files?.[0];
+    if(!file) return null;
+    try{
+        return await uploadImageToCloudinary(file);
+    }catch(e){
+        console.error(e);
+        if(err){
+            err.textContent="មិនអាច Upload រូបភាពបានទេ។ សូមព្យាយាមម្តងទៀត។";
+            err.classList.add("show");
+        }
+        throw e;
+    }
+}
 async function saveStockIn(){
     const err=document.getElementById("stockInErr");err.classList.remove("show");err.textContent="";
     const date=document.getElementById("siDate").value;
     const quantity=parseInt(String(document.getElementById("siQuantity").value).replace(/,/g,""),10);
     const note=document.getElementById("siNote").value.trim();
+    const btn=document.getElementById("btnSaveStockIn");
+    const btnHtml=btn?btn.innerHTML:"";
+    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក...';}
 
-    if(stockInEditingId){
-        const brochureId=document.getElementById("siBrochureSelect").value;
-        if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
-        const item=items.find(i=>i.id===brochureId);
-        if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
-        await updateStockIn(stockInEditingId,{date,brochureId,quantity,note},err,item);
-        return;
-    }
+    try{
+        let imageUrl=null;
+        try{
+            imageUrl=await getSiUploadedImageUrl(err);
+            if(err.classList.contains("show") && err.textContent.includes("Upload")){
+                return;
+            }
+        }catch(_){ return; }
 
-    if(siMode==="new"){
-        const name=document.getElementById("siBrochureNameNew").value.trim();
-        const year=document.getElementById("siYearNew").value.trim();
-        if(!date||!name||!year||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, ឈ្មោះ Brochure ថ្មី, ឆ្នាំ និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
-        await createStockInNewBrochure({date,name,year,quantity,note},err);
-    }else{
-        const brochureId=document.getElementById("siBrochureSelect").value;
-        if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
-        const item=items.find(i=>i.id===brochureId);
-        if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
-        await createStockIn({date,brochureId,quantity,note},err,item);
+        if(stockInEditingId){
+            const brochureId=document.getElementById("siBrochureSelect").value;
+            if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+            const item=items.find(i=>i.id===brochureId);
+            if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
+            if(imageUrl){
+                try{ await db.collection(COLLECTION).doc(brochureId).update({image:imageUrl}); }catch(e){ console.warn(e); }
+            }
+            await updateStockIn(stockInEditingId,{date,brochureId,quantity,note},err,item);
+            return;
+        }
+
+        if(siMode==="new"){
+            const name=document.getElementById("siBrochureNameNew").value.trim();
+            const year=document.getElementById("siYearNew").value.trim();
+            if(!date||!name||!year||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, ឈ្មោះ Brochure ថ្មី, ឆ្នាំ និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+            await createStockInNewBrochure({date,name,year,quantity,note,image:imageUrl},err);
+        }else{
+            const brochureId=document.getElementById("siBrochureSelect").value;
+            if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
+            const item=items.find(i=>i.id===brochureId);
+            if(!item){err.textContent="ទិន្នន័យ Brochure មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
+            if(imageUrl){
+                try{ await db.collection(COLLECTION).doc(brochureId).update({image:imageUrl}); }catch(e){ console.warn(e); }
+            }
+            await createStockIn({date,brochureId,quantity,note},err,item);
+        }
+    }finally{
+        if(btn){btn.disabled=false;btn.innerHTML=btnHtml||'<i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Stock In';}
     }
 }
 async function createStockIn(data,err,item){
@@ -5824,7 +6007,7 @@ async function createStockIn(data,err,item){
 }
 // បញ្ចូលស្តុកសម្រាប់ Brochure ថ្មី៖ បង្កើត Brochure ថ្មី (ឬប្រើ Brochure ដែលមានឈ្មោះ+ឆ្នាំដូចគ្នារួចហើយ) រួចបញ្ចូលស្តុកភ្លាមតែម្តង
 async function createStockInNewBrochure(data,err){
-    const {date,name,year,quantity,note}=data;
+    const {date,name,year,quantity,note,image}=data;
     try{
         const normalizedName=name.replace(/\s+/g," ").trim().toLowerCase();
         const normalizedYear=year.replace(/\s+/g,"").trim().toLowerCase();
@@ -5839,9 +6022,14 @@ async function createStockInNewBrochure(data,err){
 
         if(existingItem){
             brochureId=existingItem.id;
+            if(image){
+                try{ await db.collection(COLLECTION).doc(brochureId).update({image}); }catch(e){ console.warn(e); }
+            }
         }else{
             const newDocRef=db.collection(COLLECTION).doc();
-            await newDocRef.set({name,year,unit:0,other:"",createdAt:Date.now()});
+            const payload={name,year,unit:0,other:"",createdAt:Date.now()};
+            if(image) payload.image=image;
+            await newDocRef.set(payload);
             brochureId=newDocRef.id;
         }
 
@@ -5969,7 +6157,7 @@ function renderStockIn(){
     const pg=paginateList(list, st.page, st.pageSize);
     st.page=pg.page;
     const rows=pg.slice;
-    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th>${sortHeaderHtml("stockIn","date","ថ្ងៃបញ្ចូល")}${sortHeaderHtml("stockIn","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockIn","year","ឆ្នាំ")}${sortHeaderHtml("stockIn","quantity","ចំនួនបញ្ចូល")}<th>ចំណាំ</th><th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td>${escapeHtml(x.note||"")}</td><td class="actions"><button class="action-btn" onclick="openEditStockInModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockIn('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockIn", pg)}`;
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>រូបភាព</th>${sortHeaderHtml("stockIn","date","ថ្ងៃបញ្ចូល")}${sortHeaderHtml("stockIn","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockIn","year","ឆ្នាំ")}${sortHeaderHtml("stockIn","quantity","ចំនួនបញ្ចូល")}<th>ចំណាំ</th><th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td>${brochureImageCellHtml(x.brochureId, x.brochureName)}<td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td>${escapeHtml(x.note||"")}</td><td class="actions"><button class="action-btn" onclick="openEditStockInModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockIn('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockIn", pg)}`;
 }
 
 
@@ -7529,7 +7717,22 @@ document.getElementById("btnCancelStockIn")?.addEventListener("click",closeStock
 document.getElementById("btnSaveStockIn")?.addEventListener("click",saveStockIn);
 document.getElementById("siModeExisting")?.addEventListener("click",()=>setSiMode("existing"));
 document.getElementById("siModeNew")?.addEventListener("click",()=>setSiMode("new"));
-document.getElementById("siBrochureSelect")?.addEventListener("change",updateStockInBrochureInfo);
+document.getElementById("siBrochureSelect")?.addEventListener("change",()=>{
+    clearSiImageInput();
+    updateStockInBrochureInfo();
+});
+document.getElementById("siImage")?.addEventListener("change", e => {
+    const file = e.target.files?.[0];
+    const prev = document.getElementById("siImagePreview");
+    if(!file || !prev) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        prev.src = ev.target.result;
+        prev.style.display = "block";
+        prev.onclick = () => viewImage(ev.target.result, "Preview");
+    };
+    reader.readAsDataURL(file);
+});
 document.getElementById("stockInSearch")?.addEventListener("input",()=>{tableState.stockIn.page=1;renderStockIn();});
 document.getElementById("btnBackupJson")?.addEventListener("click",backupAllDataJson);
 document.getElementById("stockInOverlay")?.addEventListener("click",e=>{if(e.target.id==="stockInOverlay")closeStockInModal();});
