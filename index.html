@@ -1377,6 +1377,147 @@ body.dark .year-card h3{
     color:var(--primary);
 }
 
+.report-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:18px;
+}
+@media (max-width:900px){
+    .report-grid{grid-template-columns:1fr;}
+}
+.report-panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+.report-panel-head{
+    padding:14px 18px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+.report-panel-head h3{
+    margin:0;
+    font-size:14px;
+    color:var(--primary-dark);
+}
+body.dark .report-panel-head h3{color:#B8D8C7;}
+.report-panel-body{padding:0;}
+.report-rank{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+}
+.report-rank:last-child{border-bottom:none;}
+.report-rank-num{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:var(--primary-light);
+    color:var(--primary);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:700;
+    flex-shrink:0;
+}
+.report-rank-num.top{background:var(--gold);color:var(--primary-dark);}
+.report-rank-info{flex:1;min-width:0;}
+.report-rank-info strong{
+    display:block;
+    font-size:13px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.report-rank-info span{
+    font-size:11px;
+    color:var(--text-soft);
+}
+.report-rank-qty{
+    font-weight:700;
+    color:var(--primary);
+    font-size:13px;
+    white-space:nowrap;
+}
+
+/* Sortable headers */
+th.sortable{
+    cursor:pointer;
+    user-select:none;
+    white-space:nowrap;
+}
+th.sortable:hover{color:var(--primary);}
+th.sortable .sort-icon{
+    margin-left:4px;
+    font-size:10px;
+    opacity:.45;
+}
+th.sortable.active .sort-icon{opacity:1;color:var(--primary);}
+
+/* Pagination */
+.pager{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    padding:12px 16px;
+    border-top:1px solid var(--border);
+    background:var(--card2);
+}
+.pager-info{
+    font-size:12px;
+    color:var(--text-soft);
+}
+.pager-controls{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+.pager-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:6px 10px;
+    border-radius:7px;
+    cursor:pointer;
+    font-family:'Kantumruy Pro',sans-serif;
+    font-size:12px;
+    font-weight:600;
+}
+.pager-btn:hover:not(:disabled){
+    background:var(--primary-light);
+    color:var(--primary);
+}
+.pager-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+.pager-btn.active{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary);
+}
+.pager select{
+    padding:6px 8px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:var(--card);
+    color:var(--text);
+    font-family:'Kantumruy Pro',sans-serif;
+    font-size:12px;
+}
+
 /* =========================
    SETTINGS
 ========================= */
@@ -3179,6 +3320,36 @@ body.role-staff #btnPrintStock{
 
         </div>
 
+        <div class="report-row">
+            <span class="report-label">ចំនួន Stock Out សរុប</span>
+            <span class="report-value" id="reportStockOutCount">0</span>
+        </div>
+        <div class="report-row">
+            <span class="report-label">ចំនួនយកចេញសរុប (ក្បាល)</span>
+            <span class="report-value" id="reportStockOutUnits">0</span>
+        </div>
+
+    </div>
+
+    <div class="report-grid">
+        <div class="report-panel">
+            <div class="report-panel-head">
+                <h3><i class="fa-solid fa-building"></i> ផ្នែកយកច្រើនបំផុត</h3>
+                <span style="font-size:11px;color:var(--text-soft);">តាមចំនួនក្បាល</span>
+            </div>
+            <div class="report-panel-body" id="reportByDepartment">
+                <div class="empty-mini" style="padding:20px;">មិនទាន់មានទិន្នន័យ Stock Out</div>
+            </div>
+        </div>
+        <div class="report-panel">
+            <div class="report-panel-head">
+                <h3><i class="fa-solid fa-user"></i> និយោជិតយកញឹកញាប់</h3>
+                <span style="font-size:11px;color:var(--text-soft);">តាមចំនួនដង + ក្បាល</span>
+            </div>
+            <div class="report-panel-body" id="reportByEmployee">
+                <div class="empty-mini" style="padding:20px;">មិនទាន់មានទិន្នន័យ Stock Out</div>
+            </div>
+        </div>
     </div>
 
 </section>
@@ -3268,6 +3439,47 @@ body.role-staff #btnPrintStock{
                 <button class="btn-secondary" id="btnSaveOperator" style="padding:8px 12px;">រក្សាទុក</button>
             </div>
 
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <div class="setting-title">កម្រិតស្តុកជិតអស់</div>
+                <div class="setting-desc">បើចំនួនស្តុកតិចជាងលេខនេះ → Alert + ផ្ញើ email</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="number" id="lowStockThresholdInput" min="1" step="1" placeholder="50" style="width:90px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'Kantumruy Pro';outline:none;">
+                <button class="btn-secondary" id="btnSaveLowStockSettings" style="padding:8px 12px;">រក្សាទុក</button>
+            </div>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <div class="setting-title">Email Admin (ជូនដំណឹងស្តុក)</div>
+                <div class="setting-desc">អាចដាក់ច្រើន email ដោយញែកតាមសញ្ញាក្បៀស (,) — ឧ. admin@company.com</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+                <input type="text" id="adminNotifyEmailsInput" placeholder="admin@example.com" style="width:min(280px,70vw);padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'Kantumruy Pro';outline:none;">
+            </div>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <div class="setting-title">Browser Notification</div>
+                <div class="setting-desc">អនុញ្ញាតឲ្យកម្មវិធីជូនដំណឹងនៅលើកុំព្យូទ័រ/ទូរសព្ទ</div>
+            </div>
+            <button class="btn-secondary" id="btnEnableBrowserNotif" style="padding:8px 12px;">
+                <i class="fa-solid fa-bell"></i> បើកការជូនដំណឹង
+            </button>
+        </div>
+
+        <div class="setting-row">
+            <div>
+                <div class="setting-title">Backup ទិន្នន័យ (JSON)</div>
+                <div class="setting-desc">នាំចេញទិន្នន័យទាំងអស់ (Brochure, Stock In/Out, Department, Audit) ជា JSON ដើម្បីចម្លងទុក</div>
+            </div>
+            <button class="btn-secondary" id="btnBackupJson" style="padding:8px 12px;">
+                <i class="fa-solid fa-download"></i> Download Backup
+            </button>
         </div>
 
     </div>
@@ -3914,8 +4126,129 @@ let stockOutEditingId = null;
 let stockIns = [];
 let stockInEditingId = null;
 let siMode = "existing";
-const LOW_STOCK_THRESHOLD = 50;
+const DEFAULT_LOW_STOCK_THRESHOLD = 50;
+function getLowStockThreshold(){
+    const n = Number(localStorage.getItem("lowStockThreshold"));
+    return Number.isFinite(n) && n > 0 ? n : DEFAULT_LOW_STOCK_THRESHOLD;
+}
+let LOW_STOCK_THRESHOLD = getLowStockThreshold();
 let departmentModalMode = "department";
+let lowStockNotifyBusy = false;
+
+/* Sort + Pagination state */
+const tableState = {
+    stock:    { sortKey: "name", sortDir: "asc",  page: 1, pageSize: 25 },
+    stockOut: { sortKey: "date", sortDir: "desc", page: 1, pageSize: 20 },
+    stockIn:  { sortKey: "date", sortDir: "desc", page: 1, pageSize: 20 }
+};
+
+function sortList(list, key, dir, type){
+    const m = dir === "asc" ? 1 : -1;
+    return [...list].sort((a, b) => {
+        let va = a[key];
+        let vb = b[key];
+        if(type === "number" || key === "unit" || key === "quantity"){
+            return (Number(va || 0) - Number(vb || 0)) * m;
+        }
+        if(key === "year"){
+            const ya = Number(extractYear(va) || va || 0);
+            const yb = Number(extractYear(vb) || vb || 0);
+            return (ya - yb) * m;
+        }
+        if(key === "date"){
+            return String(va || "").localeCompare(String(vb || "")) * m;
+        }
+        return String(va || "").localeCompare(String(vb || ""), "km") * m;
+    });
+}
+
+function paginateList(list, page, pageSize){
+    const total = list.length;
+    const pages = Math.max(1, Math.ceil(total / pageSize) || 1);
+    const p = Math.min(Math.max(1, page), pages);
+    const start = (p - 1) * pageSize;
+    return {
+        page: p,
+        pages,
+        total,
+        start,
+        end: Math.min(start + pageSize, total),
+        slice: list.slice(start, start + pageSize)
+    };
+}
+
+function sortHeaderHtml(table, key, label){
+    const st = tableState[table];
+    const active = st.sortKey === key;
+    const icon = !active ? "fa-sort" : (st.sortDir === "asc" ? "fa-sort-up" : "fa-sort-down");
+    return `<th class="sortable ${active ? "active" : ""}" onclick="setTableSort('${table}','${key}')">${label}<i class="fa-solid ${icon} sort-icon"></i></th>`;
+}
+
+function setTableSort(table, key){
+    const st = tableState[table];
+    if(!st) return;
+    if(st.sortKey === key){
+        st.sortDir = st.sortDir === "asc" ? "desc" : "asc";
+    }else{
+        st.sortKey = key;
+        st.sortDir = (key === "date" || key === "unit" || key === "quantity") ? "desc" : "asc";
+    }
+    st.page = 1;
+    if(table === "stock") renderStock();
+    else if(table === "stockOut") renderStockOut();
+    else if(table === "stockIn") renderStockIn();
+}
+
+function setTablePage(table, page){
+    const st = tableState[table];
+    if(!st) return;
+    st.page = page;
+    if(table === "stock") renderStock();
+    else if(table === "stockOut") renderStockOut();
+    else if(table === "stockIn") renderStockIn();
+}
+
+function setTablePageSize(table, size){
+    const st = tableState[table];
+    if(!st) return;
+    st.pageSize = Number(size) || 20;
+    st.page = 1;
+    if(table === "stock") renderStock();
+    else if(table === "stockOut") renderStockOut();
+    else if(table === "stockIn") renderStockIn();
+}
+
+function buildPagerHtml(table, pg){
+    const st = tableState[table];
+    const pages = pg.pages;
+    let buttons = "";
+    const windowSize = 5;
+    let startP = Math.max(1, pg.page - 2);
+    let endP = Math.min(pages, startP + windowSize - 1);
+    startP = Math.max(1, endP - windowSize + 1);
+
+    buttons += `<button type="button" class="pager-btn" ${pg.page <= 1 ? "disabled" : ""} onclick="setTablePage('${table}',${pg.page - 1})"><i class="fa-solid fa-chevron-left"></i></button>`;
+    for(let i = startP; i <= endP; i++){
+        buttons += `<button type="button" class="pager-btn ${i === pg.page ? "active" : ""}" onclick="setTablePage('${table}',${i})">${i}</button>`;
+    }
+    buttons += `<button type="button" class="pager-btn" ${pg.page >= pages ? "disabled" : ""} onclick="setTablePage('${table}',${pg.page + 1})"><i class="fa-solid fa-chevron-right"></i></button>`;
+
+    const from = pg.total ? pg.start + 1 : 0;
+    const to = pg.end;
+    return `
+        <div class="pager">
+            <div class="pager-info">
+                បង្ហាញ ${from.toLocaleString()}–${to.toLocaleString()} / ${pg.total.toLocaleString()}
+            </div>
+            <div class="pager-controls">
+                <select onchange="setTablePageSize('${table}', this.value)">
+                    ${[10,20,25,50,100].map(n => `<option value="${n}" ${st.pageSize === n ? "selected" : ""}>${n} / ទំព័រ</option>`).join("")}
+                </select>
+                ${buttons}
+            </div>
+        </div>
+    `;
+}
 
 
 /* =====================================================
@@ -4004,6 +4337,7 @@ function goPage(page){
     if(page === "stockin") renderStockIn();
     if(page === "departments") renderDepartments();
     if(page === "audit") renderAuditLog();
+    if(page === "reports") updateReports();
 
 }
 
@@ -4193,6 +4527,9 @@ function listenStockOuts(){
     db.collection("stockOuts").orderBy("createdAt","desc").onSnapshot(snapshot=>{
         stockOuts=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
         renderStockOut();
+        if(document.getElementById("reports")?.classList.contains("active")){
+            updateReports();
+        }
     },error=>console.error("Stock Out listener error:",error));
 }
 function listenStockIns(){
@@ -4832,234 +5169,93 @@ function renderStock(){
 
     }
 
+    const st = tableState.stock;
+    filtered = sortList(filtered, st.sortKey, st.sortDir);
+    const pg = paginateList(filtered, st.page, st.pageSize);
+    st.page = pg.page;
+    const pageRows = pg.slice;
+    const offset = pg.start;
 
     const groups = {};
-
-
-    filtered.forEach(item => {
-
-        const year =
-            extractYear(item.year) || "ផ្សេងៗ";
-
-
-        if(!groups[year])
-            groups[year] = [];
-
-
+    pageRows.forEach(item => {
+        const year = extractYear(item.year) || "ផ្សេងៗ";
+        if(!groups[year]) groups[year] = [];
         groups[year].push(item);
-
     });
-
 
     const keys =
         Object.keys(groups)
         .sort((a,b) => {
-
-            if(a === "ផ្សេងៗ")
-                return 1;
-
-            if(b === "ផ្សេងៗ")
-                return -1;
-
-            return b-a;
-
+            if(a === "ផ្សេងៗ") return 1;
+            if(b === "ផ្សេងៗ") return -1;
+            return b - a;
         });
 
+    let rowCounter = offset;
 
     container.innerHTML =
-        `<div class="scroll-hint"><i class="fa-solid fa-hand-point-left"></i> អូសទៅឆ្វេង / ស្តាំ ដើម្បីមើលទិន្នន័យទាំងអស់ <i class="fa-solid fa-hand-point-right"></i></div>` +
+        `<div class="scroll-hint"><i class="fa-solid fa-hand-point-left"></i> អូសទៅឆ្វេង / ស្តាំ ដើម្បីមើលទិន្នន័យទាំងអស់ · ចុច header ដើម្បី Sort <i class="fa-solid fa-hand-point-right"></i></div>` +
         keys.map(year => {
-
-            const rows =
-                groups[year];
-
-
-            const subtotal =
-                rows.reduce(
-                    (sum,item) =>
-                        sum + Number(item.unit || 0),
-                    0
-                );
-
-
+            const rows = groups[year];
+            const subtotal = rows.reduce((sum, item) => sum + Number(item.unit || 0), 0);
             return `
-
                 <div class="group">
-
                     <div class="group-band">
-
                         <div>
-
-                            <div class="group-year">
-                                ${year}
-                            </div>
-
-                            <div class="group-sub">
-                                ${rows.length} មុខ
-                            </div>
-
+                            <div class="group-year">${year}</div>
+                            <div class="group-sub">${rows.length} មុខ (ទំព័រនេះ)</div>
                         </div>
-
-
                         <div class="seal">
-
-                            <strong>
-                                ${subtotal.toLocaleString()}
-                            </strong>
-
-                            <small>
-                                ក្បាល
-                            </small>
-
+                            <strong>${subtotal.toLocaleString()}</strong>
+                            <small>ក្បាល</small>
                         </div>
-
                     </div>
-
-
                     <div class="table-scroll">
                     <table>
-
                         <thead>
-
                             <tr>
-
-                                <th>
-                                    N°
-                                </th>
-
-                                <th>
-                                    រូបភាព
-                                </th>
-
-                                <th>
-                                    ឈ្មោះ Brochure
-                                </th>
-
-                                <th>
-                                    ឆ្នាំ
-                                </th>
-
-                                <th>
-                                    ចំនួន
-                                </th>
-
-                                <th>
-                                    ផ្សេងៗ
-                                </th>
-
-                                <th>
-                                    សកម្មភាព
-                                </th>
-
+                                <th>N°</th>
+                                <th>រូបភាព</th>
+                                ${sortHeaderHtml("stock", "name", "ឈ្មោះ Brochure")}
+                                ${sortHeaderHtml("stock", "year", "ឆ្នាំ")}
+                                ${sortHeaderHtml("stock", "unit", "ចំនួន")}
+                                <th>ផ្សេងៗ</th>
+                                <th>សកម្មភាព</th>
                             </tr>
-
                         </thead>
-
-
                         <tbody>
-
-                            ${rows.map((item,index) => `
-
+                            ${rows.map(item => {
+                                rowCounter++;
+                                return `
                                 <tr>
-
-                                    <td>
-                                        ${index+1}
-                                    </td>
-
+                                    <td>${rowCounter}</td>
                                     <td class="brochure-image-cell">
-
                                         ${item.image
-                                            ? `<img
-                                                class="brochure-thumb"
-                                                src="${escapeHtml(item.image)}"
-                                                alt="${escapeHtml(item.name)}"
-                                                title="ចុចដើម្បីមើលរូប Full Size"
-                                                onclick='viewImage(${JSON.stringify(item.image)}, ${JSON.stringify(item.name)})'>`
-                                            : `<div class="brochure-placeholder" title="មិនទាន់មានរូបភាព">
-                                                <i class="fa-solid fa-image"></i>
-                                              </div>`
+                                            ? `<img class="brochure-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" title="ចុចដើម្បីមើលរូប Full Size" onclick='viewImage(${JSON.stringify(item.image)}, ${JSON.stringify(item.name)})'>`
+                                            : `<div class="brochure-placeholder" title="មិនទាន់មានរូបភាព"><i class="fa-solid fa-image"></i></div>`
                                         }
-
                                     </td>
-
-                                    <td>
-                                        <strong>
-                                            ${escapeHtml(item.name)}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        ${escapeHtml(item.year)}
-                                    </td>
-
+                                    <td><strong>${escapeHtml(item.name)}</strong></td>
+                                    <td>${escapeHtml(item.year)}</td>
                                     <td class="unit ${Number(item.unit||0) < LOW_STOCK_THRESHOLD ? 'low-stock' : ''}">
                                         ${Number(item.unit || 0).toLocaleString()}
                                         ${Number(item.unit||0) < LOW_STOCK_THRESHOLD ? '<i class="fa-solid fa-triangle-exclamation" title="ស្តុកជិតអស់"></i>' : ''}
                                     </td>
-
-                                    <td>
-                                        ${escapeHtml(item.other || "")}
-                                    </td>
-
+                                    <td>${escapeHtml(item.other || "")}</td>
                                     <td class="actions">
-
-                                        <button
-                                            class="action-btn"
-                                            onclick="editById('${item.id}')">
-
-                                            <i class="fa-solid fa-pen"></i>
-                                            កែ
-
-                                        </button>
-
-
-                                        <button
-                                            class="action-btn stockin"
-                                            onclick="openStockInModal('${item.id}')"
-                                            title="បញ្ចូលស្តុក">
-
-                                            <i class="fa-solid fa-arrow-up"></i>
-                                            បញ្ចូលស្តុក
-
-                                        </button>
-
-
-                                        <button
-                                            class="action-btn withdraw"
-                                            onclick="openStockOutModal('${item.id}')"
-                                            title="ដកស្តុក">
-
-                                            <i class="fa-solid fa-arrow-down"></i>
-                                            ដកស្តុក
-
-                                        </button>
-
-
-                                        <button
-                                            class="action-btn delete"
-                                            onclick="deleteItem('${item.id}')">
-
-                                            <i class="fa-solid fa-trash"></i>
-                                            លុប
-
-                                        </button>
-
+                                        <button class="action-btn" onclick="editById('${item.id}')"><i class="fa-solid fa-pen"></i> កែ</button>
+                                        <button class="action-btn stockin" onclick="openStockInModal('${item.id}')" title="បញ្ចូលស្តុក"><i class="fa-solid fa-arrow-up"></i> បញ្ចូលស្តុក</button>
+                                        <button class="action-btn withdraw" onclick="openStockOutModal('${item.id}')" title="ដកស្តុក"><i class="fa-solid fa-arrow-down"></i> ដកស្តុក</button>
+                                        <button class="action-btn delete" onclick="deleteItem('${item.id}')"><i class="fa-solid fa-trash"></i> លុប</button>
                                     </td>
-
-                                </tr>
-
-                            `).join("")}
-
+                                </tr>`;
+                            }).join("")}
                         </tbody>
-
                     </table>
                     </div>
-
                 </div>
-
             `;
-
-        }).join("");
+        }).join("") + buildPagerHtml("stock", pg);
 
 }
 
@@ -5470,10 +5666,15 @@ async function deleteStockOut(id){
 function renderStockOut(){
     const c=document.getElementById("stockOutContent");if(!c)return;
     const q=(document.getElementById("stockOutSearch")?.value||"").toLowerCase().trim();
-    const list=q?stockOuts.filter(x=>[x.date,x.brochureName,x.year,x.departmentName,x.employeeName].some(v=>String(v||"").toLowerCase().includes(q))):stockOuts;
-    const total=list.reduce((a,x)=>a+Number(x.quantity||0),0);
+    let list=q?stockOuts.filter(x=>[x.date,x.brochureName,x.year,x.departmentName,x.employeeName].some(v=>String(v||"").toLowerCase().includes(q))):[...stockOuts];
+    const totalAll=list.reduce((a,x)=>a+Number(x.quantity||0),0);
     if(!list.length){c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ស្ថានភាព</small><strong>—</strong></div></div><div class="empty"><i class="fa-solid fa-arrow-up-from-bracket"></i><h3>មិនទាន់មាន Stock Out</h3><p>ចុច "បន្ថែម Stock Out" ដើម្បីកត់ត្រាការយក Brochure ចេញ។</p></div>`;return;}
-    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>ថ្ងៃយកចេញ</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ផ្នែក</th><th>ឈ្មោះអ្នកយក</th><th>ចំនួនយកចេញ</th><th>សកម្មភាព</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>`;
+    const st=tableState.stockOut;
+    list=sortList(list, st.sortKey, st.sortDir);
+    const pg=paginateList(list, st.page, st.pageSize);
+    st.page=pg.page;
+    const rows=pg.slice;
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th>${sortHeaderHtml("stockOut","date","ថ្ងៃយកចេញ")}${sortHeaderHtml("stockOut","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockOut","year","ឆ្នាំ")}${sortHeaderHtml("stockOut","departmentName","ផ្នែក")}${sortHeaderHtml("stockOut","employeeName","ឈ្មោះអ្នកយក")}${sortHeaderHtml("stockOut","quantity","ចំនួនយកចេញ")}<th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockOut", pg)}`;
 }
 
 
@@ -5760,49 +5961,266 @@ async function deleteStockIn(id){
 function renderStockIn(){
     const c=document.getElementById("stockInContent");if(!c)return;
     const q=(document.getElementById("stockInSearch")?.value||"").toLowerCase().trim();
-    const list=q?stockIns.filter(x=>[x.date,x.brochureName,x.year,x.note].some(v=>String(v||"").toLowerCase().includes(q))):stockIns;
-    const total=list.reduce((a,x)=>a+Number(x.quantity||0),0);
+    let list=q?stockIns.filter(x=>[x.date,x.brochureName,x.year,x.note].some(v=>String(v||"").toLowerCase().includes(q))):[...stockIns];
+    const totalAll=list.reduce((a,x)=>a+Number(x.quantity||0),0);
     if(!list.length){c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ស្ថានភាព</small><strong>—</strong></div></div><div class="empty"><i class="fa-solid fa-dolly"></i><h3>មិនទាន់មាន Stock In</h3><p>ចុច "បន្ថែម Stock In" ដើម្បីកត់ត្រាការបញ្ចូល Brochure ចូលស្តុក។</p></div>`;return;}
-    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>ថ្ងៃបញ្ចូល</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ចំនួនបញ្ចូល</th><th>ចំណាំ</th><th>សកម្មភាព</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td>${escapeHtml(x.note||"")}</td><td class="actions"><button class="action-btn" onclick="openEditStockInModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockIn('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>`;
+    const st=tableState.stockIn;
+    list=sortList(list, st.sortKey, st.sortDir);
+    const pg=paginateList(list, st.page, st.pageSize);
+    st.page=pg.page;
+    const rows=pg.slice;
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th>${sortHeaderHtml("stockIn","date","ថ្ងៃបញ្ចូល")}${sortHeaderHtml("stockIn","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockIn","year","ឆ្នាំ")}${sortHeaderHtml("stockIn","quantity","ចំនួនបញ្ចូល")}<th>ចំណាំ</th><th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td>${escapeHtml(x.note||"")}</td><td class="actions"><button class="action-btn" onclick="openEditStockInModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockIn('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockIn", pg)}`;
 }
 
 
 /* =====================================================
-   LOW STOCK ALERTS
+   LOW STOCK ALERTS + EMAIL TO ADMIN
 ===================================================== */
 function getLowStockItems(){
-    return items.filter(i=>Number(i.unit||0) < LOW_STOCK_THRESHOLD).sort((a,b)=>Number(a.unit||0)-Number(b.unit||0));
+    LOW_STOCK_THRESHOLD = getLowStockThreshold();
+    return items
+        .filter(i => Number(i.unit || 0) < LOW_STOCK_THRESHOLD)
+        .sort((a,b) => Number(a.unit || 0) - Number(b.unit || 0));
 }
+
+function getAdminNotifyEmails(){
+    const raw = (localStorage.getItem("adminNotifyEmails") || "").trim();
+    if(raw){
+        return raw.split(/[,;\s]+/).map(s => s.trim()).filter(Boolean);
+    }
+    // fallback: email របស់អ្នកប្រើបច្ចុប្បន្ន បើជា admin
+    if(isAdmin() && currentUser?.email){
+        return [currentUser.email];
+    }
+    return [];
+}
+
+function lowStockFingerprint(low){
+    return low
+        .map(i => `${i.id}:${Number(i.unit||0)}`)
+        .sort()
+        .join("|");
+}
+
+function simpleHash(str){
+    let h = 0;
+    for(let i = 0; i < str.length; i++){
+        h = ((h << 5) - h) + str.charCodeAt(i);
+        h |= 0;
+    }
+    return Math.abs(h).toString(36);
+}
+
+function buildLowStockEmailHtml(low){
+    const rows = low.map(i =>
+        `<tr>
+            <td style="padding:8px;border:1px solid #ddd;">${escapeHtml(i.name)}</td>
+            <td style="padding:8px;border:1px solid #ddd;">${escapeHtml(i.year)}</td>
+            <td style="padding:8px;border:1px solid #ddd;color:#B94A48;font-weight:700;">${Number(i.unit||0).toLocaleString()}</td>
+        </tr>`
+    ).join("");
+    return `
+        <div style="font-family:sans-serif;max-width:560px;">
+            <h2 style="color:#B94A48;margin:0 0 8px;">⚠️ ជូនដំណឹងស្តុកជិតអស់</h2>
+            <p style="color:#333;">មាន <strong>${low.length}</strong> មុខ Brochure ស្តុកតិចជាង <strong>${LOW_STOCK_THRESHOLD}</strong> ក្បាល។</p>
+            <table style="border-collapse:collapse;width:100%;margin-top:12px;">
+                <thead>
+                    <tr style="background:#F8E3E1;">
+                        <th style="padding:8px;border:1px solid #ddd;text-align:left;">Brochure</th>
+                        <th style="padding:8px;border:1px solid #ddd;text-align:left;">ឆ្នាំ</th>
+                        <th style="padding:8px;border:1px solid #ddd;text-align:left;">នៅសល់</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <p style="color:#68737D;font-size:12px;margin-top:16px;">សារ​នេះ​ផ្ញើ​ស្វ័យប្រវត្តិ​ពី​ប្រព័ន្ធ Brochure Stock Management។</p>
+        </div>
+    `;
+}
+
+function showBrowserLowStockNotification(low){
+    if(!("Notification" in window)) return;
+    if(Notification.permission !== "granted") return;
+    const title = `ស្តុកជិតអស់ — ${low.length} មុខ`;
+    const body = low.slice(0, 5).map(i =>
+        `${i.name} (${i.year}): ${Number(i.unit||0)} ក្បាល`
+    ).join("\n") + (low.length > 5 ? `\n... និង ${low.length - 5} មុខទៀត` : "");
+    try{
+        const n = new Notification(title, {
+            body,
+            icon: "logo_NU.png",
+            tag: "low-stock-alert"
+        });
+        n.onclick = () => {
+            window.focus();
+            goPage("stock");
+            n.close();
+        };
+    }catch(e){
+        console.warn("Browser notification error:", e);
+    }
+}
+
+async function queueLowStockEmail(low){
+    const emails = getAdminNotifyEmails();
+    if(!emails.length){
+        console.warn("No admin notify emails configured.");
+        return { ok: false, reason: "no-email" };
+    }
+    if(!currentUser){
+        return { ok: false, reason: "not-signed-in" };
+    }
+
+    const day = new Date().toISOString().slice(0, 10);
+    const fp = lowStockFingerprint(low);
+    const docId = `lowstock_${day}_${simpleHash(fp)}`;
+    const ref = db.collection("mail").doc(docId);
+
+    try{
+        const existing = await ref.get();
+        if(existing.exists){
+            return { ok: true, reason: "already-queued" };
+        }
+
+        const subject = `[Brochure Stock] ស្តុកជិតអស់ — ${low.length} មុខ (កម្រិត < ${LOW_STOCK_THRESHOLD})`;
+        const textLines = low.map(i =>
+            `- ${i.name} | ${i.year} | នៅសល់ ${Number(i.unit||0)} ក្បាល`
+        ).join("\n");
+
+        await ref.set({
+            to: emails,
+            message: {
+                subject,
+                text: `ជូនដំណឹងស្តុកជិតអស់\n\nមាន ${low.length} មុខ Brochure ស្តុកតិចជាង ${LOW_STOCK_THRESHOLD} ក្បាល។\n\n${textLines}\n`,
+                html: buildLowStockEmailHtml(low)
+            },
+            type: "lowStock",
+            itemCount: low.length,
+            threshold: LOW_STOCK_THRESHOLD,
+            fingerprint: fp,
+            createdAt: Date.now(),
+            createdBy: currentUser.uid,
+            createdByEmail: currentUser.email || ""
+        });
+        return { ok: true, reason: "queued" };
+    }catch(e){
+        console.error("queueLowStockEmail error:", e);
+        return { ok: false, reason: e.message || "error" };
+    }
+}
+
+async function checkAndNotifyLowStock(low){
+    if(!low.length || lowStockNotifyBusy) return;
+
+    const fp = lowStockFingerprint(low);
+    const lastFp = localStorage.getItem("lowStockLastFingerprint") || "";
+    if(fp === lastFp) return;
+
+    // មានការផ្លាស់ប្តូរថ្មីនៃបញ្ជីស្តុកទាប
+    lowStockNotifyBusy = true;
+    try{
+        showBrowserLowStockNotification(low);
+        const result = await queueLowStockEmail(low);
+        if(result.ok){
+            localStorage.setItem("lowStockLastFingerprint", fp);
+            localStorage.setItem("lowStockLastNotifiedAt", String(Date.now()));
+            if(result.reason === "queued"){
+                console.log("Low-stock email queued for admin.");
+            }
+        }else if(result.reason === "no-email"){
+            // នៅតែចង់ាត់ត្រា fingerprint សម្រាប់ browser notif ដើម្បីមិន spam
+            localStorage.setItem("lowStockLastFingerprint", fp);
+        }
+    }finally{
+        lowStockNotifyBusy = false;
+    }
+}
+
 function updateLowStockAlerts(){
-    const low=getLowStockItems();
-    const badge=document.getElementById("lowStockBadge");
+    const low = getLowStockItems();
+    const badge = document.getElementById("lowStockBadge");
     if(badge){
-        if(low.length){badge.style.display="flex";badge.textContent=low.length>99?"99+":String(low.length);}
-        else badge.style.display="none";
-    }
-    const list=document.getElementById("lowStockList");
-    if(list){
-        list.innerHTML=low.length
-            ? low.map(i=>`<div class="notif-item" onclick="goToLowStockItem('${i.id}')"><div><div class="notif-item-name">${escapeHtml(i.name)}</div><div class="notif-item-year">${escapeHtml(i.year)}</div></div><div class="notif-item-qty">${Number(i.unit||0).toLocaleString()} ក្បាល</div></div>`).join("")
-            : `<div class="empty-mini">គ្មានស្តុកជិតអស់ទេ 🎉</div>`;
-    }
-    const dashCard=document.getElementById("lowStockDashCard");
-    if(dashCard){
         if(low.length){
-            dashCard.style.display="block";
-            document.getElementById("lowStockDashList").innerHTML=low.map(i=>`<div class="low-stock-row"><strong>${escapeHtml(i.name)}</strong><span>${escapeHtml(i.year)}</span><div class="low-stock-qty">${Number(i.unit||0).toLocaleString()} ក្បាល នៅសល់</div></div>`).join("");
-            document.getElementById("lowStockDashCount").textContent=low.length;
+            badge.style.display = "flex";
+            badge.textContent = low.length > 99 ? "99+" : String(low.length);
         }else{
-            dashCard.style.display="none";
+            badge.style.display = "none";
         }
     }
+    const list = document.getElementById("lowStockList");
+    if(list){
+        list.innerHTML = low.length
+            ? low.map(i => `<div class="notif-item" onclick="goToLowStockItem('${i.id}')"><div><div class="notif-item-name">${escapeHtml(i.name)}</div><div class="notif-item-year">${escapeHtml(i.year)}</div></div><div class="notif-item-qty">${Number(i.unit||0).toLocaleString()} ក្បាល</div></div>`).join("")
+            : `<div class="empty-mini">គ្មានស្តុកជិតអស់ទេ 🎉</div>`;
+    }
+    const dashCard = document.getElementById("lowStockDashCard");
+    if(dashCard){
+        if(low.length){
+            dashCard.style.display = "block";
+            document.getElementById("lowStockDashList").innerHTML = low.map(i =>
+                `<div class="low-stock-row"><strong>${escapeHtml(i.name)}</strong><span>${escapeHtml(i.year)}</span><div class="low-stock-qty">${Number(i.unit||0).toLocaleString()} ក្បាល នៅសល់</div></div>`
+            ).join("");
+            document.getElementById("lowStockDashCount").textContent = low.length;
+        }else{
+            dashCard.style.display = "none";
+        }
+    }
+
+    // Alert + ផ្ញើ email (មិន spam — តែពេលបញ្ជីផ្លាស់ប្តូរ)
+    if(low.length){
+        checkAndNotifyLowStock(low);
+    }else{
+        localStorage.removeItem("lowStockLastFingerprint");
+    }
 }
+
 function goToLowStockItem(id){
     document.getElementById("lowStockPanel")?.classList.remove("show");
     goPage("stock");
-    const item=items.find(i=>i.id===id);
-    const search=document.getElementById("search");
-    if(search && item){search.value=item.name;renderStock();}
+    const item = items.find(i => i.id === id);
+    const search = document.getElementById("search");
+    if(search && item){
+        search.value = item.name;
+        renderStock();
+    }
+}
+
+function initLowStockSettingsUI(){
+    const thrInput = document.getElementById("lowStockThresholdInput");
+    const emailInput = document.getElementById("adminNotifyEmailsInput");
+    if(thrInput) thrInput.value = String(getLowStockThreshold());
+    if(emailInput) emailInput.value = localStorage.getItem("adminNotifyEmails") || (currentUser?.email || "");
+
+    document.getElementById("btnSaveLowStockSettings")?.addEventListener("click", () => {
+        const thr = Number(document.getElementById("lowStockThresholdInput")?.value);
+        const emails = (document.getElementById("adminNotifyEmailsInput")?.value || "").trim();
+        if(!Number.isFinite(thr) || thr < 1){
+            alert("សូមបញ្ចូលកម្រិតស្តុកត្រឹមត្រូវ (លេខ ≥ 1)។");
+            return;
+        }
+        localStorage.setItem("lowStockThreshold", String(Math.floor(thr)));
+        localStorage.setItem("adminNotifyEmails", emails);
+        LOW_STOCK_THRESHOLD = getLowStockThreshold();
+        // ឲ្យផ្ញើម្តងទៀតបើចាំបាច់
+        localStorage.removeItem("lowStockLastFingerprint");
+        updateLowStockAlerts();
+        alert("បានរក្សាទុកការកំណត់ស្តុកជិតអស់។");
+    });
+
+    document.getElementById("btnEnableBrowserNotif")?.addEventListener("click", async () => {
+        if(!("Notification" in window)){
+            alert("Browser នេះមិនគាំទ្រ Notification ទេ។");
+            return;
+        }
+        const perm = await Notification.requestPermission();
+        if(perm === "granted"){
+            alert("បានបើក Browser Notification រួចហើយ។");
+            const low = getLowStockItems();
+            if(low.length) showBrowserLowStockNotification(low);
+        }else{
+            alert("អ្នកមិនអនុញ្ញាត Notification។ អាចបើកវិញក្នុង Settings របស់ browser។");
+        }
+    });
 }
 
 
@@ -6839,30 +7257,146 @@ function updateReports(){
         )
         : 0;
 
+    const stockOutUnits = stockOuts.reduce((s,x) => s + Number(x.quantity || 0), 0);
 
-    document.getElementById(
-        "reportItems"
-    ).textContent =
-        totalItems.toLocaleString();
+    const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = val;
+    };
 
+    setText("reportItems", totalItems.toLocaleString());
+    setText("reportUnits", totalUnits.toLocaleString());
+    setText("reportYears", String(yearCount));
+    setText("reportAverage", average.toLocaleString());
+    setText("reportStockOutCount", stockOuts.length.toLocaleString());
+    setText("reportStockOutUnits", stockOutUnits.toLocaleString());
 
-    document.getElementById(
-        "reportUnits"
-    ).textContent =
-        totalUnits.toLocaleString();
+    // --- ផ្នែកយកច្រើនបំផុត ---
+    const depMap = {};
+    stockOuts.forEach(x => {
+        const key = x.departmentId || x.departmentName || "—";
+        if(!depMap[key]){
+            depMap[key] = {
+                name: x.departmentName || "—",
+                qty: 0,
+                times: 0
+            };
+        }
+        depMap[key].qty += Number(x.quantity || 0);
+        depMap[key].times += 1;
+    });
+    const depRank = Object.values(depMap).sort((a,b) => b.qty - a.qty).slice(0, 15);
+    const depEl = document.getElementById("reportByDepartment");
+    if(depEl){
+        depEl.innerHTML = depRank.length
+            ? depRank.map((d, i) => `
+                <div class="report-rank">
+                    <div class="report-rank-num ${i < 3 ? "top" : ""}">${i + 1}</div>
+                    <div class="report-rank-info">
+                        <strong>${escapeHtml(d.name)}</strong>
+                        <span>${d.times.toLocaleString()} ដង</span>
+                    </div>
+                    <div class="report-rank-qty">${d.qty.toLocaleString()} ក្បាល</div>
+                </div>
+            `).join("")
+            : `<div class="empty-mini" style="padding:20px;">មិនទាន់មានទិន្នន័យ Stock Out</div>`;
+    }
 
+    // --- និយោជិតយកញឹកញាប់ ---
+    const empMap = {};
+    stockOuts.forEach(x => {
+        const key = (x.employeeId || x.employeeName || "—") + "|" + (x.departmentName || "");
+        if(!empMap[key]){
+            empMap[key] = {
+                name: x.employeeName || "—",
+                dept: x.departmentName || "—",
+                qty: 0,
+                times: 0
+            };
+        }
+        empMap[key].qty += Number(x.quantity || 0);
+        empMap[key].times += 1;
+    });
+    const empRank = Object.values(empMap).sort((a,b) => {
+        if(b.times !== a.times) return b.times - a.times;
+        return b.qty - a.qty;
+    }).slice(0, 15);
+    const empEl = document.getElementById("reportByEmployee");
+    if(empEl){
+        empEl.innerHTML = empRank.length
+            ? empRank.map((e, i) => `
+                <div class="report-rank">
+                    <div class="report-rank-num ${i < 3 ? "top" : ""}">${i + 1}</div>
+                    <div class="report-rank-info">
+                        <strong>${escapeHtml(e.name)}</strong>
+                        <span>${escapeHtml(e.dept)} · ${e.times.toLocaleString()} ដង</span>
+                    </div>
+                    <div class="report-rank-qty">${e.qty.toLocaleString()} ក្បាល</div>
+                </div>
+            `).join("")
+            : `<div class="empty-mini" style="padding:20px;">មិនទាន់មានទិន្នន័យ Stock Out</div>`;
+    }
+}
 
-    document.getElementById(
-        "reportYears"
-    ).textContent =
-        yearCount;
+/* =====================================================
+   BACKUP JSON
+===================================================== */
+async function backupAllDataJson(){
+    const btn = document.getElementById("btnBackupJson");
+    const original = btn ? btn.innerHTML : "";
+    if(btn){
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងនាំចេញ...';
+    }
+    try{
+        // ប្រើទិន្នន័យក្នុង memory + ទាញ audit logs ចុងក្រោយ
+        let audits = typeof auditLogs !== "undefined" ? auditLogs : [];
+        try{
+            const snap = await db.collection("auditLogs").orderBy("createdAt","desc").limit(500).get();
+            audits = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        }catch(e){
+            console.warn("Could not refresh audit logs for backup:", e);
+        }
 
+        const payload = {
+            exportedAt: new Date().toISOString(),
+            app: "Brochure Stock Management",
+            counts: {
+                brochureItems: items.length,
+                stockIns: stockIns.length,
+                stockOuts: stockOuts.length,
+                departments: departments.length,
+                auditLogs: audits.length
+            },
+            data: {
+                brochureItems: items,
+                stockIns: stockIns,
+                stockOuts: stockOuts,
+                departments: departments,
+                auditLogs: audits
+            }
+        };
 
-    document.getElementById(
-        "reportAverage"
-    ).textContent =
-        average.toLocaleString();
-
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g, "-");
+        a.href = url;
+        a.download = `brochure-stock-backup-${stamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        alert("បាននាំចេញ Backup JSON រួចហើយ។");
+    }catch(e){
+        console.error(e);
+        alert("មិនអាចនាំចេញ Backup បានទេ។");
+    }finally{
+        if(btn){
+            btn.disabled = false;
+            btn.innerHTML = original || '<i class="fa-solid fa-download"></i> Download Backup';
+        }
+    }
 }
 
 
@@ -6939,7 +7473,10 @@ document
 .getElementById("search")
 .addEventListener(
     "input",
-    renderStock
+    () => {
+        tableState.stock.page = 1;
+        renderStock();
+    }
 );
 
 
@@ -6985,7 +7522,7 @@ document.getElementById("btnCancelStockOut")?.addEventListener("click",closeStoc
 document.getElementById("btnSaveStockOut")?.addEventListener("click",saveStockOut);
 document.getElementById("soBrochure")?.addEventListener("change",updateStockOutBrochureInfo);
 document.getElementById("soDepartment")?.addEventListener("change",updateStockOutEmployees);
-document.getElementById("stockOutSearch")?.addEventListener("input",renderStockOut);
+document.getElementById("stockOutSearch")?.addEventListener("input",()=>{tableState.stockOut.page=1;renderStockOut();});
 document.getElementById("stockOutOverlay")?.addEventListener("click",e=>{if(e.target.id==="stockOutOverlay")closeStockOutModal();});
 document.getElementById("btnAddStockIn")?.addEventListener("click",()=>openStockInModal());
 document.getElementById("btnCancelStockIn")?.addEventListener("click",closeStockInModal);
@@ -6993,7 +7530,8 @@ document.getElementById("btnSaveStockIn")?.addEventListener("click",saveStockIn)
 document.getElementById("siModeExisting")?.addEventListener("click",()=>setSiMode("existing"));
 document.getElementById("siModeNew")?.addEventListener("click",()=>setSiMode("new"));
 document.getElementById("siBrochureSelect")?.addEventListener("change",updateStockInBrochureInfo);
-document.getElementById("stockInSearch")?.addEventListener("input",renderStockIn);
+document.getElementById("stockInSearch")?.addEventListener("input",()=>{tableState.stockIn.page=1;renderStockIn();});
+document.getElementById("btnBackupJson")?.addEventListener("click",backupAllDataJson);
 document.getElementById("stockInOverlay")?.addEventListener("click",e=>{if(e.target.id==="stockInOverlay")closeStockInModal();});
 document.getElementById("lowStockBtn")?.addEventListener("click",e=>{e.stopPropagation();document.getElementById("lowStockPanel")?.classList.toggle("show");});
 document.addEventListener("click",e=>{const wrap=document.getElementById("notifWrap");if(wrap && !wrap.contains(e.target))document.getElementById("lowStockPanel")?.classList.remove("show");});
@@ -7163,6 +7701,8 @@ function renderAuditLog(){
     document.getElementById("auditSearch")?.addEventListener("input", renderAuditLog);
     document.getElementById("auditActionFilter")?.addEventListener("change", renderAuditLog);
     document.getElementById("auditEntityFilter")?.addEventListener("change", renderAuditLog);
+
+    initLowStockSettingsUI();
 })();
 
 /* ESC CLOSE MODAL */
