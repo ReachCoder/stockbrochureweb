@@ -1533,7 +1533,7 @@ body.dark .department-card-head h3{color:#B8D8C7;}
     align-items:center;
     justify-content:center;
 
-    padding:12px;
+    padding:20px;
 
     z-index:500;
 
@@ -1559,8 +1559,7 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 
 .modal{
     width:100%;
-    max-width:460px;
-    max-height:min(90vh, 680px);
+    max-width:430px;
 
     background:var(--card);
 
@@ -1568,64 +1567,12 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 
     border-radius:15px;
 
-    padding:18px 20px 14px;
+    padding:23px;
 
     box-shadow:
         0 25px 60px rgba(0,0,0,.25);
 
     animation:modalIn .35s ease;
-
-    overflow-y:auto;
-    overflow-x:hidden;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
-}
-
-.modal .modal-actions{
-    position:sticky;
-    bottom:0;
-    z-index:2;
-    background:var(--card);
-    margin-top:12px !important;
-    padding-top:12px;
-    border-top:1px solid var(--border);
-}
-
-.modal .field{
-    margin-bottom:10px;
-}
-
-.modal .stock-info-box{
-    margin-bottom:10px;
-}
-
-.modal .image-preview{
-    width:64px;
-    height:64px;
-}
-
-.stock-info-box.with-image{display:flex;align-items:center;gap:12px;}
-.stock-info-box .modal-brochure-thumb{
-    width:56px;height:56px;object-fit:contain;border-radius:8px;
-    border:1px solid var(--border);background:var(--card2);flex-shrink:0;cursor:zoom-in;
-}
-.stock-info-box .modal-brochure-placeholder{
-    width:56px;height:56px;border-radius:8px;border:1px dashed var(--border);
-    background:var(--card2);color:var(--text-soft);display:flex;align-items:center;
-    justify-content:center;flex-shrink:0;font-size:18px;
-}
-.data-table-wrap .brochure-thumb{width:52px;height:52px;}
-.data-table-wrap .brochure-placeholder{width:52px;height:52px;font-size:16px;}
-.data-table-wrap .brochure-image-cell{width:60px;}
-
-@media(max-width:500px){
-    .overlay{padding:8px;align-items:flex-end;}
-    .modal{
-        max-height:92vh;
-        max-width:100%;
-        border-radius:14px 14px 8px 8px;
-        padding:14px 14px 12px;
-    }
 }
 
 @keyframes modalIn{
@@ -1642,15 +1589,12 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 }
 
 .modal h2{
-    margin:0 0 12px;
-    padding-bottom:10px;
-    border-bottom:1px solid var(--border);
-    position:sticky;
-    top:0;
-    z-index:2;
-    background:var(--card);
+    margin:0 0 18px;
+
     font-family:'Moul';
+
     font-size:18px;
+
     color:var(--primary-dark);
 }
 
@@ -2231,12 +2175,253 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
 
 
 
+
+/* =========================
+   LOGIN / AUTH
+========================= */
+.login-screen{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:
+        linear-gradient(135deg, #173A2A 0%, #2F6D4C 45%, #204C36 100%);
+}
+.login-screen.hidden{display:none;}
+.login-card{
+    width:100%;
+    max-width:400px;
+    background:#FFFDF6;
+    border-radius:16px;
+    padding:28px 26px 24px;
+    box-shadow:0 25px 60px rgba(0,0,0,.28);
+    border:1px solid #D3C393;
+}
+body.dark .login-card{
+    background:#18221F;
+    border-color:#34453E;
+}
+.login-logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+}
+.login-logo img{
+    width:48px;height:48px;object-fit:contain;border-radius:10px;
+}
+.login-logo h1{
+    margin:0;
+    font-family:'Moul',serif;
+    font-size:18px;
+    color:#204C36;
+}
+body.dark .login-logo h1{color:#B8D8C7;}
+.login-logo p{
+    margin:2px 0 0;
+    font-size:12px;
+    color:#68737D;
+}
+.login-card h2{
+    margin:0 0 6px;
+    font-family:'Moul',serif;
+    font-size:16px;
+    color:#204C36;
+}
+body.dark .login-card h2{color:#B8D8C7;}
+.login-hint{
+    font-size:12px;
+    color:#68737D;
+    margin-bottom:16px;
+}
+.login-field{margin-bottom:12px;}
+.login-field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:#68737D;
+    margin-bottom:5px;
+}
+.login-field input{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid #D3C393;
+    border-radius:9px;
+    background:#fff;
+    color:#26323D;
+    font-family:'Kantumruy Pro',sans-serif;
+    outline:none;
+}
+body.dark .login-field input{
+    background:#202D29;
+    border-color:#34453E;
+    color:#ECF4EF;
+}
+.login-field input:focus{
+    border-color:#2F6D4C;
+    box-shadow:0 0 0 3px rgba(47,109,76,.15);
+}
+.login-err{
+    display:none;
+    color:#B94A48;
+    font-size:12px;
+    margin-bottom:10px;
+    padding:8px 10px;
+    background:#F8E3E1;
+    border-radius:8px;
+}
+.login-err.show{display:block;}
+.login-btn{
+    width:100%;
+    border:none;
+    background:#2F6D4C;
+    color:#fff;
+    padding:12px;
+    border-radius:9px;
+    font-family:'Kantumruy Pro',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:4px;
+    transition:.2s;
+}
+.login-btn:hover{background:#204C36;}
+.login-btn:disabled{opacity:.65;cursor:not-allowed;}
+.login-btn.google{
+    background:#fff;
+    color:#26323D;
+    border:1px solid #D3C393;
+    margin-top:10px;
+}
+body.dark .login-btn.google{
+    background:#202D29;
+    color:#ECF4EF;
+    border-color:#34453E;
+}
+.login-btn.google:hover{background:#E4F0E9;}
+body.dark .login-btn.google:hover{background:#263B31;}
+.login-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:14px 0 4px;
+    color:#68737D;
+    font-size:11px;
+}
+.login-divider::before,
+.login-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#D3C393;
+}
+body.dark .login-divider::before,
+body.dark .login-divider::after{background:#34453E;}
+.app.auth-locked{display:none !important;}
+.user-chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 10px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:var(--card);
+    font-size:12px;
+    max-width:200px;
+}
+.user-chip strong{
+    display:block;
+    font-size:12px;
+    color:var(--primary-dark);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:140px;
+}
+body.dark .user-chip strong{color:#B8D8C7;}
+.user-chip small{
+    color:var(--text-soft);
+    font-size:10px;
+}
+.role-badge{
+    display:inline-block;
+    padding:2px 7px;
+    border-radius:6px;
+    font-size:10px;
+    font-weight:700;
+}
+.role-badge.admin{background:#E4F0E9;color:#2F6D4C;}
+.role-badge.staff{background:#FFF3CD;color:#856404;}
+body.dark .role-badge.admin{background:#263B31;color:#B8D8C7;}
+body.dark .role-badge.staff{background:#3A3520;color:#E6C876;}
+/* Staff: លាក់ប៊ូតុងកែ/លុប/បន្ថែម */
+body.role-staff .admin-only,
+body.role-staff .btn-add,
+body.role-staff .action-btn.delete,
+body.role-staff .action-btn.withdraw,
+body.role-staff .action-btn.stockin,
+body.role-staff button.action-btn:not(.view-only){
+    /* keep edit hidden for staff - hide pen too */
+}
+body.role-staff .btn-add,
+body.role-staff #btnAddStockOut,
+body.role-staff #btnAddStockIn,
+body.role-staff #btnAddDepartment,
+body.role-staff #btnAddEmployee,
+body.role-staff .action-btn,
+body.role-staff #btnSaveOperator,
+body.role-staff .admin-only{
+    display:none !important;
+}
+body.role-staff .export-wrap,
+body.role-staff #btnPrintStock{
+    /* staff can export/print - keep */
+}
+
+
 </style>
 </head>
 
 <body>
 
-<div class="app">
+
+<!-- =====================================================
+     LOGIN SCREEN
+===================================================== -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <div class="login-logo">
+            <img src="logo_NU.png" alt="Logo">
+            <div>
+                <h1>Brochure Stock</h1>
+                <p>ប្រព័ន្ធគ្រប់គ្រងស្តុក</p>
+            </div>
+        </div>
+        <h2>ចូលប្រើប្រព័ន្ធ</h2>
+        <p class="login-hint">សូម Login ដើម្បីមើល និងគ្រប់គ្រងទិន្នន័យ</p>
+        <div class="login-err" id="loginErr"></div>
+        <div class="login-field">
+            <label>អ៊ីមែល</label>
+            <input type="email" id="loginEmail" placeholder="name@example.com" autocomplete="username">
+        </div>
+        <div class="login-field">
+            <label>ពាក្យសម្ងាត់</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="login-btn" id="btnLoginEmail" type="button">
+            <i class="fa-solid fa-right-to-bracket"></i> ចូលប្រើ (Email)
+        </button>
+        <div class="login-divider">ឬ</div>
+        <button class="login-btn google" id="btnLoginGoogle" type="button">
+            <i class="fa-brands fa-google"></i> ចូលជាមួយ Google
+        </button>
+    </div>
+</div>
+
+<div class="app auth-locked" id="appRoot">
 
 <!-- =====================================================
      SIDEBAR
@@ -2390,6 +2575,17 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
 
 
     <div class="top-actions">
+
+        <div class="user-chip" id="userChip" title="អ្នកកំពុងប្រើ">
+            <div>
+                <strong id="userChipName">—</strong>
+                <small><span class="role-badge" id="userRoleBadge">—</span></small>
+            </div>
+        </div>
+
+        <button class="icon-top-btn" id="logoutBtn" title="ចាកចេញ">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
 
         <div class="notif-wrap" id="notifWrap">
 
@@ -3152,18 +3348,6 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
             <input type="text" id="siYearNew" placeholder="ឧ. 2026">
         </div>
 
-        <div class="field" id="siNewImageWrap" style="display:none">
-            <label>រូបភាព Brochure</label>
-            <input type="file" id="siImageNew" accept="image/*">
-            <div class="image-preview-wrap">
-                <img id="siImagePreview" class="image-preview" alt="Brochure preview">
-                <div class="image-help">
-                    ជ្រើសរើសរូបភាព Brochure (ស្រេចចិត្ត)។<br>
-                    ប្រព័ន្ធនឹង upload ទៅ Cloudinary ដោយស្វ័យប្រវត្តិ។
-                </div>
-            </div>
-        </div>
-
         <div class="field" id="siExistingYearWrap">
             <label>ឆ្នាំ</label>
             <input type="text" id="siYear" readonly placeholder="ឆ្នាំនឹងបង្ហាញដោយស្វ័យប្រវត្តិ">
@@ -3342,7 +3526,7 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
 ===================================================== -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.0/firebase-app-compat.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.0/firebase-auth-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.0/firebase-firestore-compat.min.js"></script>
 
 
@@ -3380,9 +3564,221 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 const COLLECTION = "brochureItems";
+const USERS_COLLECTION = "users";
 
+/* =====================================================
+   AUTH STATE
+===================================================== */
+let currentUser = null;          // Firebase User
+let currentUserProfile = null;   // { role, displayName, email, ... }
+let authReady = false;
+let dataListenersStarted = false;
+
+function isAdmin(){
+    return currentUserProfile?.role === "admin";
+}
+function isStaff(){
+    return currentUserProfile?.role === "staff";
+}
+function requireAdmin(actionLabel){
+    if(!isAdmin()){
+        alert("អ្នកមិនមានសិទ្ធិ" + (actionLabel ? " " + actionLabel : "") + "។\nត្រូវការ role Admin។");
+        return false;
+    }
+    return true;
+}
+
+function showLoginError(msg){
+    const el = document.getElementById("loginErr");
+    if(!el) return;
+    if(msg){
+        el.textContent = msg;
+        el.classList.add("show");
+    }else{
+        el.textContent = "";
+        el.classList.remove("show");
+    }
+}
+
+function setLoginLoading(loading){
+    const b1 = document.getElementById("btnLoginEmail");
+    const b2 = document.getElementById("btnLoginGoogle");
+    if(b1){ b1.disabled = !!loading; b1.innerHTML = loading ? '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងចូល...' : '<i class="fa-solid fa-right-to-bracket"></i> ចូលប្រើ (Email)'; }
+    if(b2){ b2.disabled = !!loading; }
+}
+
+async function ensureUserProfile(user){
+    const ref = db.collection(USERS_COLLECTION).doc(user.uid);
+    const snap = await ref.get();
+    if(snap.exists){
+        return { id: user.uid, ...snap.data() };
+    }
+    // អ្នកប្រើថ្មី — បង្កើតជា staff (Admin ត្រូវកែ role ក្នុង Firestore)
+    const profile = {
+        email: user.email || "",
+        displayName: user.displayName || (user.email ? user.email.split("@")[0] : "User"),
+        role: "staff",
+        createdAt: Date.now()
+    };
+    try{
+        await ref.set(profile, { merge: true });
+    }catch(e){
+        console.warn("Could not create user profile (check Firestore rules):", e);
+        // បើ rules មិនអនុញ្ញាត នៅតែប្រើ profile មូលដ្ឋានក្នុង memory
+    }
+    return { id: user.uid, ...profile };
+}
+
+function applyRoleUI(){
+    document.body.classList.toggle("role-staff", isStaff());
+    document.body.classList.toggle("role-admin", isAdmin());
+
+    const badge = document.getElementById("userRoleBadge");
+    const nameEl = document.getElementById("userChipName");
+    if(nameEl){
+        nameEl.textContent = currentUserProfile?.displayName
+            || currentUser?.displayName
+            || currentUser?.email
+            || "—";
+    }
+    if(badge){
+        const role = currentUserProfile?.role || "staff";
+        badge.textContent = role === "admin" ? "Admin" : "Staff";
+        badge.className = "role-badge " + (role === "admin" ? "admin" : "staff");
+    }
+
+    // sync operator name for audit
+    const opName = currentUserProfile?.displayName
+        || currentUser?.displayName
+        || currentUser?.email
+        || "";
+    if(opName){
+        try{ localStorage.setItem("operatorName", opName); }catch(_){}
+        const opInput = document.getElementById("operatorNameInput");
+        if(opInput && !opInput.value) opInput.value = opName;
+    }
+}
+
+function showApp(){
+    document.getElementById("loginScreen")?.classList.add("hidden");
+    document.getElementById("appRoot")?.classList.remove("auth-locked");
+}
+
+function showLogin(){
+    document.getElementById("loginScreen")?.classList.remove("hidden");
+    document.getElementById("appRoot")?.classList.add("auth-locked");
+}
+
+async function loginWithEmail(){
+    showLoginError("");
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const password = document.getElementById("loginPassword")?.value || "";
+    if(!email || !password){
+        showLoginError("សូមបញ្ចូលអ៊ីមែល និងពាក្យសម្ងាត់។");
+        return;
+    }
+    setLoginLoading(true);
+    try{
+        await auth.signInWithEmailAndPassword(email, password);
+    }catch(e){
+        console.error(e);
+        const code = e.code || "";
+        if(code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found"){
+            showLoginError("អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។");
+        }else if(code === "auth/too-many-requests"){
+            showLoginError("ព្យាយាមច្រើនពេក។ សូមរង់ចាំបន្តិច។");
+        }else if(code === "auth/invalid-email"){
+            showLoginError("ទម្រង់អ៊ីមែលមិនត្រឹមត្រូវ។");
+        }else{
+            showLoginError("Login មិនជោគជ័យ៖ " + (e.message || code));
+        }
+        setLoginLoading(false);
+    }
+}
+
+async function loginWithGoogle(){
+    showLoginError("");
+    setLoginLoading(true);
+    try{
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithPopup(provider);
+    }catch(e){
+        console.error(e);
+        if(e.code === "auth/popup-closed-by-user"){
+            showLoginError("បានបិទหน้าต่าง Google Login។");
+        }else if(e.code === "auth/unauthorized-domain"){
+            showLoginError("Domain នេះមិនទាន់អនុញ្ញាតក្នុង Firebase Auth។ សូមបន្ថែម domain ក្នុង Firebase Console។");
+        }else{
+            showLoginError("Google Login មិនជោគជ័យ៖ " + (e.message || e.code || ""));
+        }
+        setLoginLoading(false);
+    }
+}
+
+async function logoutUser(){
+    try{
+        await auth.signOut();
+    }catch(e){
+        console.error(e);
+        alert("មិនអាចចាកចេញបានទេ។");
+    }
+}
+
+function startDataListenersOnce(){
+    if(dataListenersStarted) return;
+    dataListenersStarted = true;
+    listenItems();
+    listenDepartments();
+    listenStockOuts();
+    listenStockIns();
+    listenAuditLogs();
+}
+
+function initAuth(){
+    document.getElementById("btnLoginEmail")?.addEventListener("click", loginWithEmail);
+    document.getElementById("btnLoginGoogle")?.addEventListener("click", loginWithGoogle);
+    document.getElementById("logoutBtn")?.addEventListener("click", () => {
+        if(confirm("តើអ្នកចង់ចាកចេញពីប្រព័ន្ធមែនទេ?")) logoutUser();
+    });
+    document.getElementById("loginPassword")?.addEventListener("keydown", e => {
+        if(e.key === "Enter") loginWithEmail();
+    });
+    document.getElementById("loginEmail")?.addEventListener("keydown", e => {
+        if(e.key === "Enter") document.getElementById("loginPassword")?.focus();
+    });
+
+    auth.onAuthStateChanged(async (user) => {
+        authReady = true;
+        if(!user){
+            currentUser = null;
+            currentUserProfile = null;
+            dataListenersStarted = false;
+            document.body.classList.remove("role-staff", "role-admin");
+            showLogin();
+            setLoginLoading(false);
+            return;
+        }
+        currentUser = user;
+        try{
+            currentUserProfile = await ensureUserProfile(user);
+        }catch(e){
+            console.error(e);
+            currentUserProfile = {
+                id: user.uid,
+                email: user.email || "",
+                displayName: user.displayName || user.email || "User",
+                role: "staff"
+            };
+        }
+        applyRoleUI();
+        showApp();
+        setLoginLoading(false);
+        startDataListenersOnce();
+    });
+}
 
 /* =====================================================
    GLOBAL
@@ -3755,6 +4151,8 @@ async function updateItem(id,data){
 
 async function deleteItem(id){
 
+    if(!requireAdmin("លុប Brochure")) return;
+
     const item =
         items.find(x => x.id === id);
 
@@ -3804,6 +4202,8 @@ async function deleteItem(id){
 ===================================================== */
 
 function openModal(item=null){
+
+    if(!requireAdmin(item ? "កែ Brochure" : "បន្ថែម Brochure")) return;
 
     editingId =
         item ? item.id : null;
@@ -4008,6 +4408,8 @@ async function uploadImageToCloudinary(file){
 ===================================================== */
 
 async function saveForm(){
+
+    if(!requireAdmin("រក្សាទុក Brochure")) return;
 
     const name =
         document
@@ -4670,6 +5072,7 @@ function updateStockOutEmployees(){
     select.disabled=!depId || !employees.length;
 }
 function openDepartmentModal(mode="department"){
+    if(!requireAdmin("គ្រប់គ្រង Department")) return;
     departmentModalMode=mode;
     const title=document.getElementById("departmentModalTitle");
     const nameField=document.getElementById("departmentNameField");
@@ -4724,6 +5127,8 @@ async function saveDepartmentForm(){
     }catch(e){console.error(e);err.textContent=e.message||"មិនអាចរក្សាទុកបានទេ។";err.classList.add("show");}
 }
 async function deleteEmployee(departmentId,employeeId){
+    if(!requireAdmin("លុបបុគ្គលិក")) return;
+
     const dep=departments.find(d=>d.id===departmentId);if(!dep)return;
     const emp=(dep.employees||[]).find(e=>e.id===employeeId);if(!emp)return;
     if(!confirm(`តើអ្នកចង់លុបបុគ្គលិក "${emp.name}" ពីផ្នែក "${dep.name}" មែនទេ?`))return;
@@ -4739,6 +5144,8 @@ async function deleteEmployee(departmentId,employeeId){
     }catch(e){console.error(e);alert("មិនអាចលុបបុគ្គលិកបានទេ។");}
 }
 async function deleteDepartment(id){
+    if(!requireAdmin("លុប Department")) return;
+
     const dep=departments.find(d=>d.id===id);if(!dep)return;
     if(!confirm(`តើអ្នកចង់លុបផ្នែក "${dep.name}" មែនទេ?`))return;
     try{
@@ -4763,35 +5170,6 @@ function renderDepartments(){
 ===================================================== */
 function todayISO(){const d=new Date(),o=d.getTimezoneOffset();return new Date(d.getTime()-o*60000).toISOString().slice(0,10);}
 function formatDateDisplay(v){if(!v)return "-";const p=String(v).split("-");return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:v;}
-
-/** រូប Brochure តាម brochureId */
-function getBrochureImageCell(brochureId, brochureName){
-    const item = items.find(i => i.id === brochureId);
-    const name = brochureName || item?.name || "Brochure";
-    if(item?.image){
-        return `<td class="brochure-image-cell">
-            <img class="brochure-thumb"
-                src="${escapeHtml(item.image)}"
-                alt="${escapeHtml(name)}"
-                title="ចុចដើម្បីមើលរូប Full Size"
-                onclick='viewImage(${JSON.stringify(item.image)}, ${JSON.stringify(name)})'>
-        </td>`;
-    }
-    return `<td class="brochure-image-cell">
-        <div class="brochure-placeholder" title="មិនទាន់មានរូបភាព">
-            <i class="fa-solid fa-image"></i>
-        </div>
-    </td>`;
-}
-
-function brochureInfoWithImage(item, textHtml){
-    if(!item) return textHtml;
-    const imgPart = item.image
-        ? `<img class="modal-brochure-thumb" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name||'')}" title="ចុចដើម្បីមើល Full Size" onclick='viewImage(${JSON.stringify(item.image)}, ${JSON.stringify(item.name||"Brochure")})'>`
-        : `<div class="modal-brochure-placeholder"><i class="fa-solid fa-image"></i></div>`;
-    return `${imgPart}<div>${textHtml}</div>`;
-}
-
 function populateStockOutBrochures(selectedId="",fallbackLabel=""){
     const s=document.getElementById("soBrochure");if(!s)return;const current=selectedId||s.value;
     let html=`<option value="">-- ជ្រើសរើស Brochure --</option>`+[...items].sort((a,b)=>String(a.name).localeCompare(String(b.name))).map(i=>`<option value="${escapeHtml(i.id)}">${escapeHtml(i.name)} — ${escapeHtml(i.year)} (ស្តុក ${Number(i.unit||0).toLocaleString()})</option>`).join("");
@@ -4818,6 +5196,7 @@ function updateStockOutBrochureInfo(){
     year.value=item.year||"";info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
 }
 function openStockOutModal(brochureId=""){
+    if(!requireAdmin("Stock Out")) return;
     if(!items.length){alert("មិនទាន់មាន Brochure ក្នុងស្តុកទេ។");return;}
     stockOutEditingId=null;
     document.getElementById("stockOutModalTitle").textContent="បន្ថែម Stock Out";
@@ -4829,6 +5208,8 @@ function openStockOutModal(brochureId=""){
     document.getElementById("stockOutOverlay").classList.add("show");
 }
 function openEditStockOutModal(id){
+    if(!requireAdmin("កែ Stock Out")) return;
+
     const record=stockOuts.find(x=>x.id===id);
     if(!record){alert("រកមិនឃើញប្រតិបត្តិការនេះទេ។");return;}
     stockOutEditingId=id;
@@ -4941,6 +5322,8 @@ async function updateStockOut(recordId,data,err,item,dep,emp){
     }
 }
 async function deleteStockOut(id){
+    if(!requireAdmin("លុប Stock Out")) return;
+
     const record=stockOuts.find(x=>x.id===id);
     if(!record){alert("រកមិនឃើញប្រតិបត្តិការនេះទេ។");return;}
     const ok=confirm(`តើអ្នកចង់លុបប្រតិបត្តិការនេះមែនទេ?\n\nBrochure: ${record.brochureName}\nផ្នែក: ${record.departmentName}\nចំនួនយកចេញ: ${Number(record.quantity||0).toLocaleString()} ក្បាល\n\nស្តុកនឹងត្រូវបានបន្ថែមមកវិញដោយស្វ័យប្រវត្តិ។`);
@@ -4974,7 +5357,7 @@ function renderStockOut(){
     const list=q?stockOuts.filter(x=>[x.date,x.brochureName,x.year,x.departmentName,x.employeeName].some(v=>String(v||"").toLowerCase().includes(q))):stockOuts;
     const total=list.reduce((a,x)=>a+Number(x.quantity||0),0);
     if(!list.length){c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ស្ថានភាព</small><strong>—</strong></div></div><div class="empty"><i class="fa-solid fa-arrow-up-from-bracket"></i><h3>មិនទាន់មាន Stock Out</h3><p>ចុច "បន្ថែម Stock Out" ដើម្បីកត់ត្រាការយក Brochure ចេញ។</p></div>`;return;}
-    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>រូបភាព</th><th>ថ្ងៃយកចេញ</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ផ្នែក</th><th>ឈ្មោះអ្នកយក</th><th>ចំនួនយកចេញ</th><th>សកម្មភាព</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td>${getBrochureImageCell(x.brochureId, x.brochureName)}<td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>`;
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>ថ្ងៃយកចេញ</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ផ្នែក</th><th>ឈ្មោះអ្នកយក</th><th>ចំនួនយកចេញ</th><th>សកម្មភាព</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>`;
 }
 
 
@@ -4989,7 +5372,6 @@ function setSiMode(mode){
     const existingYearWrap=document.getElementById("siExistingYearWrap");
     const newNameWrap=document.getElementById("siNewNameWrap");
     const newYearWrap=document.getElementById("siNewYearWrap");
-    const newImageWrap=document.getElementById("siNewImageWrap");
     const info=document.getElementById("siStockInfo");
 
     btnExisting?.classList.toggle("active",mode==="existing");
@@ -5000,18 +5382,13 @@ function setSiMode(mode){
         existingYearWrap.style.display="block";
         newNameWrap.style.display="none";
         newYearWrap.style.display="none";
-        if(newImageWrap) newImageWrap.style.display="none";
         updateStockInBrochureInfo();
     }else{
         existingWrap.style.display="none";
         existingYearWrap.style.display="none";
         newNameWrap.style.display="block";
         newYearWrap.style.display="block";
-        if(newImageWrap) newImageWrap.style.display="block";
-        if(info){
-            info.classList.remove("with-image");
-            info.innerHTML="Brochure ថ្មីនឹងត្រូវបានបង្កើតដោយស្វ័យប្រវត្តិ ព្រមជាមួយការបញ្ចូលស្តុកលើកដំបូង។";
-        }
+        if(info) info.innerHTML="Brochure ថ្មីនឹងត្រូវបានបង្កើតដោយស្វ័យប្រវត្តិ ព្រមជាមួយការបញ្ចូលស្តុកលើកដំបូង។";
     }
 }
 function populateStockInBrochures(selectedId="",fallbackLabel=""){
@@ -5040,14 +5417,12 @@ function updateStockInBrochureInfo(){
     year.value=item.year||"";info.innerHTML=`ស្តុកបច្ចុប្បន្ន: <strong>${Number(item.unit||0).toLocaleString()} ក្បាល</strong>`;
 }
 function openStockInModal(brochureId=""){
+    if(!requireAdmin("Stock In")) return;
     stockInEditingId=null;
     document.getElementById("stockInModalTitle").textContent="បន្ថែម Stock In";
     document.getElementById("btnSaveStockIn").innerHTML=`<i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Stock In`;
     document.getElementById("siDate").value=todayISO();document.getElementById("siQuantity").value="";document.getElementById("siNote").value="";
     document.getElementById("siBrochureNameNew").value="";document.getElementById("siYearNew").value="";
-    const siImg=document.getElementById("siImageNew"); if(siImg) siImg.value="";
-    const siPrev=document.getElementById("siImagePreview");
-    if(siPrev){ siPrev.removeAttribute("src"); siPrev.style.display="none"; }
     document.getElementById("stockInErr").classList.remove("show");document.getElementById("stockInErr").textContent="";
     document.getElementById("siModeField").style.display="block";
     setSiMode("existing");
@@ -5056,6 +5431,8 @@ function openStockInModal(brochureId=""){
     document.getElementById("stockInOverlay").classList.add("show");
 }
 function openEditStockInModal(id){
+    if(!requireAdmin("កែ Stock In")) return;
+
     const record=stockIns.find(x=>x.id===id);
     if(!record){alert("រកមិនឃើញប្រតិបត្តិការនេះទេ។");return;}
     stockInEditingId=id;
@@ -5092,9 +5469,8 @@ async function saveStockIn(){
     if(siMode==="new"){
         const name=document.getElementById("siBrochureNameNew").value.trim();
         const year=document.getElementById("siYearNew").value.trim();
-        const imageFile=document.getElementById("siImageNew")?.files?.[0] || null;
         if(!date||!name||!year||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, ឈ្មោះ Brochure ថ្មី, ឆ្នាំ និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
-        await createStockInNewBrochure({date,name,year,quantity,note,imageFile},err);
+        await createStockInNewBrochure({date,name,year,quantity,note},err);
     }else{
         const brochureId=document.getElementById("siBrochureSelect").value;
         if(!date||!brochureId||!Number.isInteger(quantity)||quantity<=0){err.textContent="សូមបំពេញ ថ្ងៃបញ្ចូល, Brochure និងចំនួនឱ្យបានត្រឹមត្រូវ។";err.classList.add("show");return;}
@@ -5131,37 +5507,8 @@ async function createStockIn(data,err,item){
 }
 // បញ្ចូលស្តុកសម្រាប់ Brochure ថ្មី៖ បង្កើត Brochure ថ្មី (ឬប្រើ Brochure ដែលមានឈ្មោះ+ឆ្នាំដូចគ្នារួចហើយ) រួចបញ្ចូលស្តុកភ្លាមតែម្តង
 async function createStockInNewBrochure(data,err){
-    const {date,name,year,quantity,note,imageFile}=data;
-    const btnSave=document.getElementById("btnSaveStockIn");
-    const btnSaveOriginalHtml=btnSave?btnSave.innerHTML:"";
+    const {date,name,year,quantity,note}=data;
     try{
-        let image=null;
-        if(imageFile){
-            if(btnSave){
-                btnSave.disabled=true;
-                btnSave.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> កំពុង Upload រូបភាព...';
-            }
-            try{
-                image=await uploadImageToCloudinary(imageFile);
-            }catch(uploadErr){
-                console.error(uploadErr);
-                if(btnSave){btnSave.disabled=false;btnSave.innerHTML=btnSaveOriginalHtml;}
-                if(uploadErr.message==="INVALID_IMAGE"){
-                    err.textContent="ឯកសារនេះមិនមែនជារូបភាពទេ។ សូមជ្រើសរើសរូបភាពម្តងទៀត។";
-                }else if(uploadErr.message==="UPLOAD_NETWORK_ERROR"){
-                    err.textContent="Upload មិនជោគជ័យ។ សូមពិនិត្យការភ្ជាប់អ៊ីនធឺណិត ហើយសាកល្បងម្តងទៀត។";
-                }else{
-                    err.textContent="Upload រូបភាពមិនជោគជ័យទេ។ សូមសាកល្បងម្តងទៀត។";
-                }
-                err.classList.add("show");
-                return;
-            }
-            if(btnSave){
-                btnSave.disabled=true;
-                btnSave.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក...';
-            }
-        }
-
         const normalizedName=name.replace(/\s+/g," ").trim().toLowerCase();
         const normalizedYear=year.replace(/\s+/g,"").trim().toLowerCase();
 
@@ -5175,12 +5522,9 @@ async function createStockInNewBrochure(data,err){
 
         if(existingItem){
             brochureId=existingItem.id;
-            if(image){
-                await db.collection(COLLECTION).doc(brochureId).update({image});
-            }
         }else{
             const newDocRef=db.collection(COLLECTION).doc();
-            await newDocRef.set({name,year,unit:0,other:"",createdAt:Date.now(),...(image?{image}:{})});
+            await newDocRef.set({name,year,unit:0,other:"",createdAt:Date.now()});
             brochureId=newDocRef.id;
         }
 
@@ -5216,8 +5560,6 @@ async function createStockInNewBrochure(data,err){
         console.error(e);
         err.textContent="មិនអាចរក្សាទុក Stock In សម្រាប់ Brochure ថ្មីបានទេ។ សូមព្យាយាមម្តងទៀត។";
         err.classList.add("show");
-    }finally{
-        if(btnSave){btnSave.disabled=false;btnSave.innerHTML=btnSaveOriginalHtml;}
     }
 }
 async function updateStockIn(recordId,data,err,item){
@@ -5269,6 +5611,8 @@ async function updateStockIn(recordId,data,err,item){
     }
 }
 async function deleteStockIn(id){
+    if(!requireAdmin("លុប Stock In")) return;
+
     const record=stockIns.find(x=>x.id===id);
     if(!record){alert("រកមិនឃើញប្រតិបត្តិការនេះទេ។");return;}
     const ok=confirm(`តើអ្នកចង់លុបប្រតិបត្តិការនេះមែនទេ?\n\nBrochure: ${record.brochureName}\nចំនួនបញ្ចូល: ${Number(record.quantity||0).toLocaleString()} ក្បាល\n\nស្តុកនឹងត្រូវបានដកចេញវិញតាមចំនួននេះដោយស្វ័យប្រវត្តិ។`);
@@ -5303,7 +5647,7 @@ function renderStockIn(){
     const list=q?stockIns.filter(x=>[x.date,x.brochureName,x.year,x.note].some(v=>String(v||"").toLowerCase().includes(q))):stockIns;
     const total=list.reduce((a,x)=>a+Number(x.quantity||0),0);
     if(!list.length){c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>0</strong></div><div class="stockout-summary-card"><small>ស្ថានភាព</small><strong>—</strong></div></div><div class="empty"><i class="fa-solid fa-dolly"></i><h3>មិនទាន់មាន Stock In</h3><p>ចុច "បន្ថែម Stock In" ដើម្បីកត់ត្រាការបញ្ចូល Brochure ចូលស្តុក។</p></div>`;return;}
-    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>រូបភាព</th><th>ថ្ងៃបញ្ចូល</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ចំនួនបញ្ចូល</th><th>ចំណាំ</th><th>សកម្មភាព</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td>${getBrochureImageCell(x.brochureId, x.brochureName)}<td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td>${escapeHtml(x.note||"")}</td><td class="actions"><button class="action-btn" onclick="openEditStockInModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockIn('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>`;
+    c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនបញ្ចូលសរុប</small><strong>${total.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${list.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>ថ្ងៃបញ្ចូល</th><th>ឈ្មោះ Brochure</th><th>ឆ្នាំ</th><th>ចំនួនបញ្ចូល</th><th>ចំណាំ</th><th>សកម្មភាព</th></tr></thead><tbody>${list.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td>${escapeHtml(x.note||"")}</td><td class="actions"><button class="action-btn" onclick="openEditStockInModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockIn('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>`;
 }
 
 
@@ -6532,22 +6876,6 @@ document.getElementById("btnCancelStockIn")?.addEventListener("click",closeStock
 document.getElementById("btnSaveStockIn")?.addEventListener("click",saveStockIn);
 document.getElementById("siModeExisting")?.addEventListener("click",()=>setSiMode("existing"));
 document.getElementById("siModeNew")?.addEventListener("click",()=>setSiMode("new"));
-document.getElementById("siImageNew")?.addEventListener("change", event => {
-    const file = event.target.files[0];
-    const preview = document.getElementById("siImagePreview");
-    if(!preview) return;
-    if(!file){
-        preview.removeAttribute("src");
-        preview.style.display = "none";
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = e => {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-});
 document.getElementById("siBrochureSelect")?.addEventListener("change",updateStockInBrochureInfo);
 document.getElementById("stockInSearch")?.addEventListener("input",renderStockIn);
 document.getElementById("stockInOverlay")?.addEventListener("click",e=>{if(e.target.id==="stockInOverlay")closeStockInModal();});
@@ -6575,6 +6903,9 @@ const AUDIT_COLLECTION = "auditLogs";
 let auditLogs = [];
 
 function getOperatorName(){
+    if(currentUserProfile?.displayName) return String(currentUserProfile.displayName).trim();
+    if(currentUser?.displayName) return String(currentUser.displayName).trim();
+    if(currentUser?.email) return String(currentUser.email).trim();
     return (localStorage.getItem("operatorName") || "").trim() || "មិនស្គាល់";
 }
 
@@ -6749,11 +7080,7 @@ if ('serviceWorker' in navigator) {
    START
 ===================================================== */
 
-listenItems();
-listenDepartments();
-listenStockOuts();
-listenStockIns();
-listenAuditLogs();
+initAuth();
 
 </script>
 
