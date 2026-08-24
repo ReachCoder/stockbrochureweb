@@ -52,6 +52,20 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     --sidebar-width:250px;
 
     --shadow:0 8px 25px rgba(38,50,61,.08);
+
+    /* ambient background glows */
+    --glow-gold:rgba(200,155,60,.16);
+    --glow-green:rgba(47,109,76,.14);
+    --glow-green-soft:rgba(47,109,76,.08);
+
+    --bg-gradient:
+        radial-gradient(circle at 10% 0%, var(--glow-gold), transparent 42%),
+        radial-gradient(circle at 92% 12%, var(--glow-green), transparent 45%),
+        radial-gradient(circle at 50% 100%, var(--glow-green-soft), transparent 55%),
+        linear-gradient(160deg, #F6EFD9 0%, var(--bg) 55%, #EADFC0 100%);
+
+    --card-gradient:linear-gradient(160deg, var(--card) 0%, var(--card2) 100%);
+    --topbar-gradient:linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
 }
 
 /* =========================
@@ -73,6 +87,19 @@ body.dark{
     --danger-light:#3A2524;
 
     --shadow:0 8px 25px rgba(0,0,0,.30);
+
+    --glow-gold:rgba(200,155,60,.10);
+    --glow-green:rgba(47,109,76,.22);
+    --glow-green-soft:rgba(47,109,76,.12);
+
+    --bg-gradient:
+        radial-gradient(circle at 10% 0%, var(--glow-gold), transparent 42%),
+        radial-gradient(circle at 92% 12%, var(--glow-green), transparent 45%),
+        radial-gradient(circle at 50% 100%, var(--glow-green-soft), transparent 55%),
+        linear-gradient(160deg, #121A17 0%, var(--bg) 55%, #0D1210 100%);
+
+    --card-gradient:linear-gradient(160deg, var(--card) 0%, var(--card2) 100%);
+    --topbar-gradient:linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
 }
 
 /* =========================
@@ -90,7 +117,8 @@ html{
 body{
     margin:0;
     padding:0;
-    background:var(--bg);
+    background:var(--bg-gradient);
+    background-attachment:fixed;
     color:var(--text);
     font-family:'Kantumruy Pro',sans-serif;
 
@@ -121,6 +149,7 @@ body{
     top:0;
 
     background:
+        radial-gradient(circle at 15% 0%, rgba(255,255,255,.10), transparent 40%),
         linear-gradient(
             180deg,
             var(--primary-dark),
@@ -268,6 +297,83 @@ body{
     box-shadow:0 5px 15px rgba(0,0,0,.12);
 }
 
+.menu-badge{
+    margin-left:auto;
+    background:var(--danger);
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+/* =========================
+   SUB TABS (Stock Out: Transactions / Requests)
+========================= */
+
+.subtabs{
+    display:flex;
+    gap:8px;
+    padding:14px 20px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.subtab-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    border:none;
+    background:transparent;
+    color:var(--text-soft);
+
+    padding:10px 14px;
+    border-radius:10px 10px 0 0;
+
+    cursor:pointer;
+
+    font-family:'Kantumruy Pro';
+    font-weight:700;
+    font-size:13px;
+
+    transition:.2s;
+}
+
+.subtab-btn:hover{
+    background:var(--card2);
+    color:var(--text);
+}
+
+.subtab-btn.active{
+    background:var(--card-gradient);
+    color:var(--primary);
+    box-shadow:0 -2px 0 0 var(--gold) inset;
+}
+
+body.dark .subtab-btn.active{
+    color:#B8D8C7;
+}
+
+.subtab-badge{
+    background:var(--danger);
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+
 /* sidebar footer */
 
 .sidebar-footer{
@@ -303,7 +409,7 @@ body{
 .topbar{
     height:75px;
 
-    background:var(--card);
+    background:var(--topbar-gradient);
 
     border-bottom:1px solid var(--border);
 
@@ -488,7 +594,7 @@ body.dark .page-title h2{
 }
 
 .stat-card{
-    background:var(--card);
+    background:var(--card-gradient);
 
     border:1px solid var(--border);
 
@@ -626,7 +732,7 @@ body.dark .chart-header h3{
 ========================= */
 
 .card{
-    background:var(--card);
+    background:var(--card-gradient);
 
     border:1px solid var(--border);
 
@@ -856,57 +962,73 @@ tbody tr:last-child td{
 
 /* Brochure image */
 .brochure-image-cell{
-    width:82px;
+    width:130px;
     text-align:center;
 }
 
 .brochure-thumb{
-    width:86px;
-    height:86px;
+    width:130px;
+    height:130px;
     object-fit:contain;
-    border-radius:10px;
+    padding:8px;
+    border-radius:16px;
     border:1px solid var(--border);
-    background:var(--card2);
+    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    box-shadow:0 2px 6px rgba(38,50,61,.08), inset 0 0 0 1px rgba(255,255,255,.35);
     display:block;
     margin:auto;
     cursor:zoom-in;
-    transition:transform .2s ease, box-shadow .2s ease;
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, border-color .25s ease;
 }
 
 .brochure-thumb:hover{
-    transform:scale(1.04);
-    box-shadow:0 6px 16px rgba(0,0,0,.15);
+    transform:scale(1.08) translateY(-2px);
+    box-shadow:0 10px 22px rgba(38,50,61,.20), 0 0 0 2px var(--gold-light);
+    border-color:var(--gold);
 }
 
 .brochure-placeholder{
-    width:86px;
-    height:86px;
-    border-radius:10px;
-    border:1px dashed var(--border);
-    background:var(--card2);
+    width:130px;
+    height:130px;
+    border-radius:16px;
+    border:1.5px dashed var(--border);
+    background:linear-gradient(145deg, var(--card2) 0%, var(--bg) 100%);
     color:var(--text-soft);
     display:flex;
     align-items:center;
     justify-content:center;
     margin:auto;
-    font-size:20px;
+    font-size:30px;
 }
 
 .image-preview-wrap{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:14px;
     margin-top:8px;
+    padding:10px;
+    border-radius:14px;
+    background:var(--card2);
+    border:1px solid var(--border);
 }
 
 .image-preview{
-    width:78px;
-    height:78px;
+    width:120px;
+    height:120px;
     object-fit:cover;
-    border-radius:10px;
+    padding:5px;
+    border-radius:14px;
     border:1px solid var(--border);
-    background:var(--card2);
+    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    box-shadow:0 2px 8px rgba(38,50,61,.10);
     display:none;
+    cursor:zoom-in;
+    transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.image-preview:hover{
+    transform:scale(1.05);
+    box-shadow:0 8px 18px rgba(38,50,61,.18);
 }
 
 .image-help{
@@ -961,6 +1083,16 @@ tbody tr:last-child td{
 .action-btn.delete:hover{
     background:var(--danger-light);
 
+    color:var(--danger);
+}
+
+.action-btn.approve:hover{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+.action-btn.reject:hover{
+    background:var(--danger-light);
     color:var(--danger);
 }
 
@@ -1634,7 +1766,7 @@ th.sortable.active .sort-icon{opacity:1;color:var(--primary);}
 .data-table-wrap{overflow-x:auto;padding:18px 20px 20px;}
 .data-table-wrap table{min-width:900px;}
 .department-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;padding:20px;}
-.department-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow);}
+.department-card{background:var(--card-gradient);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow);}
 .department-card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .department-card-head h3{margin:0;color:var(--primary-dark);font-size:15px;}
 body.dark .department-card-head h3{color:#B8D8C7;}
@@ -1816,28 +1948,34 @@ body.dark .modal h2{
 
 /* smaller thumbs in stock in/out tables */
 .table-thumb{
-    width:48px;
-    height:48px;
+    width:72px;
+    height:72px;
     object-fit:contain;
-    border-radius:8px;
+    padding:4px;
+    border-radius:12px;
     border:1px solid var(--border);
-    background:var(--card2);
+    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    box-shadow:0 1px 4px rgba(38,50,61,.08);
     display:block;
     cursor:zoom-in;
-    transition:transform .15s ease;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, border-color .2s ease;
 }
-.table-thumb:hover{transform:scale(1.06);}
+.table-thumb:hover{
+    transform:scale(1.15);
+    box-shadow:0 6px 14px rgba(38,50,61,.18), 0 0 0 2px var(--gold-light);
+    border-color:var(--gold);
+}
 .table-thumb-ph{
-    width:48px;
-    height:48px;
-    border-radius:8px;
-    border:1px dashed var(--border);
-    background:var(--card2);
+    width:72px;
+    height:72px;
+    border-radius:12px;
+    border:1.5px dashed var(--border);
+    background:linear-gradient(145deg, var(--card2) 0%, var(--bg) 100%);
     color:var(--text-soft);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:16px;
+    font-size:22px;
 }
 
 .btn-cancel{
@@ -2127,6 +2265,21 @@ body.dark .empty h3{
 body.dark .audit-badge.create{ background:#263B31; color:#B8D8C7; }
 body.dark .audit-badge.update{ background:#3A3520; color:#E6C876; }
 body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
+
+.request-status-badge{
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+}
+.request-status-badge.pending{ background:#FFF3CD; color:#856404; }
+.request-status-badge.approved{ background:#E4F0E9; color:#2F6D4C; }
+.request-status-badge.rejected{ background:#F8E3E1; color:#B94A48; }
+body.dark .request-status-badge.pending{ background:#3A3520; color:#E6C876; }
+body.dark .request-status-badge.approved{ background:#263B31; color:#B8D8C7; }
+body.dark .request-status-badge.rejected{ background:#3A2524; color:#F8B4B4; }
 .audit-detail{
     font-size:12px;
     color:var(--text-soft);
@@ -2631,6 +2784,16 @@ body.role-staff #btnPrintStock{
     /* staff can export/print - keep */
 }
 
+/* Staff: Stock Out request button (visible only to staff) */
+#btnRequestStockOut{
+    display:none;
+}
+body.role-staff #btnRequestStockOut{
+    display:inline-flex !important;
+    align-items:center;
+    gap:8px;
+}
+
 
 </style>
 </head>
@@ -2724,6 +2887,7 @@ body.role-staff #btnPrintStock{
                 data-page="stockout">
             <i class="fa-solid fa-arrow-up-from-bracket"></i>
             <span>Stock Out</span>
+            <span class="menu-badge" id="stockOutMenuBadge" style="display:none;">0</span>
         </button>
 
 
@@ -3175,31 +3339,66 @@ body.role-staff #btnPrintStock{
     <div class="card">
         <div class="card-header">
             <div>
-                <h3><i class="fa-solid fa-arrow-up-from-bracket"></i> ប្រវត្តិការដកស្តុក (Stock Out)</h3>
-                <div class="page-hint">ថ្ងៃយកចេញ • Brochure • ឆ្នាំ • ផ្នែក • ឈ្មោះអ្នកយក • ចំនួនយកចេញ</div>
-            </div>
-            <div class="search">
-                <input type="text" id="stockOutSearch" placeholder="ស្វែងរក Stock Out...">
-                <div class="export-wrap" id="stockOutExportWrap">
-                    <button class="btn-secondary" id="btnExportStockOut" title="នាំចេញទិន្នន័យ Stock Out">
-                        <i class="fa-solid fa-file-export"></i>
-                        Export
-                    </button>
-                    <div class="export-menu" id="stockOutExportMenu">
-                        <button class="export-menu-item" onclick="exportStockOut('xlsx')">
-                            <i class="fa-solid fa-file-excel"></i>
-                            Excel (.xlsx)
-                        </button>
-                        <button class="export-menu-item" onclick="exportStockOut('csv')">
-                            <i class="fa-solid fa-file-csv"></i>
-                            CSV (.csv)
-                        </button>
-                    </div>
-                </div>
-                <button class="btn-add" id="btnAddStockOut"><i class="fa-solid fa-plus"></i> បន្ថែម Stock Out</button>
+                <h3><i class="fa-solid fa-arrow-up-from-bracket"></i> Stock Out</h3>
+                <div class="page-hint">គ្រប់គ្រងការដកស្តុក Brochure ចេញ និងសំណើស្នើសុំពី Staff</div>
             </div>
         </div>
-        <div id="stockOutContent"><div class="empty">កំពុងផ្ទុកទិន្នន័យ...</div></div>
+
+        <div class="subtabs">
+            <button type="button" class="subtab-btn active" id="stockOutTabTransactions" onclick="switchStockOutTab('transactions')">
+                <i class="fa-solid fa-clock-rotate-left"></i> ប្រតិបត្តិការ
+            </button>
+            <button type="button" class="subtab-btn" id="stockOutTabRequests" onclick="switchStockOutTab('requests')">
+                <i class="fa-solid fa-inbox"></i> សំណើស្នើសុំ
+                <span class="subtab-badge" id="stockOutRequestsTabBadge" style="display:none;">0</span>
+            </button>
+        </div>
+
+        <div id="stockOutTxPanel">
+            <div class="card-header" style="border-top:1px solid var(--border);">
+                <div class="page-hint" style="margin:0;">ថ្ងៃយកចេញ • Brochure • ឆ្នាំ • ផ្នែក • ឈ្មោះអ្នកយក • ចំនួនយកចេញ</div>
+                <div class="search">
+                    <input type="text" id="stockOutSearch" placeholder="ស្វែងរក Stock Out...">
+                    <div class="export-wrap" id="stockOutExportWrap">
+                        <button class="btn-secondary" id="btnExportStockOut" title="នាំចេញទិន្នន័យ Stock Out">
+                            <i class="fa-solid fa-file-export"></i>
+                            Export
+                        </button>
+                        <div class="export-menu" id="stockOutExportMenu">
+                            <button class="export-menu-item" onclick="exportStockOut('xlsx')">
+                                <i class="fa-solid fa-file-excel"></i>
+                                Excel (.xlsx)
+                            </button>
+                            <button class="export-menu-item" onclick="exportStockOut('csv')">
+                                <i class="fa-solid fa-file-csv"></i>
+                                CSV (.csv)
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-add" id="btnAddStockOut"><i class="fa-solid fa-plus"></i> បន្ថែម Stock Out</button>
+                    <button class="btn-add" id="btnRequestStockOut"><i class="fa-solid fa-paper-plane"></i> ស្នើសុំ Stock Out</button>
+                </div>
+            </div>
+            <div id="stockOutContent"><div class="empty">កំពុងផ្ទុកទិន្នន័យ...</div></div>
+        </div>
+
+        <div id="stockOutReqPanel" style="display:none;">
+            <div class="card-header" style="border-top:1px solid var(--border);">
+                <div class="page-hint" style="margin:0;">Staff ស្នើសុំ → Admin អនុម័ត/បដិសេធ → ស្តុកកាត់ត្រឹមតែពេលអនុម័តរួច</div>
+                <div class="search">
+                    <input type="text" id="stockOutRequestSearch" placeholder="ស្វែងរកសំណើ...">
+                    <select id="stockOutRequestStatusFilter" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'Kantumruy Pro';outline:none;">
+                        <option value="">គ្រប់ស្ថានភាព</option>
+                        <option value="pending">កំពុងរង់ចាំ</option>
+                        <option value="approved">បានអនុម័ត</option>
+                        <option value="rejected">បានបដិសេធ</option>
+                        <option value="cancelled">បានបោះបង់</option>
+                    </select>
+                </div>
+            </div>
+            <div id="stockOutRequestsContent"><div class="empty">កំពុងផ្ទុកទិន្នន័យ...</div></div>
+        </div>
+
     </div>
 </section>
 
@@ -4129,6 +4328,7 @@ function startDataListenersOnce(){
     listenDepartments();
     listenStockOuts();
     listenStockIns();
+    listenStockOutRequests();
     listenAuditLogs();
 }
 
@@ -4192,6 +4392,9 @@ let pieChart = null;
 let departments = [];
 let stockOuts = [];
 let stockOutEditingId = null;
+let stockOutModalMode = "direct"; // "direct" | "request"
+let stockOutRequests = [];
+let stockOutActiveTab = "transactions"; // "transactions" | "requests"
 let stockIns = [];
 let stockInEditingId = null;
 let siMode = "existing";
@@ -4208,7 +4411,8 @@ let lowStockNotifyBusy = false;
 const tableState = {
     stock:    { sortKey: "name", sortDir: "asc",  page: 1, pageSize: 25 },
     stockOut: { sortKey: "date", sortDir: "desc", page: 1, pageSize: 20 },
-    stockIn:  { sortKey: "date", sortDir: "desc", page: 1, pageSize: 20 }
+    stockIn:  { sortKey: "date", sortDir: "desc", page: 1, pageSize: 20 },
+    stockOutRequests: { sortKey: "requestedAt", sortDir: "desc", page: 1, pageSize: 20 }
 };
 
 function sortList(list, key, dir, type){
@@ -4260,12 +4464,13 @@ function setTableSort(table, key){
         st.sortDir = st.sortDir === "asc" ? "desc" : "asc";
     }else{
         st.sortKey = key;
-        st.sortDir = (key === "date" || key === "unit" || key === "quantity") ? "desc" : "asc";
+        st.sortDir = (key === "date" || key === "unit" || key === "quantity" || key === "requestedAt") ? "desc" : "asc";
     }
     st.page = 1;
     if(table === "stock") renderStock();
     else if(table === "stockOut") renderStockOut();
     else if(table === "stockIn") renderStockIn();
+    else if(table === "stockOutRequests") renderStockOutRequests();
 }
 
 function setTablePage(table, page){
@@ -4275,6 +4480,7 @@ function setTablePage(table, page){
     if(table === "stock") renderStock();
     else if(table === "stockOut") renderStockOut();
     else if(table === "stockIn") renderStockIn();
+    else if(table === "stockOutRequests") renderStockOutRequests();
 }
 
 function setTablePageSize(table, size){
@@ -4285,6 +4491,7 @@ function setTablePageSize(table, size){
     if(table === "stock") renderStock();
     else if(table === "stockOut") renderStockOut();
     else if(table === "stockIn") renderStockIn();
+    else if(table === "stockOutRequests") renderStockOutRequests();
 }
 
 function buildPagerHtml(table, pg){
@@ -4600,6 +4807,32 @@ function listenStockOuts(){
             updateReports();
         }
     },error=>console.error("Stock Out listener error:",error));
+}
+function listenStockOutRequests(){
+    db.collection("stockOutRequests").orderBy("requestedAt","desc").onSnapshot(snapshot=>{
+        stockOutRequests=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+        updateStockOutRequestBadges();
+        if(document.getElementById("stockout")?.classList.contains("active") && stockOutActiveTab==="requests"){
+            renderStockOutRequests();
+        }
+    },error=>console.error("Stock Out Requests listener error:",error));
+}
+function updateStockOutRequestBadges(){
+    const pendingAll = stockOutRequests.filter(r=>r.status==="pending").length;
+    const pendingMine = stockOutRequests.filter(r=>r.status==="pending" && r.requestedByUid===currentUser?.uid).length;
+    const count = isAdmin() ? pendingAll : pendingMine;
+    const label = count>99 ? "99+" : String(count);
+
+    const menuBadge = document.getElementById("stockOutMenuBadge");
+    if(menuBadge){
+        menuBadge.textContent = label;
+        menuBadge.style.display = count>0 ? "flex" : "none";
+    }
+    const tabBadge = document.getElementById("stockOutRequestsTabBadge");
+    if(tabBadge){
+        tabBadge.textContent = label;
+        tabBadge.style.display = count>0 ? "inline-flex" : "none";
+    }
 }
 function listenStockIns(){
     db.collection("stockIns").orderBy("createdAt","desc").onSnapshot(snapshot=>{
@@ -5598,8 +5831,21 @@ function openStockOutModal(brochureId=""){
     if(!requireAdmin("Stock Out")) return;
     if(!items.length){alert("មិនទាន់មាន Brochure ក្នុងស្តុកទេ។");return;}
     stockOutEditingId=null;
+    stockOutModalMode="direct";
     document.getElementById("stockOutModalTitle").textContent="បន្ថែម Stock Out";
     document.getElementById("btnSaveStockOut").innerHTML=`<i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Stock Out`;
+    document.getElementById("soDate").value=todayISO();document.getElementById("soQuantity").value="";document.getElementById("soDepartment").value="";document.getElementById("soEmployee").value="";document.getElementById("soEmployee").disabled=true;
+    document.getElementById("stockOutErr").classList.remove("show");document.getElementById("stockOutErr").textContent="";
+    populateStockOutBrochures(brochureId);populateDepartmentSelects();
+    if(brochureId){document.getElementById("soBrochure").value=brochureId;updateStockOutBrochureInfo();}
+    document.getElementById("stockOutOverlay").classList.add("show");
+}
+function openStockOutRequestModal(brochureId=""){
+    if(!items.length){alert("មិនទាន់មាន Brochure ក្នុងស្តុកទេ។");return;}
+    stockOutEditingId=null;
+    stockOutModalMode="request";
+    document.getElementById("stockOutModalTitle").textContent="ស្នើសុំ Stock Out";
+    document.getElementById("btnSaveStockOut").innerHTML=`<i class="fa-solid fa-paper-plane"></i> ស្នើសុំ`;
     document.getElementById("soDate").value=todayISO();document.getElementById("soQuantity").value="";document.getElementById("soDepartment").value="";document.getElementById("soEmployee").value="";document.getElementById("soEmployee").disabled=true;
     document.getElementById("stockOutErr").classList.remove("show");document.getElementById("stockOutErr").textContent="";
     populateStockOutBrochures(brochureId);populateDepartmentSelects();
@@ -5612,6 +5858,7 @@ function openEditStockOutModal(id){
     const record=stockOuts.find(x=>x.id===id);
     if(!record){alert("រកមិនឃើញប្រតិបត្តិការនេះទេ។");return;}
     stockOutEditingId=id;
+    stockOutModalMode="direct";
     document.getElementById("stockOutModalTitle").textContent="កែប្រែ Stock Out";
     document.getElementById("btnSaveStockOut").innerHTML=`<i class="fa-solid fa-floppy-disk"></i> កែប្រែ Stock Out`;
     document.getElementById("stockOutErr").classList.remove("show");document.getElementById("stockOutErr").textContent="";
@@ -5624,7 +5871,7 @@ function openEditStockOutModal(id){
     document.getElementById("soQuantity").value=record.quantity;
     document.getElementById("stockOutOverlay").classList.add("show");
 }
-function closeStockOutModal(){document.getElementById("stockOutOverlay").classList.remove("show");stockOutEditingId=null;}
+function closeStockOutModal(){document.getElementById("stockOutOverlay").classList.remove("show");stockOutEditingId=null;stockOutModalMode="direct";}
 async function saveStockOut(){
     const err=document.getElementById("stockOutErr");err.classList.remove("show");err.textContent="";
     const date=document.getElementById("soDate").value,brochureId=document.getElementById("soBrochure").value,departmentId=document.getElementById("soDepartment").value,employeeId=document.getElementById("soEmployee").value,quantity=parseInt(document.getElementById("soQuantity").value,10);
@@ -5633,6 +5880,8 @@ async function saveStockOut(){
     if(!item||!dep||!emp){err.textContent="ទិន្នន័យ Brochure ឬ Department/បុគ្គលិក មិនត្រឹមត្រូវ។";err.classList.add("show");return;}
     if(stockOutEditingId){
         await updateStockOut(stockOutEditingId,{date,brochureId,departmentId,employeeId,quantity},err,item,dep,emp);
+    }else if(stockOutModalMode==="request"){
+        await createStockOutRequest({date,brochureId,departmentId,employeeId,quantity},err,item,dep,emp);
     }else{
         await createStockOut({date,brochureId,departmentId,employeeId,quantity},err,item,dep,emp);
     }
@@ -5772,6 +6021,291 @@ function renderStockOut(){
     st.page=pg.page;
     const rows=pg.slice;
     c.innerHTML=`<div class="stockout-summary"><div class="stockout-summary-card"><small>ប្រតិបត្តិការសរុប</small><strong>${list.length.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>ចំនួនយកចេញសរុប</small><strong>${totalAll.toLocaleString()}</strong></div><div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div></div><div class="data-table-wrap"><table><thead><tr><th>N°</th><th>រូបភាព</th>${sortHeaderHtml("stockOut","date","ថ្ងៃយកចេញ")}${sortHeaderHtml("stockOut","brochureName","ឈ្មោះ Brochure")}${sortHeaderHtml("stockOut","year","ឆ្នាំ")}${sortHeaderHtml("stockOut","departmentName","ផ្នែក")}${sortHeaderHtml("stockOut","employeeName","ឈ្មោះអ្នកយក")}${sortHeaderHtml("stockOut","quantity","ចំនួនយកចេញ")}<th>សកម្មភាព</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${pg.start+i+1}</td>${brochureImageCellHtml(x.brochureId, x.brochureName)}<td>${escapeHtml(formatDateDisplay(x.date))}</td><td><strong>${escapeHtml(x.brochureName)}</strong></td><td>${escapeHtml(x.year)}</td><td>${escapeHtml(x.departmentName)}</td><td>${escapeHtml(x.employeeName)}</td><td class="unit">${Number(x.quantity||0).toLocaleString()}</td><td class="actions"><button class="action-btn" onclick="openEditStockOutModal('${x.id}')"><i class="fa-solid fa-pen"></i> កែ</button><button class="action-btn delete" onclick="deleteStockOut('${x.id}')"><i class="fa-solid fa-trash"></i> លុប</button></td></tr>`).join("")}</tbody></table></div>${buildPagerHtml("stockOut", pg)}`;
+}
+
+function switchStockOutTab(tab){
+    stockOutActiveTab = tab;
+    document.getElementById("stockOutTabTransactions")?.classList.toggle("active", tab==="transactions");
+    document.getElementById("stockOutTabRequests")?.classList.toggle("active", tab==="requests");
+    const txPanel = document.getElementById("stockOutTxPanel");
+    const reqPanel = document.getElementById("stockOutReqPanel");
+    if(txPanel) txPanel.style.display = tab==="transactions" ? "" : "none";
+    if(reqPanel) reqPanel.style.display = tab==="requests" ? "" : "none";
+    if(tab==="requests") renderStockOutRequests();
+}
+
+function requestStatusBadgeHtml(status){
+    const map = {
+        pending:   { label:"កំពុងរង់ចាំ",   cls:"pending"  },
+        approved:  { label:"បានអនុម័ត",     cls:"approved" },
+        rejected:  { label:"បានបដិសេធ",     cls:"rejected" },
+        cancelled: { label:"បានបោះបង់",     cls:"rejected" }
+    };
+    const s = map[status] || { label: status || "-", cls: "" };
+    return `<span class="request-status-badge ${s.cls}">${escapeHtml(s.label)}</span>`;
+}
+
+function renderStockOutRequests(){
+    const c=document.getElementById("stockOutRequestsContent");if(!c)return;
+    const admin = isAdmin();
+    const q=(document.getElementById("stockOutRequestSearch")?.value||"").toLowerCase().trim();
+    const statusFilter = document.getElementById("stockOutRequestStatusFilter")?.value || "";
+
+    let list = admin ? [...stockOutRequests] : stockOutRequests.filter(r=>r.requestedByUid===currentUser?.uid);
+    if(statusFilter) list = list.filter(r=>r.status===statusFilter);
+    if(q) list = list.filter(r=>[r.brochureName,r.year,r.departmentName,r.employeeName,r.requestedByName].some(v=>String(v||"").toLowerCase().includes(q)));
+
+    const pendingCount = list.filter(r=>r.status==="pending").length;
+
+    if(!list.length){
+        c.innerHTML=`<div class="empty"><i class="fa-solid fa-inbox"></i><h3>មិនទាន់មានសំណើ</h3><p>${admin ? "សំណើ Stock Out ពី Staff នឹងបង្ហាញនៅទីនេះ។" : 'ចុច "ស្នើសុំ Stock Out" ដើម្បីស្នើសុំយក Brochure ចេញ។'}</p></div>`;
+        return;
+    }
+
+    const st=tableState.stockOutRequests;
+    list=sortList(list, st.sortKey, st.sortDir);
+    const pg=paginateList(list, st.page, st.pageSize);
+    st.page=pg.page;
+    const rows=pg.slice;
+
+    c.innerHTML=`
+        <div class="stockout-summary">
+            <div class="stockout-summary-card"><small>សំណើសរុប</small><strong>${list.length.toLocaleString()}</strong></div>
+            <div class="stockout-summary-card"><small>កំពុងរង់ចាំ</small><strong>${pendingCount.toLocaleString()}</strong></div>
+            <div class="stockout-summary-card"><small>បង្ហាញ</small><strong>${rows.length.toLocaleString()}</strong></div>
+        </div>
+        <div class="data-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>រូបភាព</th>
+                        ${sortHeaderHtml("stockOutRequests","date","ថ្ងៃស្នើ")}
+                        ${sortHeaderHtml("stockOutRequests","brochureName","ឈ្មោះ Brochure")}
+                        ${sortHeaderHtml("stockOutRequests","departmentName","ផ្នែក")}
+                        ${sortHeaderHtml("stockOutRequests","employeeName","ឈ្មោះអ្នកយក")}
+                        ${sortHeaderHtml("stockOutRequests","quantity","ចំនួន")}
+                        ${admin ? sortHeaderHtml("stockOutRequests","requestedByName","ស្នើដោយ") : ""}
+                        <th>ស្ថានភាព</th>
+                        <th>សកម្មភាព</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows.map((x,i)=>`
+                        <tr>
+                            <td>${pg.start+i+1}</td>
+                            ${brochureImageCellHtml(x.brochureId, x.brochureName)}
+                            <td>${escapeHtml(formatDateDisplay(x.date))}</td>
+                            <td><strong>${escapeHtml(x.brochureName)}</strong>${x.year?` <span style="color:var(--text-soft);font-size:11px;">(${escapeHtml(x.year)})</span>`:""}</td>
+                            <td>${escapeHtml(x.departmentName)}</td>
+                            <td>${escapeHtml(x.employeeName)}</td>
+                            <td class="unit">${Number(x.quantity||0).toLocaleString()}</td>
+                            ${admin ? `<td>${escapeHtml(x.requestedByName||"-")}</td>` : ""}
+                            <td>${requestStatusBadgeHtml(x.status)}${x.status==="rejected" && x.reviewNote ? `<div style="font-size:11px;color:var(--text-soft);margin-top:3px;max-width:160px;">${escapeHtml(x.reviewNote)}</div>` : ""}</td>
+                            <td class="actions">
+                                ${admin && x.status==="pending" ? `<button class="action-btn approve" onclick="approveStockOutRequest('${x.id}')" title="អនុម័ត"><i class="fa-solid fa-check"></i> អនុម័ត</button><button class="action-btn reject" onclick="rejectStockOutRequest('${x.id}')" title="បដិសេធ"><i class="fa-solid fa-xmark"></i> បដិសេធ</button>` : ""}
+                                ${!admin && x.status==="pending" ? `<button class="btn-secondary" style="padding:6px 10px;font-size:12px;" onclick="cancelStockOutRequest('${x.id}')"><i class="fa-solid fa-ban"></i> បោះបង់</button>` : ""}
+                                ${x.status!=="pending" ? `<span style="font-size:11px;color:var(--text-soft);">${escapeHtml(x.reviewedByName||"")}</span>` : ""}
+                            </td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+        ${buildPagerHtml("stockOutRequests", pg)}
+    `;
+}
+
+/* =====================================================
+   STOCK OUT REQUESTS (Staff ស្នើ → Admin អនុម័ត)
+===================================================== */
+async function createStockOutRequest(data, err, item, dep, emp){
+    const { date, brochureId, departmentId, employeeId, quantity } = data;
+    try{
+        const available = Number(item.unit || 0);
+        if(quantity > available){
+            err.textContent = `ស្តុកមិនគ្រប់។ មាន: ${available.toLocaleString()} ក្បាល | ស្នើ: ${quantity.toLocaleString()} ក្បាល`;
+            err.classList.add("show");
+            return;
+        }
+        const payload = {
+            date,
+            brochureId,
+            brochureName: item.name || "",
+            year: item.year || "",
+            departmentId,
+            departmentName: dep.name || "",
+            employeeId,
+            employeeName: emp.name || "",
+            quantity,
+            status: "pending",
+            requestedByUid: currentUser?.uid || "",
+            requestedByName: getOperatorName(),
+            requestedAt: Date.now(),
+            reviewNote: "",
+            reviewedByUid: "",
+            reviewedByName: "",
+            reviewedAt: null
+        };
+        const ref = await db.collection("stockOutRequests").add(payload);
+        await writeAuditLog({
+            action: "create",
+            entity: "stockOutRequest",
+            entityId: ref.id,
+            entityName: item.name,
+            details: `ស្នើដក ${quantity.toLocaleString()} ក្បាល | អ្នកយក: ${emp.name} | ផ្នែក: ${dep.name}`
+        });
+        closeStockOutModal();
+        alert(`បានផ្ញើសំណើ Stock Out រួចហើយ។\n\nBrochure: ${item.name}\nចំនួន: ${quantity.toLocaleString()} ក្បាល\nរង់ចាំ Admin អនុម័ត។`);
+        switchStockOutTab("requests");
+        goPage("stockout");
+    }catch(e){
+        console.error(e);
+        err.textContent = e.code === "permission-denied"
+            ? "គ្មានសិទ្ធិបង្កើតសំណើ។ សូមពិនិត្យ Firestore Rules និង users/{uid}。"
+            : "មិនអាចផ្ញើសំណើបានទេ។ សូមព្យាយាមម្តងទៀត។";
+        err.classList.add("show");
+    }
+}
+
+async function approveStockOutRequest(id){
+    if(!requireAdmin("អនុម័តសំណើ")) return;
+    const req = stockOutRequests.find(x => x.id === id);
+    if(!req || req.status !== "pending"){
+        alert("សំណើនេះមិនអាចអនុម័តបានទេ។");
+        return;
+    }
+    if(!confirm(`អនុម័តសំណើ?\n\nBrochure: ${req.brochureName}\nចំនួន: ${Number(req.quantity||0).toLocaleString()} ក្បាល\nអ្នកយក: ${req.employeeName}`)) return;
+
+    const stockRef = db.collection(COLLECTION).doc(req.brochureId);
+    const outRef = db.collection("stockOuts").doc();
+    const reqRef = db.collection("stockOutRequests").doc(id);
+
+    try{
+        const result = await db.runTransaction(async tx => {
+            const stockSnap = await tx.get(stockRef);
+            if(!stockSnap.exists) throw new Error("ITEM_NOT_FOUND");
+            const fresh = stockSnap.data();
+            const available = Number(fresh.unit || 0);
+            const quantity = Number(req.quantity || 0);
+            if(quantity > available){
+                const e = new Error("NOT_ENOUGH_STOCK");
+                e.available = available;
+                throw e;
+            }
+            const reqSnap = await tx.get(reqRef);
+            if(!reqSnap.exists || reqSnap.data().status !== "pending") throw new Error("REQUEST_NOT_PENDING");
+
+            const remaining = available - quantity;
+            tx.update(stockRef, { unit: remaining });
+            tx.set(outRef, {
+                date: req.date || todayISO(),
+                brochureId: req.brochureId,
+                brochureName: fresh.name || req.brochureName,
+                year: fresh.year || req.year,
+                departmentId: req.departmentId,
+                departmentName: req.departmentName,
+                employeeId: req.employeeId,
+                employeeName: req.employeeName,
+                quantity,
+                createdAt: Date.now(),
+                fromRequestId: id
+            });
+            tx.update(reqRef, {
+                status: "approved",
+                reviewedByUid: currentUser?.uid || "",
+                reviewedByName: getOperatorName(),
+                reviewedAt: Date.now(),
+                stockOutId: outRef.id
+            });
+            return { remaining, quantity };
+        });
+
+        await writeAuditLog({
+            action: "update",
+            entity: "stockOutRequest",
+            entityId: id,
+            entityName: req.brochureName,
+            details: `អនុម័តសំណើ · ដក ${result.quantity.toLocaleString()} ក្បាល · នៅសល់ ${result.remaining.toLocaleString()}`
+        });
+        alert(`បានអនុម័តសំណើ។\nស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);
+    }catch(e){
+        console.error(e);
+        if(e.message === "NOT_ENOUGH_STOCK"){
+            alert(`ស្តុកមិនគ្រប់។ មាន: ${Number(e.available||0).toLocaleString()} ក្បាល`);
+        }else if(e.message === "ITEM_NOT_FOUND"){
+            alert("រកមិនឃើញ Brochure ក្នុងស្តុកទេ។");
+        }else if(e.message === "REQUEST_NOT_PENDING"){
+            alert("សំណើនេះមិននៅស្ថានភាពរង់ចាំទេ។");
+        }else{
+            alert("មិនអាចអនុម័តបានទេ។ សូមព្យាយាមម្តងទៀត។");
+        }
+    }
+}
+
+async function rejectStockOutRequest(id){
+    if(!requireAdmin("បដិសេធសំណើ")) return;
+    const req = stockOutRequests.find(x => x.id === id);
+    if(!req || req.status !== "pending"){
+        alert("សំណើនេះមិនអាចបដិសេធបានទេ។");
+        return;
+    }
+    const note = prompt("មូលហេតុបដិសេធ (ស្រេចចិត្ត):", "") || "";
+    if(!confirm(`បដិសេធសំណើ?\n\nBrochure: ${req.brochureName}\nចំនួន: ${Number(req.quantity||0).toLocaleString()} ក្បាល`)) return;
+
+    try{
+        await db.collection("stockOutRequests").doc(id).update({
+            status: "rejected",
+            reviewNote: note,
+            reviewedByUid: currentUser?.uid || "",
+            reviewedByName: getOperatorName(),
+            reviewedAt: Date.now()
+        });
+        await writeAuditLog({
+            action: "update",
+            entity: "stockOutRequest",
+            entityId: id,
+            entityName: req.brochureName,
+            details: `បដិសេធសំណើ${note ? " · " + note : ""}`
+        });
+        alert("បានបដិសេធសំណើ។");
+    }catch(e){
+        console.error(e);
+        alert("មិនអាចបដិសេធបានទេ។");
+    }
+}
+
+async function cancelStockOutRequest(id){
+    const req = stockOutRequests.find(x => x.id === id);
+    if(!req || req.status !== "pending"){
+        alert("សំណើនេះមិនអាចបោះបង់បានទេ។");
+        return;
+    }
+    if(req.requestedByUid !== currentUser?.uid && !isAdmin()){
+        alert("អ្នកអាចបោះបង់តែសំណើរបស់ខ្លួនឯង។");
+        return;
+    }
+    if(!confirm("បោះបង់សំណើនេះ?")) return;
+
+    try{
+        await db.collection("stockOutRequests").doc(id).update({
+            status: "cancelled",
+            reviewedByUid: currentUser?.uid || "",
+            reviewedByName: getOperatorName(),
+            reviewedAt: Date.now()
+        });
+        await writeAuditLog({
+            action: "update",
+            entity: "stockOutRequest",
+            entityId: id,
+            entityName: req.brochureName,
+            details: "បោះបង់សំណើ"
+        });
+        alert("បានបោះបង់សំណើ។");
+    }catch(e){
+        console.error(e);
+        alert("មិនអាចបោះបង់បានទេ។");
+    }
 }
 
 
@@ -7706,6 +8240,7 @@ if(imageLightbox){
 
 
 document.getElementById("btnAddStockOut")?.addEventListener("click",()=>openStockOutModal());
+document.getElementById("btnRequestStockOut")?.addEventListener("click",()=>openStockOutRequestModal());
 document.getElementById("btnCancelStockOut")?.addEventListener("click",closeStockOutModal);
 document.getElementById("btnSaveStockOut")?.addEventListener("click",saveStockOut);
 document.getElementById("soBrochure")?.addEventListener("change",updateStockOutBrochureInfo);
@@ -7814,6 +8349,7 @@ function entityLabel(e){
         brochure: "Brochure",
         stockIn: "Stock In",
         stockOut: "Stock Out",
+        stockOutRequest: "សំណើ Stock Out",
         department: "Department",
         employee: "Employee"
     };
