@@ -2066,14 +2066,36 @@ body.dark .empty h3{
    MOBILE
 ========================= */
 
+/* Sidebar backdrop (mobile) */
+.sidebar-backdrop{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:90;
+    background:rgba(16,23,21,.45);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+    opacity:0;
+    transition:opacity .3s ease;
+}
+.sidebar-backdrop.show{
+    display:block;
+    opacity:1;
+}
+
 @media(max-width:900px){
 
     .stats{
-        grid-template-columns:
-            repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
     }
 
     .chart-grid{
+        grid-template-columns:1fr;
+        gap:14px;
+    }
+
+    .report-grid{
         grid-template-columns:1fr;
     }
 }
@@ -2081,121 +2103,345 @@ body.dark .empty h3{
 @media(max-width:700px){
 
     .sidebar{
-        transform:translateX(-100%);
+        transform:translateX(-105%);
+        width:min(280px, 86vw);
+        box-shadow:none;
+        border-radius:0 18px 18px 0;
     }
 
     .sidebar.open{
         transform:translateX(0);
+        box-shadow:12px 0 40px rgba(0,0,0,.28);
     }
 
     .main{
         margin-left:0;
-
         width:100%;
     }
 
     .mobile-menu{
         display:flex;
-
-        width:40px;
-        height:40px;
-
+        width:42px;
+        height:42px;
         align-items:center;
         justify-content:center;
-
         border:1px solid var(--border);
-
-        background:var(--card);
-
-        color:var(--text);
-
-        border-radius:8px;
-
+        background:var(--card-gradient);
+        color:var(--primary);
+        border-radius:12px;
         cursor:pointer;
+        box-shadow:0 2px 8px rgba(38,50,61,.08);
+        transition:transform .2s ease, background .2s ease, color .2s ease;
+        flex-shrink:0;
+    }
+    .mobile-menu:active{
+        transform:scale(.94);
+        background:var(--primary);
+        color:#fff;
     }
 
     .topbar{
-        padding:0 15px;
+        padding:0 12px 0 14px;
+        height:64px;
+        gap:8px;
     }
 
-    .page{
-        padding:15px;
+    .page-title{
+        gap:10px;
+        min-width:0;
+        flex:1;
+    }
+
+    .page-title h2{
+        font-size:16px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
     }
 
     .page-title span{
         display:none;
     }
 
-    .search input{
-        width:100%;
+    .top-actions{
+        gap:6px;
+        flex-shrink:0;
     }
 
-    .search{
-        width:100%;
+    .icon-top-btn{
+        width:38px;
+        height:38px;
+        border-radius:11px;
+    }
+
+    .user-chip{
+        max-width:110px;
+        padding:4px 8px;
+        border-radius:10px;
+    }
+    .user-chip strong{
+        font-size:11px;
+        display:block;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+    .user-chip small{
+        font-size:9px;
+    }
+
+    .page{
+        padding:14px 12px 28px;
+        padding-bottom:calc(28px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .welcome{
+        padding:18px 16px;
+        border-radius:16px;
+        margin-bottom:16px;
+    }
+    .welcome h1{
+        font-size:18px;
+        line-height:1.35;
+    }
+    .welcome p{
+        font-size:12px;
+        margin-top:4px;
+    }
+
+    .stat-card{
+        padding:14px;
+        border-radius:14px;
+        gap:10px;
+    }
+    .stat-info h3{
+        font-size:20px;
+    }
+    .stat-icon{
+        width:44px;
+        height:44px;
+        font-size:18px;
+        border-radius:12px;
+    }
+
+    .card{
+        border-radius:16px;
+        overflow-x:visible;
     }
 
     .card-header{
         align-items:stretch;
+        flex-direction:column;
+        gap:12px;
+        padding:14px 14px 12px;
+    }
+    .card-header h3{
+        font-size:14px;
+    }
+    .card-header .search,
+    .card-header > div{
+        width:100%;
+    }
+    .search{
+        width:100%;
+        flex-wrap:wrap;
+    }
+    .search input{
+        width:100%;
+        min-width:0;
+        flex:1;
+        font-size:16px; /* avoid iOS zoom */
+        padding:11px 14px;
+        border-radius:10px;
+    }
+    .btn-add{
+        width:100%;
+        justify-content:center;
+        padding:12px 16px;
+        border-radius:10px;
+        font-size:14px;
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+    }
+    body.role-staff #btnRequestStockOut{
+        width:100%;
+        justify-content:center;
+    }
+
+    /* Sub tabs — horizontal scroll */
+    .subtabs{
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+        padding:10px 12px 0;
+        gap:6px;
+        scrollbar-width:none;
+    }
+    .subtabs::-webkit-scrollbar{ display:none; }
+    .subtab-btn{
+        flex-shrink:0;
+        padding:10px 14px;
+        font-size:12px;
+        border-radius:10px 10px 0 0;
     }
 
     .group{
-        margin:12px;
-        overflow: hidden; /* band stays fixed; table scrolls inside */
+        margin:10px;
+        border-radius:14px;
+        overflow:hidden;
     }
+    .group-band{
+        padding:12px 14px;
+        flex-wrap:wrap;
+        gap:8px;
+    }
+    .group-year{ font-size:14px; }
 
-    /* តារាងក្នុង group — អូសផ្តេកបាន */
     .table-scroll{
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        width: 100%;
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        width:100%;
     }
-
     .table-scroll table,
     .group table{
-        min-width: 820px;
+        min-width:820px;
     }
+    table{ min-width:720px; }
 
-    table{
-        min-width: 720px;
-    }
-
-    .card{
-        overflow-x: visible;
-    }
-
-    #stockContent{
-        overflow-x: visible;
-    }
+    #stockContent{ overflow-x:visible; }
 
     .data-table-wrap{
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        padding-left: 12px;
-        padding-right: 12px;
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    .data-table-wrap table{ min-width:880px; }
+
+    tbody td, thead th{
+        padding:10px 12px;
+        font-size:12px;
     }
 
-    .data-table-wrap table{
-        min-width: 900px;
+    .brochure-thumb,
+    .brochure-placeholder{
+        width:72px;
+        height:72px;
+        border-radius:12px;
     }
+    .brochure-image-cell{ width:90px; }
 
-    /* ណែនាំអ្នកប្រើឲ្យអូស */
     .scroll-hint{
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-size: 11px;
-        color: var(--text-soft);
-        padding: 8px 12px 4px;
-        margin: 0 12px;
-        text-align: center;
+        display:flex !important;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        font-size:11px;
+        color:var(--text-soft);
+        padding:8px 12px 6px;
+        margin:0 10px;
+        text-align:center;
+        background:var(--card2);
+        border-radius:8px;
     }
     .scroll-hint i{
-        opacity: 0.75;
-        animation: scrollHintPulse 1.6s ease-in-out infinite;
+        opacity:0.75;
+        animation:scrollHintPulse 1.6s ease-in-out infinite;
+    }
+
+    /* Modal — full-width bottom sheet feel */
+    .overlay{
+        padding:0;
+        align-items:flex-end;
+        justify-content:center;
+    }
+    .modal{
+        max-width:100%;
+        width:100%;
+        max-height:min(94vh, 100%);
+        border-radius:20px 20px 0 0;
+        padding:16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+        margin:0;
+        animation:modalSheetIn .35s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes modalSheetIn{
+        from{ opacity:0; transform:translateY(40px); }
+        to{ opacity:1; transform:translateY(0); }
+    }
+    .modal h2{
+        font-size:16px;
+        top:-16px;
+        padding-top:6px;
+    }
+    .modal-actions{
+        flex-wrap:wrap;
+        gap:8px;
+    }
+    .modal-actions .btn-cancel,
+    .modal-actions .btn-save{
+        flex:1;
+        min-width:120px;
+        justify-content:center;
+        padding:12px 14px;
+        border-radius:10px;
+        font-size:14px;
+    }
+    .field input,
+    .modal select,
+    .modal input[type="date"],
+    .modal input[type="number"]{
+        font-size:16px;
+        padding:12px 14px;
+        border-radius:10px;
+    }
+
+    /* Login mobile */
+    .login-screen{
+        padding:16px;
+        align-items:flex-end;
+    }
+    .login-card{
+        max-width:100%;
+        border-radius:20px 20px 12px 12px;
+        padding:22px 18px 20px;
+        margin-bottom:env(safe-area-inset-bottom, 0px);
+    }
+    .login-logo h1{ font-size:16px; }
+
+    /* Menu items larger touch targets */
+    .menu-item{
+        padding:14px 16px;
+        font-size:14px;
+        border-radius:12px;
+        margin:4px 0;
+    }
+
+    .stockout-summary{
+        grid-template-columns:1fr;
+        gap:10px;
+    }
+    .stockout-summary-card{
+        padding:12px 14px;
+        border-radius:12px;
+    }
+
+    .notif-panel{
+        width:min(320px, calc(100vw - 24px));
+        right:-8px;
+    }
+
+    .export-menu{
+        right:0;
+        left:auto;
+    }
+
+    .year-cards,
+    #yearCards{
+        grid-template-columns:1fr 1fr !important;
+        gap:10px;
     }
 }
 
@@ -2204,7 +2450,7 @@ body.dark .empty h3{
     50% { transform: translateX(3px); opacity: 1; }
 }
 
-/* desktop: លាក់ hint, table-scroll មិនត្រូវការ scroll */
+/* desktop: លាក់ hint */
 .scroll-hint{
     display: none;
 }
@@ -2216,19 +2462,72 @@ body.dark .empty h3{
 @media(max-width:500px){
 
     .stats{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
     }
 
     .welcome h1{
-        font-size:19px;
+        font-size:17px;
     }
 
     .chart-box{
-        height:240px;
+        height:220px;
     }
 
     .stat-card{
-        padding:15px;
+        padding:12px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+    .stat-icon{
+        order:-1;
+        align-self:flex-end;
+        position:absolute;
+        top:12px;
+        right:12px;
+        width:40px;
+        height:40px;
+        font-size:16px;
+        opacity:.9;
+    }
+    .stat-card{
+        position:relative;
+        min-height:88px;
+    }
+    .stat-info small{
+        font-size:11px;
+    }
+    .stat-info h3{
+        font-size:18px;
+        margin-top:4px;
+    }
+
+    .page-title h2{
+        font-size:15px;
+    }
+
+    .user-chip{
+        display:none;
+    }
+
+    .topbar{
+        height:58px;
+    }
+
+    .brochure-thumb,
+    .brochure-placeholder{
+        width:56px;
+        height:56px;
+    }
+
+    .year-cards,
+    #yearCards{
+        grid-template-columns:1fr !important;
+    }
+
+    .low-stock-alert-list{
+        grid-template-columns:1fr;
     }
 }
 
@@ -2844,6 +3143,8 @@ body.role-staff #btnRequestStockOut{
 
 <div class="app auth-locked" id="appRoot">
 
+<div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
 <!-- =====================================================
      SIDEBAR
 ===================================================== -->
@@ -3392,7 +3693,6 @@ body.role-staff #btnRequestStockOut{
                         <option value="pending">កំពុងរង់ចាំ</option>
                         <option value="approved">បានអនុម័ត</option>
                         <option value="rejected">បានបដិសេធ</option>
-                        <option value="cancelled">បានបោះបង់</option>
                     </select>
                 </div>
             </div>
@@ -4598,9 +4898,12 @@ function goPage(page){
         titles[page];
 
 
-    document
-        .getElementById("sidebar")
-        .classList.remove("open");
+    if(typeof setSidebarOpen === "function"){
+        setSidebarOpen(false);
+    }else{
+        document.getElementById("sidebar")?.classList.remove("open");
+        document.getElementById("sidebarBackdrop")?.classList.remove("show");
+    }
 
 
     if(page === "dashboard"){
@@ -4633,15 +4936,28 @@ menuItems.forEach(item => {
    MOBILE SIDEBAR
 ===================================================== */
 
-document
-.getElementById("mobileMenu")
-.addEventListener("click", () => {
+function setSidebarOpen(open){
+    const side = document.getElementById("sidebar");
+    const back = document.getElementById("sidebarBackdrop");
+    if(!side) return;
+    side.classList.toggle("open", !!open);
+    if(back){
+        back.classList.toggle("show", !!open);
+        back.setAttribute("aria-hidden", open ? "false" : "true");
+    }
+    document.body.style.overflow = open ? "hidden" : "";
+}
 
-    document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
+document.getElementById("mobileMenu")?.addEventListener("click", () => {
+    const side = document.getElementById("sidebar");
+    setSidebarOpen(!side?.classList.contains("open"));
 });
+
+document.getElementById("sidebarBackdrop")?.addEventListener("click", () => {
+    setSidebarOpen(false);
+});
+
+/* បិទ sidebar ពេលជ្រើសម៉ឺនុយ — goPage ក៏បិទរួច */
 
 
 /* =====================================================
@@ -6036,10 +6352,9 @@ function switchStockOutTab(tab){
 
 function requestStatusBadgeHtml(status){
     const map = {
-        pending:   { label:"កំពុងរង់ចាំ",   cls:"pending"  },
-        approved:  { label:"បានអនុម័ត",     cls:"approved" },
-        rejected:  { label:"បានបដិសេធ",     cls:"rejected" },
-        cancelled: { label:"បានបោះបង់",     cls:"rejected" }
+        pending:  { label:"កំពុងរង់ចាំ",   cls:"pending"  },
+        approved: { label:"បានអនុម័ត",     cls:"approved" },
+        rejected: { label:"បានបដិសេធ",     cls:"rejected" }
     };
     const s = map[status] || { label: status || "-", cls: "" };
     return `<span class="request-status-badge ${s.cls}">${escapeHtml(s.label)}</span>`;
@@ -6114,198 +6429,6 @@ function renderStockOutRequests(){
         </div>
         ${buildPagerHtml("stockOutRequests", pg)}
     `;
-}
-
-/* =====================================================
-   STOCK OUT REQUESTS (Staff ស្នើ → Admin អនុម័ត)
-===================================================== */
-async function createStockOutRequest(data, err, item, dep, emp){
-    const { date, brochureId, departmentId, employeeId, quantity } = data;
-    try{
-        const available = Number(item.unit || 0);
-        if(quantity > available){
-            err.textContent = `ស្តុកមិនគ្រប់។ មាន: ${available.toLocaleString()} ក្បាល | ស្នើ: ${quantity.toLocaleString()} ក្បាល`;
-            err.classList.add("show");
-            return;
-        }
-        const payload = {
-            date,
-            brochureId,
-            brochureName: item.name || "",
-            year: item.year || "",
-            departmentId,
-            departmentName: dep.name || "",
-            employeeId,
-            employeeName: emp.name || "",
-            quantity,
-            status: "pending",
-            requestedByUid: currentUser?.uid || "",
-            requestedByName: getOperatorName(),
-            requestedAt: Date.now(),
-            reviewNote: "",
-            reviewedByUid: "",
-            reviewedByName: "",
-            reviewedAt: null
-        };
-        const ref = await db.collection("stockOutRequests").add(payload);
-        await writeAuditLog({
-            action: "create",
-            entity: "stockOutRequest",
-            entityId: ref.id,
-            entityName: item.name,
-            details: `ស្នើដក ${quantity.toLocaleString()} ក្បាល | អ្នកយក: ${emp.name} | ផ្នែក: ${dep.name}`
-        });
-        closeStockOutModal();
-        alert(`បានផ្ញើសំណើ Stock Out រួចហើយ។\n\nBrochure: ${item.name}\nចំនួន: ${quantity.toLocaleString()} ក្បាល\nរង់ចាំ Admin អនុម័ត។`);
-        switchStockOutTab("requests");
-        goPage("stockout");
-    }catch(e){
-        console.error(e);
-        err.textContent = e.code === "permission-denied"
-            ? "គ្មានសិទ្ធិបង្កើតសំណើ។ សូមពិនិត្យ Firestore Rules និង users/{uid}。"
-            : "មិនអាចផ្ញើសំណើបានទេ។ សូមព្យាយាមម្តងទៀត។";
-        err.classList.add("show");
-    }
-}
-
-async function approveStockOutRequest(id){
-    if(!requireAdmin("អនុម័តសំណើ")) return;
-    const req = stockOutRequests.find(x => x.id === id);
-    if(!req || req.status !== "pending"){
-        alert("សំណើនេះមិនអាចអនុម័តបានទេ។");
-        return;
-    }
-    if(!confirm(`អនុម័តសំណើ?\n\nBrochure: ${req.brochureName}\nចំនួន: ${Number(req.quantity||0).toLocaleString()} ក្បាល\nអ្នកយក: ${req.employeeName}`)) return;
-
-    const stockRef = db.collection(COLLECTION).doc(req.brochureId);
-    const outRef = db.collection("stockOuts").doc();
-    const reqRef = db.collection("stockOutRequests").doc(id);
-
-    try{
-        const result = await db.runTransaction(async tx => {
-            const stockSnap = await tx.get(stockRef);
-            if(!stockSnap.exists) throw new Error("ITEM_NOT_FOUND");
-            const fresh = stockSnap.data();
-            const available = Number(fresh.unit || 0);
-            const quantity = Number(req.quantity || 0);
-            if(quantity > available){
-                const e = new Error("NOT_ENOUGH_STOCK");
-                e.available = available;
-                throw e;
-            }
-            const reqSnap = await tx.get(reqRef);
-            if(!reqSnap.exists || reqSnap.data().status !== "pending") throw new Error("REQUEST_NOT_PENDING");
-
-            const remaining = available - quantity;
-            tx.update(stockRef, { unit: remaining });
-            tx.set(outRef, {
-                date: req.date || todayISO(),
-                brochureId: req.brochureId,
-                brochureName: fresh.name || req.brochureName,
-                year: fresh.year || req.year,
-                departmentId: req.departmentId,
-                departmentName: req.departmentName,
-                employeeId: req.employeeId,
-                employeeName: req.employeeName,
-                quantity,
-                createdAt: Date.now(),
-                fromRequestId: id
-            });
-            tx.update(reqRef, {
-                status: "approved",
-                reviewedByUid: currentUser?.uid || "",
-                reviewedByName: getOperatorName(),
-                reviewedAt: Date.now(),
-                stockOutId: outRef.id
-            });
-            return { remaining, quantity };
-        });
-
-        await writeAuditLog({
-            action: "update",
-            entity: "stockOutRequest",
-            entityId: id,
-            entityName: req.brochureName,
-            details: `អនុម័តសំណើ · ដក ${result.quantity.toLocaleString()} ក្បាល · នៅសល់ ${result.remaining.toLocaleString()}`
-        });
-        alert(`បានអនុម័តសំណើ។\nស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);
-    }catch(e){
-        console.error(e);
-        if(e.message === "NOT_ENOUGH_STOCK"){
-            alert(`ស្តុកមិនគ្រប់។ មាន: ${Number(e.available||0).toLocaleString()} ក្បាល`);
-        }else if(e.message === "ITEM_NOT_FOUND"){
-            alert("រកមិនឃើញ Brochure ក្នុងស្តុកទេ។");
-        }else if(e.message === "REQUEST_NOT_PENDING"){
-            alert("សំណើនេះមិននៅស្ថានភាពរង់ចាំទេ។");
-        }else{
-            alert("មិនអាចអនុម័តបានទេ។ សូមព្យាយាមម្តងទៀត។");
-        }
-    }
-}
-
-async function rejectStockOutRequest(id){
-    if(!requireAdmin("បដិសេធសំណើ")) return;
-    const req = stockOutRequests.find(x => x.id === id);
-    if(!req || req.status !== "pending"){
-        alert("សំណើនេះមិនអាចបដិសេធបានទេ។");
-        return;
-    }
-    const note = prompt("មូលហេតុបដិសេធ (ស្រេចចិត្ត):", "") || "";
-    if(!confirm(`បដិសេធសំណើ?\n\nBrochure: ${req.brochureName}\nចំនួន: ${Number(req.quantity||0).toLocaleString()} ក្បាល`)) return;
-
-    try{
-        await db.collection("stockOutRequests").doc(id).update({
-            status: "rejected",
-            reviewNote: note,
-            reviewedByUid: currentUser?.uid || "",
-            reviewedByName: getOperatorName(),
-            reviewedAt: Date.now()
-        });
-        await writeAuditLog({
-            action: "update",
-            entity: "stockOutRequest",
-            entityId: id,
-            entityName: req.brochureName,
-            details: `បដិសេធសំណើ${note ? " · " + note : ""}`
-        });
-        alert("បានបដិសេធសំណើ។");
-    }catch(e){
-        console.error(e);
-        alert("មិនអាចបដិសេធបានទេ។");
-    }
-}
-
-async function cancelStockOutRequest(id){
-    const req = stockOutRequests.find(x => x.id === id);
-    if(!req || req.status !== "pending"){
-        alert("សំណើនេះមិនអាចបោះបង់បានទេ។");
-        return;
-    }
-    if(req.requestedByUid !== currentUser?.uid && !isAdmin()){
-        alert("អ្នកអាចបោះបង់តែសំណើរបស់ខ្លួនឯង។");
-        return;
-    }
-    if(!confirm("បោះបង់សំណើនេះ?")) return;
-
-    try{
-        await db.collection("stockOutRequests").doc(id).update({
-            status: "cancelled",
-            reviewedByUid: currentUser?.uid || "",
-            reviewedByName: getOperatorName(),
-            reviewedAt: Date.now()
-        });
-        await writeAuditLog({
-            action: "update",
-            entity: "stockOutRequest",
-            entityId: id,
-            entityName: req.brochureName,
-            details: "បោះបង់សំណើ"
-        });
-        alert("បានបោះបង់សំណើ។");
-    }catch(e){
-        console.error(e);
-        alert("មិនអាចបោះបង់បានទេ។");
-    }
 }
 
 
@@ -8240,7 +8363,6 @@ if(imageLightbox){
 
 
 document.getElementById("btnAddStockOut")?.addEventListener("click",()=>openStockOutModal());
-document.getElementById("btnRequestStockOut")?.addEventListener("click",()=>openStockOutRequestModal());
 document.getElementById("btnCancelStockOut")?.addEventListener("click",closeStockOutModal);
 document.getElementById("btnSaveStockOut")?.addEventListener("click",saveStockOut);
 document.getElementById("soBrochure")?.addEventListener("change",updateStockOutBrochureInfo);
