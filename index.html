@@ -110,6 +110,10 @@ body.dark{
     box-sizing:border-box;
 }
 
+button,input,select,textarea{
+    font-family:'Kantumruy Pro',sans-serif;
+}
+
 html{
     scroll-behavior:smooth;
 }
@@ -813,7 +817,7 @@ body.dark .card-header h3{
 
     color:var(--primary-dark);
 
-    padding:10px 16px;
+    padding:11px 18px;
 
     border-radius:8px;
 
@@ -821,7 +825,11 @@ body.dark .card-header h3{
 
     font-family:'Kantumruy Pro';
 
+    font-size:14px;
+
     font-weight:700;
+
+    letter-spacing:.2px;
 
     transition:.25s;
 }
@@ -1049,51 +1057,77 @@ tbody tr:last-child td{
 }
 
 .action-btn{
-    border:none;
+    border:1px solid transparent;
 
-    background:transparent;
+    background:var(--card2);
 
-    padding:7px 9px;
+    padding:8px 12px;
 
     border-radius:7px;
 
     cursor:pointer;
 
     color:var(--text-soft);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.2px;
+    line-height:1.4;
 
-    transition:.2s;
+    transition:background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
 }
 
 .action-btn:hover{
-    background:var(--card2);
+    background:var(--text-soft);
 
-    color:var(--primary);
+    color:#fff;
+
+    transform:translateY(-1px);
 }
 
-.action-btn.withdraw:hover{
+.action-btn.stockin{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+.action-btn.stockin:hover{
+    background:var(--primary);
+    color:#fff;
+}
+
+.action-btn.withdraw{
     background:var(--gold-light);
     color:var(--primary-dark);
 }
-
-.action-btn.stockin:hover{
-    background:var(--primary-light);
-    color:var(--primary);
+.action-btn.withdraw:hover{
+    background:var(--gold);
+    color:#fff;
 }
 
+.action-btn.delete{
+    background:var(--danger-light);
+    color:var(--danger);
+}
 .action-btn.delete:hover{
-    background:var(--danger-light);
+    background:var(--danger);
 
-    color:var(--danger);
+    color:#fff;
 }
 
-.action-btn.approve:hover{
+.action-btn.approve{
     background:var(--primary-light);
     color:var(--primary);
 }
+.action-btn.approve:hover{
+    background:var(--primary);
+    color:#fff;
+}
 
-.action-btn.reject:hover{
+.action-btn.reject{
     background:var(--danger-light);
     color:var(--danger);
+}
+.action-btn.reject:hover{
+    background:var(--danger);
+    color:#fff;
 }
 
 /* =========================
@@ -1757,7 +1791,7 @@ th.sortable.active .sort-icon{opacity:1;color:var(--primary);}
    STOCK OUT / DEPARTMENT
 ========================= */
 .page-hint{margin-top:4px;color:var(--text-soft);font-size:11px;}
-.btn-secondary{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;font-family:'Kantumruy Pro';font-weight:700;transition:.25s;}
+.btn-secondary{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 15px;border-radius:8px;cursor:pointer;font-family:'Kantumruy Pro';font-size:14px;font-weight:600;letter-spacing:.2px;transition:.25s;}
 .btn-secondary:hover{background:var(--primary-light);color:var(--primary);transform:translateY(-2px);}
 .stockout-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:18px 20px 0;}
 .stockout-summary-card{background:var(--primary-light);border:1px solid var(--border);border-radius:10px;padding:13px 15px;}
@@ -1954,7 +1988,7 @@ body.dark .modal h2{
     padding:4px;
     border-radius:12px;
     border:1px solid var(--border);
-    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    background:#FFFFFF;
     box-shadow:0 1px 4px rgba(38,50,61,.08);
     display:block;
     cursor:zoom-in;
@@ -1985,13 +2019,19 @@ body.dark .modal h2{
 
     color:var(--text);
 
-    padding:9px 16px;
+    padding:10px 18px;
 
     border-radius:8px;
 
     cursor:pointer;
 
     font-family:'Kantumruy Pro';
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.2px;
 }
 
 .btn-save{
@@ -2001,7 +2041,7 @@ body.dark .modal h2{
 
     color:white;
 
-    padding:9px 18px;
+    padding:10px 20px;
 
     border-radius:8px;
 
@@ -2009,7 +2049,11 @@ body.dark .modal h2{
 
     font-family:'Kantumruy Pro';
 
+    font-size:14px;
+
     font-weight:700;
+
+    letter-spacing:.2px;
 }
 
 .btn-save:hover{
@@ -3332,6 +3376,15 @@ body.role-staff #btnRequestStockOut{
             </div>
 
         </div>
+
+        <button class="icon-top-btn"
+                id="langToggleBtn"
+                title="Switch Language / ប្តូរភាសា"
+                style="font-weight:800;font-size:12px;width:auto;padding:0 10px;">
+
+            EN
+
+        </button>
 
         <button class="icon-top-btn"
                 id="darkModeBtn"
@@ -8769,6 +8822,537 @@ if ('serviceWorker' in navigator) {
 /* =====================================================
    START
 ===================================================== */
+
+
+/* =====================================================
+   I18N — KHMER / ENGLISH LANGUAGE SWITCH
+===================================================== */
+const I18N_DICT = {
+    "ក្បាល": "copies",
+    "ផ្នែក": "Department",
+    "ឆ្នាំ": "Year",
+    "ចំនួន": "Quantity",
+    "លុប": "Delete",
+    "ឈ្មោះ": "Name",
+    "រូបភាព": "Image",
+    "បន្ថែម": "Add",
+    "រក្សាទុក": "Save",
+    "អ្នកយក": "Recipient",
+    "ផ្សេងៗ": "Note",
+    "កែ": "Edit",
+    "ចំនួនបញ្ចូល": "Quantity In",
+    "ឧ": "e.g.",
+    "កែប្រែ": "Edit",
+    "មុខ": "items",
+    "ចំនួនយកចេញ": "Quantity Out",
+    "ថ្មី": "New",
+    "ស្នើសុំ": "Request",
+    "ចំណាំ": "Note",
+    "ចុច": "Click",
+    "នេះលែងមានក្នុងស្តុកទៀតហើយ។": "is no longer in stock.",
+    "សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។": "This request has already been handled.",
+    "ស្តុកសរុបថ្មី": "New total stock",
+    "កំពុងផ្ទុកទិន្នន័យ": "Loading data",
+    "ឈ្មោះអ្នកយក": "Recipient name",
+    "បន្ថែមផ្នែក": "Add Department",
+    "មិនទាន់មានទិន្នន័យ": "No data yet",
+    "បោះបង់": "Cancel",
+    "សកម្មភាព": "Action",
+    "មិនទាន់មាន": "No",
+    "បានទេ។ សូមព្យាយាមម្តងទៀត។": ". Please try again.",
+    "រកមិនឃើញសំណើនេះទេ។": "This request could not be found.",
+    "ស្តុក": "Stock",
+    "ស្វែងរក": "Search",
+    "ថ្ងៃយកចេញ": "Date Out",
+    "ថ្ងៃបញ្ចូល": "Date In",
+    "ទិន្នន័យ": "data",
+    "បង្កើត": "Create",
+    "ជ្រើសរើស": "Select",
+    "សូមជ្រើសរើស": "Please select",
+    "ដើម្បីមើលស្តុកបច្ចុប្បន្ន។": "to view current stock.",
+    "បង្ហាញ": "Showing",
+    "រកមិនឃើញប្រតិបត្តិការនេះទេ។": "This transaction could not be found.",
+    "ប្រតិបត្តិការសរុប": "Total Transactions",
+    "ជួរទី": "Row",
+    "ប្រព័ន្ធគ្រប់គ្រងស្តុក": "Stock Management System",
+    "ភ្លេចពាក្យសម្ងាត់": "Forgot Password",
+    "ជូនដំណឹងស្តុកជិតអស់": "Low Stock Notification",
+    "កំពុងផ្ទុក": "Loading",
+    "បញ្ជីស្តុក": "Stock List",
+    "កំពុងរង់ចាំ": "Pending",
+    "បន្ថែមបុគ្គលិក": "Add Employee",
+    "ជ្រើសរើសផ្នែក": "Select Department",
+    "មែនទេ": "?",
+    "ស្តុកជិតអស់": "Low Stock",
+    "ស្តុកបច្ចុប្បន្ន": "Current Stock",
+    "ស្តុកនៅសល់": "Remaining Stock",
+    "មិនអាចរក្សាទុក": "Unable to save",
+    "ស្ថានភាព": "Status",
+    "អនុម័ត": "Approve",
+    "បដិសេធ": "Reject",
+    "សម្រាប់": "for",
+    "កំណត់ទំហំ": "Set size",
+    "លាក់": "Hide",
+    "និង": "and",
+    "ចូលប្រើ": "Login",
+    "ឬ": "or",
+    "តាមឆ្នាំ": "by Year",
+    "របាយការណ៍": "Report",
+    "ការកំណត់": "Settings",
+    "គ្មានស្តុកជិតអស់ទេ": "No low stock items",
+    "មុខទំនិញសរុប": "Total Items",
+    "ចំនួនក្បាលសរុប": "Total Copies",
+    "ចំនួនឆ្នាំ": "Number of Years",
+    "នាំចេញទិន្នន័យ": "Export Data",
+    "បានអនុម័ត": "Approved",
+    "បានបដិសេធ": "Rejected",
+    "ប្រវត្តិការបញ្ចូលស្តុក": "Stock-In History",
+    "គ្រប់គ្រង": "Manage",
+    "របាយការណ៍ស្តុក": "Stock Report",
+    "ផ្នែកយកច្រើនបំផុត": "Top Department",
+    "និយោជិតយកញឹកញាប់": "Most Frequent Employee",
+    "ឧ. សុខ ដារ៉ា": "e.g. Sok Dara",
+    "ផ្ញើ": "Send",
+    "បិទ": "Close",
+    "ឆ្នាំនឹងបង្ហាញដោយស្វ័យប្រវត្តិ": "the year will show automatically",
+    "ជ្រើសរើសអ្នកយក": "Select Recipient",
+    "ប្រភេទ": "Type",
+    "ឆ្នាំបោះពុម្ព": "Print Year",
+    "ស្រេចចិត្ត": "optional",
+    "មានស្រាប់៖ បង្ហាញរូបបច្ចុប្បន្ន": "Existing: showing current image",
+    "អាចជ្រើសរូបថ្មីដើម្បីប្តូរ": "you may pick a new image to replace it",
+    "បន្ថែមធាតុថ្មី": "Add New Entry",
+    "ទម្រង់អ៊ីមែលមិនត្រឹមត្រូវ។": "Invalid email format.",
+    "ព្យាយាមច្រើនពេក។ សូមរង់ចាំបន្តិច។": "Too many attempts. Please wait a moment.",
+    "ក្នុង": "in",
+    "មិនជោគជ័យ៖": "failed:",
+    "ស្តុកដែលមាន": "Available stock",
+    "កំពុងរក្សាទុក": "Saving",
+    "មិនទាន់មានរូបភាព": "No image yet",
+    "បញ្ចូលស្តុក": "Stock In",
+    "ដកស្តុក": "Stock Out",
+    "ដកស្តុកបានជោគជ័យ": "Stock out successful",
+    "លុបបុគ្គលិក": "Delete Employee",
+    "ពីផ្នែក": "from department",
+    "លែងមាន/លែងស្ថិតក្នុងបញ្ជីបច្ចុប្បន្ន": "no longer exists / not in the current list",
+    "នេះលែងមានក្នុងបញ្ជីស្តុកបច្ចុប្បន្នទៀតហើយ (ត្រូវបានលុប ឬប្ដូរឈ្មោះ)។": "is no longer in the current stock list (deleted or renamed).",
+    "ក្នុងស្តុកទេ។": "in stock.",
+    "បុគ្គលិកនេះលែងស្ថិតនៅក្នុងផ្នែកនេះទៀតហើយ។ សូមជ្រើសរើសម្តងទៀត។": "This employee is no longer in this department. Please select again.",
+    "ផ្នែកនេះលែងមានទៀតហើយ។ សូមជ្រើសរើសម្តងទៀត។": "This department no longer exists. Please select again.",
+    "បានជោគជ័យ": "successful",
+    "ស្នើ": "Requested",
+    "ប្រតិបត្តិការនេះលែងមានទៀតហើយ។ សូមផ្ទុកទំព័រឡើងវិញ។": "This transaction no longer exists. Please reload the page.",
+    "មិនអាចកែប្រែ": "Unable to edit",
+    "តើអ្នកចង់លុបប្រតិបត្តិការនេះមែនទេ": "Are you sure you want to delete this transaction",
+    "មិនអាចលុបប្រតិបត្តិការនេះបានទេ។ សូមព្យាយាមម្តងទៀត។": "Unable to delete this transaction. Please try again.",
+    "ចំនួនយកចេញសរុប": "Total Quantity Out",
+    "ចេញ។": "out.",
+    "សំណើ": "Request",
+    "សូមបំពេញ ថ្ងៃបញ្ចូល": "Please fill in the date in",
+    "និងចំនួនឱ្យបានត្រឹមត្រូវ។": "and quantity correctly.",
+    "មិនត្រឹមត្រូវ។": "is invalid.",
+    "បញ្ចូល": "In",
+    "បញ្ចូលស្តុកបានជោគជ័យ": "Stock in successful",
+    "ចំនួនបញ្ចូលសរុប": "Total Quantity In",
+    "មាន": "has",
+    "ស្តុកតិចជាង": "stock less than",
+    "ក្បាល។": "copies.",
+    "នៅសល់": "remaining",
+    "រួចហើយ។": "already.",
+    "មិនមានទិន្នន័យសម្រាប់នាំចេញទេ។": "No data to export.",
+    "ចំនួនកំណត់ត្រា": "Number of Records",
+    "ដង": "times",
+    "មិនស្គាល់": "Unknown",
+    "សូមស្វាគមន៍": "Welcome",
+    "សួស្តី": "Hello",
+    "អ្នកកំពុងប្រើ": "You are using",
+    "ចាកចេញ": "Log out",
+    "ចូលជាមួយ": "Sign in with",
+    "អ៊ីមែល": "Email",
+    "ពាក្យសម្ងាត់": "Password",
+    "បង្ហាញ / លាក់ ពាក្យសម្ងាត់": "Show / hide password",
+    "បង្ហាញពាក្យសម្ងាត់": "Show password",
+    "ចូលប្រើប្រព័ន្ធ": "Sign in",
+    "សូម": "Please",
+    "ដើម្បីមើល និងគ្រប់គ្រងទិន្នន័យ": "to view and manage data",
+    "អ្នកមិនមានសិទ្ធិ": "You don't have permission",
+    "ត្រូវការ": "requires",
+    "សូមបញ្ចូលអ៊ីមែលជាមុន រួចចុច": "Please enter your email first, then click",
+    "ម្តងទៀត។": "again.",
+    "កំពុងផ្ញើ": "Sending",
+    "បានផ្ញើតំណកំណត់ពាក្យសម្ងាត់ថ្មីទៅ": "Password reset link sent to",
+    "។ សូមពិនិត្យ": ". Please check",
+    "រកមិនឃើញគណនីជាមួយអ៊ីមែលនេះ។": "No account found with this email.",
+    "មិនអាចផ្ញើបានទេ៖": "Unable to send:",
+    "កំពុងចូល": "Signing in",
+    "អ្នកប្រើថ្មី": "New user",
+    "បង្កើតជា": "Created as",
+    "ត្រូវកែ": "needs to be edited",
+    "បើ": "if",
+    "មិនអនុញ្ញាត នៅតែប្រើ": "not allowed, still using",
+    "មូលដ្ឋានក្នុង": "base in",
+    "សូមបញ្ចូលអ៊ីមែល និងពាក្យសម្ងាត់។": "Please enter email and password.",
+    "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។": "Incorrect email or password.",
+    "បានបិទ": "closed",
+    "នេះមិនទាន់អនុញ្ញាតក្នុង": "is not yet allowed in",
+    "។ សូមបន្ថែម": ". Please add",
+    "មិនអាចចាកចេញបានទេ។": "Unable to log out.",
+    "តើអ្នកចង់ចាកចេញពីប្រព័ន្ធមែនទេ": "Are you sure you want to log out",
+    "ការកំណត់ប្រព័ន្ធ": "System Settings",
+    "ប្តូរទៅ": "Switch to",
+    "ងងឹត": "Dark",
+    "ឈ្មោះអ្នកប្រើ": "Username",
+    "ឈ្មោះនេះនឹងត្រូវកត់ត្រាក្នុង": "This name will be recorded in",
+    "ពេលកែ/លុបទិន្នន័យ": "when editing/deleting data",
+    "កម្រិតស្តុកជិតអស់": "Low Stock Threshold",
+    "បើចំនួនស្តុកតិចជាងលេខនេះ": "if the stock quantity is below this number",
+    "ជូនដំណឹងស្តុក": "Stock notification",
+    "អាចដាក់ច្រើន": "you can enter multiple",
+    "ដោយញែកតាមសញ្ញាក្បៀស": "separated by commas",
+    "អនុញ្ញាតឲ្យកម្មវិធីជូនដំណឹងនៅលើកុំព្យូទ័រ/ទូរសព្ទ": "allow the app to send notifications on computer/phone",
+    "បើកការជូនដំណឹង": "Enable Notifications",
+    "នាំចេញទិន្នន័យទាំងអស់": "Export All Data",
+    "ជា": "as",
+    "ដើម្បីចម្លងទុក": "to back up",
+    "ប្រវត្តិសកម្មភាព": "Activity History",
+    "កត់ត្រាអ្នកដែលបង្កើត / កែ / លុប ទិន្នន័យ (ប្រើឈ្មោះអ្នកប្រើពីការកំណត់": "Records who created / edited / deleted data (uses the username from settings",
+    "គ្រប់សកម្មភាព": "All Actions",
+    "គ្រប់ប្រភេទ": "All Types",
+    "រូបភាពនៃ": "Image of",
+    "ដែលបានជ្រើស (ចុចរូបដើម្បីមើល": "selected (click image to view",
+    "ស្តុកមានស្រាប់": "Existing Stock",
+    "វាយឈ្មោះ": "Type name",
+    "ថ្មី៖ អាច": "new: you can",
+    "ចំណាំ / មូលហេតុ": "Note / Reason",
+    "ឧ. បោះពុម្ពថែម": "e.g. reprint",
+    "ឈ្មោះផ្នែក": "Department Name",
+    "ឈ្មោះបុគ្គលិក": "Employee Name",
+    "ជ្រើសរើសរូបភាព": "Select Image",
+    "របស់អ្នក។": "of yours.",
+    "ប្រព័ន្ធនឹងបង្រួមរូបភាពដោយស្វ័យប្រវត្តិ។": "The system will automatically compress the image.",
+    "ចំនួនសរុប": "Total Quantity",
+    "សូមបំពេញ ឈ្មោះ ឆ្នាំ និងចំនួនសរុប": "Please fill in the Name, Year, and Total Quantity",
+    "ថ្មីនឹងត្រូវបានបង្កើតដោយស្វ័យប្រវត្តិ ព្រមជាមួយការបញ្ចូលស្តុកលើកដំបូង។": "will be created automatically along with the first stock-in.",
+    "កុំលុប": "Do not delete",
+    "បើអ្នកប្រើកំពុងជ្រើសរូប": "If the user is selecting an image",
+    "តែពេលប្តូរ": "only when changing",
+    "ការកែប្រែជានិច្ចកែទៅលើ": "Edits always apply to",
+    "ដែលមានស្រាប់ ដូច្នេះលាក់ប៊ូតុង": "that already exists, so hide the button",
+    "មិនអាច": "unable to",
+    "រូបភាពបានទេ។ សូមព្យាយាមម្តងទៀត។": "the image. Please try again.",
+    "សូមបំពេញ ថ្ងៃបញ្ចូល, ឈ្មោះ": "Please fill in Date In, Name",
+    "ថ្មី, ឆ្នាំ និងចំនួនឱ្យបានត្រឹមត្រូវ។": "(new), Year, and Quantity correctly.",
+    "បញ្ចូលស្តុកសម្រាប់": "Stock in for",
+    "ថ្មី៖ បង្កើត": "new: create",
+    "ថ្មី (ឬប្រើ": "new (or use",
+    "ដែលមានឈ្មោះ": "that has the name",
+    "ឆ្នាំដូចគ្នារួចហើយ) រួចបញ្ចូលស្តុកភ្លាមតែម្តង": "and the same year already) and stock in immediately",
+    "បន្ថែមទៅស្តុកមានស្រាប់": "add to existing stock",
+    "ថ្មីតាម": "new by",
+    "បញ្ចូលបន្ថែមទៅស្តុកមានស្រាប់": "add in to existing stock",
+    "ថ្មីបានទេ។ សូមព្យាយាមម្តងទៀត។": "(new). Please try again.",
+    "មិនអាចកែប្រែបានទេ ព្រោះស្តុកបច្ចុប្បន្ន": "Unable to edit because the current stock",
+    "ក្បាល) មិនគ្រប់ដើម្បីដកចំនួនចាស់ចេញវិញ។ ប្រហែលជាមានការដកស្តុកចេញច្រើនរួចហើយ។": "copies) is not enough to remove the old amount. Stock may have already been withdrawn elsewhere.",
+    "ស្តុកនឹងត្រូវបានដកចេញវិញតាមចំនួននេះដោយស្វ័យប្រវត្តិ។": "Stock will be deducted again by this amount automatically.",
+    "ដើម្បីកត់ត្រាការបញ្ចូល": "to record the stock-in of",
+    "ចូលស្តុក។": "into stock.",
+    "របស់អ្នកប្រើបច្ចុប្បន្ន បើជា": "of the current user if",
+    "សារ​នេះ​ផ្ញើ​ស្វ័យប្រវត្តិ​ពី​ប្រព័ន្ធ": "This message is sent automatically by the system",
+    "មុខទៀត": "more items",
+    "មុខ (កម្រិត": "items (threshold",
+    "មានការផ្លាស់ប្តូរថ្មីនៃបញ្ជីស្តុកទាប": "There's a new change in the low-stock list",
+    "នៅតែចង់ាត់ត្រា": "still want to record",
+    "ដើម្បីមិន": "in order to not",
+    "ក្បាល នៅសល់": "copies remaining",
+    "មិន": "not",
+    "តែពេលបញ្ជីផ្លាស់ប្តូរ": "only when the list changes",
+    "សូមបញ្ចូលកម្រិតស្តុកត្រឹមត្រូវ (លេខ": "Please enter a valid stock threshold (number",
+    "ឲ្យផ្ញើម្តងទៀតបើចាំបាច់": "so it can resend if needed",
+    "បានរក្សាទុកការកំណត់ស្តុកជិតអស់។": "Low-stock settings saved.",
+    "នេះមិនគាំទ្រ": "is not supported",
+    "ទេ។": ".",
+    "ដកស្តុកចេញពី": "Stock out from",
+    "សូមបញ្ចូលចំនួនដែលត្រូវដក": "Please enter the quantity to withdraw",
+    "សូមបញ្ចូលចំនួនស្តុកដែលត្រឹមត្រូវ។": "Please enter a valid stock quantity.",
+    "ដកចេញ": "Withdraw",
+    "ស្តុកមិនគ្រប់សម្រាប់ការដកចេញទេ។": "Not enough stock for this withdrawal.",
+    "ចំនួនដែលស្នើដក": "Requested withdrawal quantity",
+    "មិនអាចរកឃើញ": "Could not find",
+    "នេះទេ។": "this.",
+    "មិនអាចដកស្តុកបានទេ។ សូមព្យាយាមម្តងទៀត។": "Unable to withdraw stock. Please try again.",
+    "រក្សាទុកផ្នែក": "Save Department",
+    "រក្សាទុកបុគ្គលិក": "Save Employee",
+    "សូមបញ្ចូលឈ្មោះផ្នែក។": "Please enter the department name.",
+    "ផ្នែកនេះមានរួចហើយ។": "This department already exists.",
+    "បានបន្ថែមផ្នែកដោយជោគជ័យ។": "Department added successfully.",
+    "សូមជ្រើសរើសផ្នែក។": "Please select a department.",
+    "សូមបញ្ចូលឈ្មោះបុគ្គលិក។": "Please enter the employee name.",
+    "មិនអាចរកឃើញផ្នែក។": "Department not found.",
+    "បុគ្គលិកឈ្មោះនេះមានរួចហើយក្នុងផ្នែកនេះ។": "An employee with this name already exists in this department.",
+    "ទៅផ្នែក": "to department",
+    "បានបន្ថែមបុគ្គលិកដោយជោគជ័យ។": "Employee added successfully.",
+    "មិនអាចរក្សាទុកបានទេ។": "Unable to save.",
+    "តើអ្នកចង់លុបបុគ្គលិក": "Are you sure you want to delete employee",
+    "មិនអាចលុបបុគ្គលិកបានទេ។": "Unable to delete employee.",
+    "តើអ្នកចង់លុបផ្នែក": "Are you sure you want to delete department",
+    "លុបផ្នែក": "Delete Department",
+    "មិនអាចលុបផ្នែកបានទេ។": "Unable to delete department.",
+    "មិនទាន់មានផ្នែក": "No department yet",
+    "ដើម្បីបង្កើត": "to create",
+    "នាក់": "people",
+    "មិនទាន់មានបុគ្គលិកក្នុងផ្នែកនេះ": "No employees in this department yet",
+    "សូមបំពេញ ថ្ងៃយកចេញ": "Please fill in the Date Out",
+    "ផ្នែក, ឈ្មោះអ្នកយក និងចំនួនឱ្យបានត្រឹមត្រូវ។": "Department, Recipient Name, and Quantity correctly.",
+    "បុគ្គលិក មិនត្រឹមត្រូវ។": "employee is invalid.",
+    "ដក": "withdraw",
+    "ស្តុកមិនគ្រប់សម្រាប់ការដកចេញទេ។ ស្តុកដែលមាន": "Not enough stock to withdraw. Available stock",
+    "ស្នើដក": "Requested",
+    "ស្តុកមិនគ្រប់សម្រាប់ការកែប្រែនេះទេ។ ស្តុកអតិបរមាដែលអាចប្រើបាន": "Not enough stock for this edit. Maximum available stock",
+    "ស្តុកនឹងត្រូវបានបន្ថែមមកវិញដោយស្វ័យប្រវត្តិ។": "Stock will be added back automatically.",
+    "ចុចមើល": "Click to view",
+    "ដើម្បីកត់ត្រាការយក": "to record taking",
+    "មិនទាន់មានសំណើ": "No requests yet",
+    "ពី": "from",
+    "នឹងបង្ហាញនៅទីនេះ។": "will be shown here.",
+    "ដើម្បីស្នើសុំយក": "to request taking out",
+    "សំណើសរុប": "Total Requests",
+    "ថ្ងៃស្នើ": "Date Requested",
+    "ស្នើដោយ": "Requested By",
+    "ស្តុកមិនគ្រប់សម្រាប់ការស្នើសុំនេះទេ។ ស្តុកដែលមាន": "Not enough stock for this request. Available stock",
+    "ស្នើសុំដក": "Requested to withdraw",
+    "បានជោគជ័យ! សូមរង់ចាំការអនុម័តពី": "successful! Please wait for approval from",
+    "មិនអាចផ្ញើសំណើ": "Unable to send the request",
+    "តើអ្នកចង់អនុម័តសំណើនេះមែនទេ": "Are you sure you want to approve this request",
+    "អនុម័តសំណើ": "Approve Request",
+    "អនុម័តសំណើបានជោគជ័យ! ស្តុកនៅសល់": "Request approved successfully! Remaining stock",
+    "ស្តុកមិនគ្រប់សម្រាប់អនុម័តទេ។ ស្តុកដែលមាន": "Not enough stock to approve. Available stock",
+    "បុគ្គលិកនេះលែងស្ថិតនៅក្នុងផ្នែកនេះទៀតហើយ។": "This employee is no longer in this department.",
+    "ផ្នែកនេះលែងមានទៀតហើយ។": "This department no longer exists.",
+    "មិនអាចអនុម័តសំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។": "Unable to approve this request. Please try again.",
+    "មូលហេតុនៃការបដិសេធ (មិនចាំបាច់": "Reason for rejection (optional",
+    "បដិសេធសំណើ": "Reject Request",
+    "មូលហេតុ": "Reason",
+    "បានបដិសេធសំណើនេះ។": "This request has been rejected.",
+    "មិនអាចបដិសេធសំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។": "Unable to reject this request. Please try again.",
+    "អ្នកមិនអាចបោះបង់សំណើនេះបានទេ។": "You cannot cancel this request.",
+    "តើអ្នកចង់បោះបង់សំណើនេះមែនទេ": "Are you sure you want to cancel this request",
+    "បោះបង់សំណើ": "Cancel Request",
+    "មិនអាចបោះបង់សំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។": "Unable to cancel this request. Please try again.",
+    "ថ្មី (ស្រេចចិត្ត": "(new, optional",
+    "អូសទៅឆ្វេង / ស្តាំ ដើម្បីមើលទិន្នន័យទាំងអស់": "Scroll left / right to see all data",
+    "ដើម្បី": "to",
+    "មុខ (ទំព័រនេះ": "items (this page",
+    "ចុចដើម្បីមើលរូប": "Click to view image",
+    "ស្តុករបស់": "Stock of",
+    "នេះអស់ហើយ។": "is out of stock.",
+    "បន្ថែមក្នុងប្លុក": "Add to block",
+    "ជាមួយ": "with",
+    "ពេញលេញ": "Full",
+    "លើ": "on",
+    "ពេល": "when",
+    "ទេ": "no",
+    "ស្តុកជិតអស់ (តិចជាង": "Low stock (less than",
+    "តិចជាង": "less than",
+    "ស្តុកមធ្យម": "Average Stock",
+    "ចំនួនស្តុកតាមឆ្នាំ": "Stock Quantity by Year",
+    "សមាមាត្រស្តុក": "Stock Ratio",
+    "ថ្មីៗ": "Recent",
+    "មើលទាំងអស់": "View All",
+    "បោះពុម្ពស្តុក": "Print Stock",
+    "នាំចេញទិន្នន័យស្តុក": "Export Stock Data",
+    "គ្រប់គ្រងការដកស្តុក": "Manage Stock Out",
+    "ចេញ និងសំណើស្នើសុំពី": "and requests from",
+    "ប្រតិបត្តិការ": "Transactions",
+    "សំណើស្នើសុំ": "Requests",
+    "អនុម័ត/បដិសេធ": "Approve/Reject",
+    "ស្តុកកាត់ត្រឹមតែពេលអនុម័តរួច": "Stock is only deducted once approved",
+    "ស្វែងរកសំណើ": "Search requests",
+    "គ្រប់ស្ថានភាព": "All Statuses",
+    "និងបុគ្គលិក": "and employees",
+    "បញ្ចូលផ្នែក និងឈ្មោះបុគ្គលិកសម្រាប់ប្រើពេលដក": "Add departments and employee names for use when withdrawing",
+    "ស្តុកតាមឆ្នាំ": "stock by year",
+    "ចំនួនមធ្យមក្នុងមុខ": "Average quantity per item",
+    "សរុប": "Total",
+    "ចំនួនយកចេញសរុប (ក្បាល": "Total Quantity Out (copies",
+    "តាមចំនួនក្បាល": "by number of copies",
+    "តាមចំនួនដង": "by number of times",
+    "ការកំណត់ត្រា": "Record",
+    "បើចំនួន": "if the quantity",
+    "ថ្ងៃខែ": "Date",
+    "សំណើ Stock Out": "Stock Out Request",
+    "អ្នករៀបចំ": "Prepared by",
+    "អ្នកមិនអនុញ្ញាត": "Not permitted",
+    "អ្នកពិនិត្យ": "Reviewer",
+    "អ្នកប្រើ": "User",
+    "អាន": "Read",
+    "អក្សរស": "White text",
+    "អក្សរដិត": "Bold text",
+    "ហើយត្រឡប់ជា": "and convert to",
+    "ស្អាតទាក់ទាញ": "clean and attractive",
+    "ស្រាលៗ ដូច": "lightweight, like",
+    "ស្ទាយ": "style",
+    "ស្តុកទាប": "Low stock",
+    "សូមពិនិត្យ": "Please check",
+    "សូមបន្ថែម": "Please add",
+    "សូមបញ្ចូលឈ្មោះអ្នកប្រើ។": "Please enter a username.",
+    "សរុប៖": "Total:",
+    "សម្រាប់ទំព័របោះពុម្ព": "for the print page",
+    "សម្រាប់ជួរឈរជាលេខ": "for numeric columns",
+    "សម្រាប់គ្រប់គ្រងស្តុក": "for stock management",
+    "លឿន និងសន្សំ": "faster and save",
+    "លើជួរក្បាល": "on the header row",
+    "លាក់ប៊ូតុងកែ/លុប/បន្ថែម": "Hide edit/delete/add buttons",
+    "ល.រ": "No.",
+    "រូបភាពមិនជោគជ័យទេ។ សូមសាកល្បងម្តងទៀត។": "Image failed. Please try again.",
+    "រូបភាពទៅ": "the image to",
+    "របស់": "of",
+    "រកមិនឃើញ": "Not found",
+    "ម៉ោង៖": "Time:",
+    "ម៉ោង": "Time",
+    "មុននឹង": "before",
+    "មុខទំនិញសរុប៖": "Total Items:",
+    "មិនអាចលុបទិន្នន័យបានទេ": "Unable to delete data",
+    "មិនអាចរក្សាទុកទិន្នន័យបានទេ។ សូមព្យាយាមម្តងទៀត។": "Unable to save data. Please try again.",
+    "មិនអាចរក្សាទុកទិន្នន័យបានទេ": "Unable to save data",
+    "មិនអាចភ្ជាប់": "Unable to connect",
+    "មិនអាចផ្ទុកបណ្ណាល័យ": "Unable to load the library",
+    "មិនអាចនាំចេញ": "Unable to export",
+    "មិនអាចកែប្រែទិន្នន័យបានទេ": "Unable to edit data",
+    "មិនមែន": "not",
+    "មិនមានទិន្នន័យសម្រាប់បោះពុម្ព": "No data to print",
+    "មិនមានទិន្នន័យសម្រាប់": "No data for",
+    "មិនទាន់មានស្តុក": "No stock yet",
+    "មិនទាន់មានទិន្នន័យស្តុកសម្រាប់បោះពុម្ពទេ។": "No stock data available to print.",
+    "មិនទាន់មានឆ្នាំ": "No year yet",
+    "មិនជោគជ័យ។ សូមពិនិត្យការភ្ជាប់អ៊ីនធឺណិត ហើយសាកល្បងម្តងទៀត។": "failed. Please check your internet connection and try again.",
+    "ភ្លាមៗ": "immediately",
+    "ព័ត៌មានលម្អិត": "Details",
+    "ពេលវេលា": "Time",
+    "ពេលជ្រើសម៉ឺនុយ": "when selecting the menu",
+    "ក៏បិទរួច": "also closes",
+    "ឯកសារនេះមិនមែនជារូបភាពទេ។ សូមជ្រើសរើសរូបភាពម្តងទៀត។": "This file is not an image. Please select an image again.",
+    "ឲ្យអានស្រួល": "for easier reading",
+    "ឲ្យនៅខាងលើគេបង្អស់នៃទំព័រ": "to stay at the top of the page",
+    "។ អាចបើកវិញក្នុង": ". Can be re-enabled in"
+};
+
+const I18N_KEYS_SORTED = Object.keys(I18N_DICT).sort((a,b)=>b.length-a.length);
+
+let currentLang = localStorage.getItem("appLang") || "km";
+
+function translateText(str){
+    if(currentLang !== "en" || !str) return str;
+    let result = str;
+    for(let i=0;i<I18N_KEYS_SORTED.length;i++){
+        const km = I18N_KEYS_SORTED[i];
+        if(result.indexOf(km) !== -1){
+            result = result.split(km).join(I18N_DICT[km]);
+        }
+    }
+    return result;
+}
+
+const I18N_SKIP_TAGS = new Set(["SCRIPT","STYLE"]);
+const I18N_ATTRS = ["placeholder","title","alt"];
+const i18nOriginalText = new WeakMap();
+const i18nOriginalAttr = new WeakMap();
+
+function i18nDesiredText(node){
+    if(!i18nOriginalText.has(node)) i18nOriginalText.set(node, node.nodeValue);
+    const original = i18nOriginalText.get(node);
+    return currentLang === "en" ? translateText(original) : original;
+}
+
+function i18nDesiredAttr(el, attr, currentValue){
+    if(!i18nOriginalAttr.has(el)) i18nOriginalAttr.set(el, {});
+    const store = i18nOriginalAttr.get(el);
+    if(!(attr in store)) store[attr] = currentValue;
+    const original = store[attr];
+    return currentLang === "en" ? translateText(original) : original;
+}
+
+function i18nWalk(node){
+    if(!node) return;
+    if(node.nodeType === Node.TEXT_NODE){
+        const desired = i18nDesiredText(node);
+        if(node.nodeValue !== desired) node.nodeValue = desired;
+        return;
+    }
+    if(node.nodeType !== Node.ELEMENT_NODE) return;
+    if(I18N_SKIP_TAGS.has(node.tagName)) return;
+    for(let i=0;i<I18N_ATTRS.length;i++){
+        const attr = I18N_ATTRS[i];
+        if(node.hasAttribute(attr)){
+            const current = node.getAttribute(attr);
+            const desired = i18nDesiredAttr(node, attr, current);
+            if(current !== desired) node.setAttribute(attr, desired);
+        }
+    }
+    node.childNodes.forEach(i18nWalk);
+}
+
+let i18nObserverActive = true;
+const i18nObserver = new MutationObserver(mutations=>{
+    if(currentLang !== "en") return;
+    if(!i18nObserverActive) return;
+    i18nObserverActive = false;
+    for(let m=0;m<mutations.length;m++){
+        const mut = mutations[m];
+        if(mut.type === "childList"){
+            mut.addedNodes.forEach(n=>i18nWalk(n));
+        } else if(mut.type === "characterData"){
+            const desired = i18nDesiredText(mut.target);
+            if(mut.target.nodeValue !== desired) mut.target.nodeValue = desired;
+        } else if(mut.type === "attributes"){
+            const el = mut.target;
+            const attr = mut.attributeName;
+            if(I18N_ATTRS.includes(attr) && el.hasAttribute(attr)){
+                const current = el.getAttribute(attr);
+                const desired = i18nDesiredAttr(el, attr, current);
+                if(current !== desired) el.setAttribute(attr, desired);
+            }
+        }
+    }
+    i18nObserverActive = true;
+});
+
+function startI18nObserver(){
+    i18nObserver.observe(document.body, {
+        childList:true, subtree:true, characterData:true,
+        attributes:true, attributeFilter:I18N_ATTRS
+    });
+}
+
+/* Translate native dialogs (alert/confirm/prompt) so they respect the current language */
+(function(){
+    const _alert = window.alert.bind(window);
+    window.alert = function(msg){ return _alert(translateText(String(msg))); };
+    const _confirm = window.confirm.bind(window);
+    window.confirm = function(msg){ return _confirm(translateText(String(msg))); };
+    const _prompt = window.prompt.bind(window);
+    window.prompt = function(msg, def){ return _prompt(translateText(String(msg)), def); };
+})();
+
+function applyLanguage(){
+    document.documentElement.setAttribute("lang", currentLang === "en" ? "en" : "km");
+    document.body.classList.toggle("lang-en", currentLang === "en");
+    const btn = document.getElementById("langToggleBtn");
+    if(btn) btn.textContent = currentLang === "en" ? "\u1781\u17d2\u1798\u17c2\u179a" : "EN";
+    i18nWalk(document.body);
+}
+
+function toggleLanguage(){
+    currentLang = currentLang === "en" ? "km" : "en";
+    localStorage.setItem("appLang", currentLang);
+    applyLanguage();
+}
+
+document.getElementById("langToggleBtn")?.addEventListener("click", toggleLanguage);
+
+(function initI18n(){
+    startI18nObserver();
+    applyLanguage();
+})();
 
 initAuth();
 
