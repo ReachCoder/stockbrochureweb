@@ -4612,6 +4612,11 @@ function applyRoleUI(){
 function showApp(){
     document.getElementById("loginScreen")?.classList.add("hidden");
     document.getElementById("appRoot")?.classList.remove("auth-locked");
+
+    //  បន្ថែមការហៅ Function ទាញទិន្នន័យមកបង្ហាញនៅត្រង់នេះ
+    if (typeof loadDashboardData === "function") {
+        loadDashboardData();
+    }
 }
 
 function showLogin(){
