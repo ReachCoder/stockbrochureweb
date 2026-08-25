@@ -4623,47 +4623,142 @@ async function loginWithEmail(){
     showLoginError("");
     const email = document.getElementById("loginEmail")?.value.trim();
     const password = document.getElementById("loginPassword")?.value || "";
+
     if(!email || !password){
         showLoginError("សូមបញ្ចូលអ៊ីមែល និងពាក្យសម្ងាត់។");
         return;
     }
+
     setLoginLoading(true);
-    try{
-        await auth.signInWithEmailAndPassword(email, password);
-    }catch(e){
+
+    try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        
+        if (userCredential && userCredential.user) {
+            // បើ Login ជោគជ័យ ឲ្យលោតទៅ Dashboard ភ្លាម
+            showApp();
+        }
+    } catch(e) {
         console.error(e);
         const code = e.code || "";
+        
         if(code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found"){
             showLoginError("អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។");
-        }else if(code === "auth/too-many-requests"){
+        } else if(code === "auth/too-many-requests"){
             showLoginError("ព្យាយាមច្រើនពេក។ សូមរង់ចាំបន្តិច។");
-        }else if(code === "auth/invalid-email"){
+        } else if(code === "auth/invalid-email"){
             showLoginError("ទម្រង់អ៊ីមែលមិនត្រឹមត្រូវ។");
-        }else{
-            showLoginError("Login មិនជោគជ័យ៖ " + (e.message || code));
+        } else {
+            showLoginError("មានបញ្ហាក្នុងការចូលប្រើ៖ " + (e.message || code));
         }
+    } finally {
+        // បិទ Loading រាល់ពេល (ទោះជោគជ័យ ឬបរាជ័យ)
         setLoginLoading(false);
     }
 }
 
-async function loginWithGoogle(){
+// Function សម្រាប់ handle Google Login
+async function loginWithGoogle() {
     showLoginError("");
     setLoginLoading(true);
-    try{
+
+    try {
         const provider = new firebase.auth.GoogleAuthProvider();
+        // បើកការ Redirect ទៅកាន់ Google Login
         await auth.signInWithPopup(provider);
-    }catch(e){
+    } catch (e) {
         console.error(e);
-        if(e.code === "auth/popup-closed-by-user"){
-            showLoginError("បានបិទหน้าต่าง Google Login។");
-        }else if(e.code === "auth/unauthorized-domain"){
-            showLoginError("Domain នេះមិនទាន់អនុញ្ញាតក្នុង Firebase Auth។ សូមបន្ថែម domain ក្នុង Firebase Console។");
-        }else{
-            showLoginError("Google Login មិនជោគជ័យ៖ " + (e.message || e.code || ""));
-        }
+        handleAuthError(e);
         setLoginLoading(false);
     }
 }
+
+// ទទួលលទ្ធផលនៅពេលលោតត្រឡប់មកវិញពី Google
+async function handleRedirectResult() {
+    try {
+        const result = await auth.getRedirectResult();
+        if (result && result.user) {
+            console.log("Login ជោគជ័យតាមរយៈ Redirect:", result.user);
+            // បើ Login ជោគជ័យ បញ្ជូនទៅកាន់ Dashboard
+            navigateToDashboard();
+        }
+    } catch (e) {
+        console.error("Error from redirect:", e);
+        handleAuthError(e);
+        setLoginLoading(false);
+    }
+}
+
+// 1. ស្ដាប់មើលស្ថានភាព Login របស់ User (រាល់ពេល Reload ឬ Redirect បកមកវិញ)
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        // បើមាន User ឡកอิน ឲ្យបង្ហាញ Dashboard (App) ភ្លាម
+        showApp();
+    } else {
+        // បើគ្មាន User ទេ ឲ្យបង្ហាញ Login Screen
+        showLogin();
+    }
+    setLoginLoading(false);
+});
+
+// 2. ឆែកមើលលទ្ធផលពី Google Redirect
+async function checkGoogleRedirectResult() {
+    try {
+        const result = await auth.getRedirectResult();
+        if (result && result.user) {
+            // បើ Login តាម Google ជោគជ័យ
+            showApp();
+        }
+    } catch (e) {
+        console.error("Google Redirect Error:", e);
+        if (typeof showLoginError === "function") {
+            if (e.code === "auth/unauthorized-domain") {
+                showLoginError("Domain នេះមិនទាន់អនុញ្ញាតក្នុង Firebase Auth ទេ។");
+            } else {
+                showLoginError("Google Login មិនជោគជ័យ៖ " + (e.message || e.code || ""));
+            }
+        }
+    } finally {
+        if (typeof setLoginLoading === "function") {
+            setLoginLoading(false);
+        }
+    }
+}
+
+// ហៅ Run ពេល Script ឬ ទំព័រដើរដំបូង
+checkGoogleRedirectResult();
+
+// Helper សម្រាប់បង្ហាញ Error
+function handleAuthError(e) {
+    if (e.code === "auth/unauthorized-domain") {
+        showLoginError("Domain នេះមិនទាន់អនុញ្ញាតក្នុង Firebase Auth ទេ។");
+    } else if (e.code === "auth/popup-closed-by-user") {
+        showLoginError("អ្នកបានបិទផ្ទាំង Login។");
+    } else {
+        showLoginError("Google Login មិនជោគជ័យ៖ " + (e.message || e.code || ""));
+    }
+}
+
+// Function សម្រាប់ប្តូរទៅកាន់ Dashboard Page
+function navigateToDashboard() {
+    // ប្រសិនបើកម្មវិធីរបស់អ្នកជា Single Page Application (SPA)៖
+    // ឧទាហរណ៍៖ បិទ login section ហើយបើក dashboard section
+    const loginPage = document.getElementById("loginPage"); // ឬ id នៃ login page របស់អ្នក
+    const dashboardPage = document.getElementById("dashboard"); // ឬ id នៃ dashboard របស់អ្នក
+
+    if (loginPage && dashboardPage) {
+        loginPage.style.display = "none";
+        dashboardPage.style.display = "block";
+    }
+
+    // ឬបើអ្នកប្រើប្រាស់ URL/Routing ផ្សេងគ្នា (ឧ. redirect ទៅកាន់ dashboard.html)៖
+    // window.location.href = "dashboard.html";
+}
+
+// ដំណើរការឆែក Redirect នៅពេល Reload Page ដំបូង
+document.addEventListener("DOMContentLoaded", () => {
+    handleRedirectResult();
+});
 
 async function logoutUser(){
     try{
