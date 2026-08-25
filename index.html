@@ -4697,13 +4697,11 @@ async function handleRedirectResult() {
 // 1. ស្ដាប់មើលស្ថានភាព Login របស់ User (រាល់ពេល Reload ឬ Redirect បកមកវិញ)
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // បើមាន User ឡកอิน ឲ្យបង្ហាញ Dashboard (App) ភ្លាម
         showApp();
+        loadDashboardData(); //  ទាញទិន្នន័យពី Database (Firestore/Realtime Database)
     } else {
-        // បើគ្មាន User ទេ ឲ្យបង្ហាញ Login Screen
         showLogin();
     }
-    setLoginLoading(false);
 });
 
 // 2. ឆែកមើលលទ្ធផលពី Google Redirect
