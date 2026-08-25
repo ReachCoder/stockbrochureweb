@@ -4612,11 +4612,6 @@ function applyRoleUI(){
 function showApp(){
     document.getElementById("loginScreen")?.classList.add("hidden");
     document.getElementById("appRoot")?.classList.remove("auth-locked");
-
-    //  បន្ថែមការហៅ Function ទាញទិន្នន័យមកបង្ហាញនៅត្រង់នេះ
-    if (typeof loadDashboardData === "function") {
-        loadDashboardData();
-    }
 }
 
 function showLogin(){
@@ -4698,7 +4693,6 @@ async function handleRedirectResult() {
 auth.onAuthStateChanged((user) => {
     if (user) {
         showApp();
-        loadDashboardData(); //  ទាញទិន្នន័យពី Database (Firestore/Realtime Database)
     } else {
         showLogin();
     }
