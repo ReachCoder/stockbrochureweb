@@ -19,7 +19,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
  <!-- បន្ថែមក្នុងប្លុក <head> -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4f46e5">
-<link rel="apple-touch-icon" href="logo.png">
+<link rel="apple-touch-icon" href="icon_stock.png">
+<link rel="icon" type="image/png" href="icon_stock.png">
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -6429,6 +6430,178 @@ function renderStockOutRequests(){
         </div>
         ${buildPagerHtml("stockOutRequests", pg)}
     `;
+}
+
+/* =====================================================
+   STOCK OUT REQUEST — CREATE / APPROVE / REJECT / CANCEL
+===================================================== */
+async function createStockOutRequest(data,err,item,dep,emp){
+    const {date,brochureId,departmentId,employeeId,quantity}=data;
+    try{
+        const fresh = items.find(i=>i.id===brochureId);
+        if(!fresh){err.textContent="Brochure នេះលែងមានក្នុងស្តុកទៀតហើយ។";err.classList.add("show");return;}
+        if(quantity > Number(fresh.unit||0)){
+            err.textContent=`Not enough stock! ស្តុកមិនគ្រប់សម្រាប់ការស្នើសុំនេះទេ។ ស្តុកដែលមាន: ${Number(fresh.unit||0).toLocaleString()} ក្បាល | ស្នើ: ${quantity.toLocaleString()} ក្បាល`;
+            err.classList.add("show");
+            return;
+        }
+        const reqRef = db.collection("stockOutRequests").doc();
+        await reqRef.set({
+            date, brochureId, brochureName:item.name, year:item.year||"",
+            departmentId, departmentName:dep.name,
+            employeeId, employeeName:emp.name,
+            quantity,
+            status:"pending",
+            requestedByUid: currentUser?.uid || "",
+            requestedByName: getOperatorName(),
+            requestedAt: Date.now()
+        });
+        await writeAuditLog({
+            action:"create",
+            entity:"stockOutRequest",
+            entityId:reqRef.id,
+            entityName:item.name,
+            details:`ស្នើសុំដក ${quantity.toLocaleString()} ក្បាល | អ្នកយក: ${emp.name} | ផ្នែក: ${dep.name}`
+        });
+        closeStockOutModal();
+        alert(`ស្នើសុំ Stock Out បានជោគជ័យ! សូមរង់ចាំការអនុម័តពី Admin។\n\nBrochure: ${item.name}\nអ្នកយក: ${emp.name}\nផ្នែក: ${dep.name}\nចំនួន: ${quantity.toLocaleString()} ក្បាល`);
+        goPage("stockout");
+    }catch(e){
+        console.error(e);
+        err.textContent="មិនអាចផ្ញើសំណើ Stock Out បានទេ។ សូមព្យាយាមម្តងទៀត។";
+        err.classList.add("show");
+    }
+}
+
+async function approveStockOutRequest(id){
+    if(!requireAdmin("អនុម័ត Stock Out")) return;
+    const request = stockOutRequests.find(r=>r.id===id);
+    if(!request){alert("រកមិនឃើញសំណើនេះទេ។");return;}
+    if(request.status!=="pending"){alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");return;}
+    const ok = confirm(`តើអ្នកចង់អនុម័តសំណើនេះមែនទេ?\n\nBrochure: ${request.brochureName}\nផ្នែក: ${request.departmentName}\nអ្នកយក: ${request.employeeName}\nចំនួន: ${Number(request.quantity||0).toLocaleString()} ក្បាល`);
+    if(!ok)return;
+
+    const reqRef = db.collection("stockOutRequests").doc(id);
+    const stockRef = db.collection(COLLECTION).doc(request.brochureId);
+    const outRef = db.collection("stockOuts").doc();
+
+    try{
+        const result = await db.runTransaction(async tx=>{
+            const reqSnap = await tx.get(reqRef);
+            if(!reqSnap.exists) throw new Error("REQUEST_NOT_FOUND");
+            const freshReq = reqSnap.data();
+            if(freshReq.status!=="pending") throw new Error("ALREADY_HANDLED");
+
+            const stockSnap = await tx.get(stockRef);
+            if(!stockSnap.exists) throw new Error("ITEM_NOT_FOUND");
+            const fresh = stockSnap.data(), available = Number(fresh.unit||0);
+            const quantity = Number(freshReq.quantity||0);
+            if(quantity>available){const e=new Error("NOT_ENOUGH_STOCK");e.available=available;throw e;}
+
+            const depSnap = await tx.get(db.collection("departments").doc(freshReq.departmentId));
+            if(!depSnap.exists) throw new Error("DEPARTMENT_NOT_FOUND");
+            const latest = (depSnap.data().employees||[]).find(e=>e.id===freshReq.employeeId);
+            if(!latest) throw new Error("EMPLOYEE_NOT_FOUND");
+
+            const remaining = available-quantity;
+            tx.update(stockRef,{unit:remaining});
+            tx.set(outRef,{
+                date:freshReq.date, brochureId:freshReq.brochureId, brochureName:fresh.name||freshReq.brochureName, year:fresh.year||freshReq.year,
+                departmentId:freshReq.departmentId, departmentName:depSnap.data().name||freshReq.departmentName,
+                employeeId:freshReq.employeeId, employeeName:latest.name,
+                quantity, createdAt:Date.now(), fromRequestId:id
+            });
+            tx.update(reqRef,{
+                status:"approved",
+                reviewedByUid:currentUser?.uid||"",
+                reviewedByName:getOperatorName(),
+                reviewedAt:Date.now()
+            });
+            return {remaining, quantity};
+        });
+        await writeAuditLog({
+            action:"update",
+            entity:"stockOutRequest",
+            entityId:id,
+            entityName:request.brochureName,
+            details:`អនុម័តសំណើ Stock Out | ចំនួន ${result.quantity.toLocaleString()} | ផ្នែក ${request.departmentName} | អ្នកយក ${request.employeeName}`
+        });
+        alert(`អនុម័តសំណើបានជោគជ័យ! ស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);
+    }catch(e){
+        console.error(e);
+        if(e.message==="NOT_ENOUGH_STOCK") alert(`Not enough stock! ស្តុកមិនគ្រប់សម្រាប់អនុម័តទេ។ ស្តុកដែលមាន: ${Number(e.available||0).toLocaleString()} ក្បាល`);
+        else if(e.message==="ALREADY_HANDLED") alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");
+        else if(e.message==="REQUEST_NOT_FOUND") alert("រកមិនឃើញសំណើនេះទេ។");
+        else if(e.message==="EMPLOYEE_NOT_FOUND") alert("បុគ្គលិកនេះលែងស្ថិតនៅក្នុងផ្នែកនេះទៀតហើយ។");
+        else if(e.message==="DEPARTMENT_NOT_FOUND") alert("ផ្នែកនេះលែងមានទៀតហើយ។");
+        else if(e.message==="ITEM_NOT_FOUND") alert("Brochure នេះលែងមានក្នុងស្តុកទៀតហើយ។");
+        else alert("មិនអាចអនុម័តសំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។");
+    }
+}
+
+async function rejectStockOutRequest(id){
+    if(!requireAdmin("បដិសេធ Stock Out")) return;
+    const request = stockOutRequests.find(r=>r.id===id);
+    if(!request){alert("រកមិនឃើញសំណើនេះទេ។");return;}
+    if(request.status!=="pending"){alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");return;}
+    const note = prompt("មូលហេតុនៃការបដិសេធ (មិនចាំបាច់):","") || "";
+    const reqRef = db.collection("stockOutRequests").doc(id);
+    try{
+        await db.runTransaction(async tx=>{
+            const reqSnap = await tx.get(reqRef);
+            if(!reqSnap.exists) throw new Error("REQUEST_NOT_FOUND");
+            if(reqSnap.data().status!=="pending") throw new Error("ALREADY_HANDLED");
+            tx.update(reqRef,{
+                status:"rejected",
+                reviewNote:note.trim(),
+                reviewedByUid:currentUser?.uid||"",
+                reviewedByName:getOperatorName(),
+                reviewedAt:Date.now()
+            });
+        });
+        await writeAuditLog({
+            action:"update",
+            entity:"stockOutRequest",
+            entityId:id,
+            entityName:request.brochureName,
+            details:`បដិសេធសំណើ Stock Out | ផ្នែក ${request.departmentName} | អ្នកយក ${request.employeeName}${note.trim()?` | មូលហេតុ: ${note.trim()}`:""}`
+        });
+        alert("បានបដិសេធសំណើនេះ។");
+    }catch(e){
+        console.error(e);
+        if(e.message==="ALREADY_HANDLED") alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");
+        else if(e.message==="REQUEST_NOT_FOUND") alert("រកមិនឃើញសំណើនេះទេ។");
+        else alert("មិនអាចបដិសេធសំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។");
+    }
+}
+
+async function cancelStockOutRequest(id){
+    const request = stockOutRequests.find(r=>r.id===id);
+    if(!request){alert("រកមិនឃើញសំណើនេះទេ។");return;}
+    if(request.requestedByUid !== currentUser?.uid){alert("អ្នកមិនអាចបោះបង់សំណើនេះបានទេ។");return;}
+    if(request.status!=="pending"){alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");return;}
+    const ok = confirm("តើអ្នកចង់បោះបង់សំណើនេះមែនទេ?");
+    if(!ok) return;
+    const reqRef = db.collection("stockOutRequests").doc(id);
+    try{
+        await db.runTransaction(async tx=>{
+            const reqSnap = await tx.get(reqRef);
+            if(!reqSnap.exists) throw new Error("REQUEST_NOT_FOUND");
+            if(reqSnap.data().status!=="pending") throw new Error("ALREADY_HANDLED");
+            tx.delete(reqRef);
+        });
+        await writeAuditLog({
+            action:"delete",
+            entity:"stockOutRequest",
+            entityId:id,
+            entityName:request.brochureName,
+            details:`បោះបង់សំណើ Stock Out | ចំនួន ${Number(request.quantity||0).toLocaleString()} | ផ្នែក ${request.departmentName}`
+        });
+    }catch(e){
+        console.error(e);
+        if(e.message==="ALREADY_HANDLED") alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");
+        else alert("មិនអាចបោះបង់សំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។");
+    }
 }
 
 
