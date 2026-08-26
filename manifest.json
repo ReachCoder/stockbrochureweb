@@ -1,19 +1,20 @@
+
 {
   "name": "Brochure Stock Management System",
   "short_name": "Brochure Stock",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4f46e5",
+  "background_color": "#F1E8CE",
+  "theme_color": "#2F6D4C",
   "icons": [
     {
-      "src": "icon_stock.png",
+      "src": "assets/icon_stock.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon_stock.png",
+      "src": "assets/icon_stock.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

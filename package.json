@@ -1,5 +1,17 @@
 {
+  "name": "brochure-stock-management",
+  "version": "1.0.0",
+  "description": "Brochure Stock Management System - Khmer language inventory app with Firebase",
+  "private": true,
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "serve": "npx serve ."
+  },
   "dependencies": {
     "firebase": "^12.18.0"
-  }
+  },
+  "devDependencies": {},
+  "keywords": ["brochure", "stock", "inventory", "firebase", "khmer"],
+  "author": "",
+  "license": "UNLICENSED"
 }
