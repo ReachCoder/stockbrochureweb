@@ -25,6 +25,7 @@
         "ប្រព័ន្ធគ្រប់គ្រងស្តុក Brochure": "Brochure Stock Management System",
         "MAIN MENU": "MAIN MENU",
         "SYSTEM": "SYSTEM",
+        "ផ្ទាំងគ្រប់គ្រង": "Dashboard",
         "ស្តុក Brochure": "Brochure Stock",
         "តាមឆ្នាំ": "By Year",
         "របាយការណ៍": "Reports",
@@ -202,7 +203,7 @@
     // Page titles used by app.js (goPage). Exposed globally so app.js
     // (or this file) can look up the right title in the active language.
     window.PAGE_TITLES = {
-        dashboard: { km: "Dashboard", en: "Dashboard" },
+        dashboard: { km: "ផ្ទាំងគ្រប់គ្រង", en: "Dashboard" },
         stock: { km: "ស្តុក Brochure", en: "Brochure Stock" },
         stockout: { km: "Stock Out", en: "Stock Out" },
         stockin: { km: "Stock In", en: "Stock In" },
