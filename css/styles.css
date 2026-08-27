@@ -96,6 +96,16 @@ body{
         color .35s ease;
 }
 
+/* Buttons/inputs/selects don't inherit the page font by default in
+   browsers - this was making every button fall back to the system
+   UI font instead of Kantumruy Pro. Fix that globally here. */
+button, input, select, textarea, optgroup{
+    font-family:inherit;
+}
+button{
+    font-size:14px;
+}
+
 /* =========================
    APP
 ========================= */
@@ -430,27 +440,44 @@ body.dark .page-title h2{
 }
 
 .icon-top-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+
     width:40px;
     height:40px;
+    padding:0 10px;
 
     border:1px solid var(--border);
 
     background:var(--card);
 
     color:var(--text);
+    font-size:14px;
+    font-weight:600;
 
     border-radius:9px;
 
     cursor:pointer;
 
-    transition:.25s;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
 }
 
 .icon-top-btn:hover{
     background:var(--primary);
+    border-color:var(--primary);
     color:white;
+}
 
-    transform:rotate(8deg);
+/* language toggle grows to fit its "EN" / "ខ្មែរ" label */
+.lang-toggle-btn{
+    width:auto;
+    min-width:40px;
+}
+.lang-toggle-btn .lang-code{
+    font-size:12px;
+    letter-spacing:.2px;
 }
 
 /* mobile button */
@@ -2994,9 +3021,10 @@ body.dark .login-divider::after{background:#34453E;}
 .app.auth-locked{display:none !important;}
 .user-chip{
     display:flex;
-    align-items:center;
-    gap:8px;
-    padding:6px 10px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+    padding:6px 14px;
     border:1px solid var(--border);
     border-radius:9px;
     background:var(--card);
@@ -3005,17 +3033,21 @@ body.dark .login-divider::after{background:#34453E;}
 }
 .user-chip strong{
     display:block;
-    font-size:12px;
+    font-size:13px;
+    font-weight:700;
     color:var(--primary-dark);
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    max-width:140px;
+    max-width:170px;
+    line-height:1.3;
 }
 body.dark .user-chip strong{color:#B8D8C7;}
 .user-chip small{
+    display:block;
     color:var(--text-soft);
     font-size:10px;
+    line-height:1.4;
 }
 .role-badge{
     display:inline-block;

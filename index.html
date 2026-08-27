@@ -267,6 +267,16 @@
 
         </div>
 
+        <button class="icon-top-btn lang-toggle-btn"
+                id="langToggleBtn"
+                type="button"
+                title="Switch to English">
+
+            <i class="fa-solid fa-language"></i>
+            <span class="lang-code">EN</span>
+
+        </button>
+
         <button class="icon-top-btn"
                 id="darkModeBtn"
                 title="Dark Mode">
@@ -1313,7 +1323,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.0/firebase-firestore-compat.min.js"></script>
 
 <!-- App JS -->
+<script src="js/i18n.js"></script>
 <script src="js/app.js"></script>
+<script>
+document.getElementById("langToggleBtn").addEventListener("click", function(){
+    if(window.i18n) window.i18n.toggleLanguage();
+});
+</script>
 
 </body>
 </html>

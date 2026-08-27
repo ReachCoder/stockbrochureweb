@@ -1,9 +1,10 @@
-const CACHE_NAME = 'brochure-stock-v2';
+const CACHE_NAME = 'brochure-stock-v3';
 const urlsToCache = [
   '/',
   '/index.html',
   '/css/styles.css',
   '/js/app.js',
+  '/js/i18n.js',
   '/manifest.json'
 ];
 
