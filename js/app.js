@@ -248,6 +248,39 @@ function startDataListenersOnce(){
     // ទុក Stock Out / Stock In / Audit ឲ្យ listen ពេលចូល page
 }
 
+function stopDataListeners() {
+
+    console.log("Stopping Firebase listeners...");
+
+    if (_unsubItems) {
+        _unsubItems();
+        _unsubItems = null;
+    }
+
+    if (_unsubDepartments) {
+        _unsubDepartments();
+        _unsubDepartments = null;
+    }
+
+    if (window._unsubStockOutRequests) {
+        window._unsubStockOutRequests();
+        window._unsubStockOutRequests = null;
+    }
+    if (_unsubStockOuts) {
+    _unsubStockOuts();
+    _unsubStockOuts = null;
+    }
+
+    // Reset page listener flags
+    window._stockOutsListening = false;
+    window._stockInsListening = false;
+    window._auditListening = false;
+
+    dataListenersStarted = false;
+
+    console.log("All Firebase listeners stopped.");
+}
+
 function initAuth(){
     document.getElementById("btnLoginEmail")?.addEventListener("click", loginWithEmail);
     document.getElementById("btnLoginGoogle")?.addEventListener("click", loginWithGoogle);
@@ -266,12 +299,21 @@ function initAuth(){
     auth.onAuthStateChanged(async (user) => {
         authReady = true;
         if(!user){
+
+            // IMPORTANT: unsubscribe Firestore listeners
+            stopDataListeners();
+
             currentUser = null;
             currentUserProfile = null;
-            dataListenersStarted = false;
-            document.body.classList.remove("role-staff", "role-admin");
+
+            document.body.classList.remove(
+                "role-staff",
+                "role-admin"
+            );
+
             showLogin();
             setLoginLoading(false);
+
             return;
         }
         currentUser = user;
@@ -681,116 +723,202 @@ function extractYear(value){
    FIREBASE LISTENER
 ===================================================== */
 
-function listenItems(){
+let _unsubItems = null;
 
-    db.collection(COLLECTION)
-      .orderBy("createdAt","asc")
-      .onSnapshot(snapshot => {
+function listenItems() {
 
-        items =
-            snapshot.docs.map(doc => ({
-                id:doc.id,
+    // Stop previous listener
+    if (_unsubItems) {
+        _unsubItems();
+        _unsubItems = null;
+    }
+
+    console.log("Starting Items listener...");
+
+    _unsubItems = db.collection(COLLECTION)
+        .orderBy("createdAt", "asc")
+        .limit(500)
+        .onSnapshot(snapshot => {
+
+            items = snapshot.docs.map(doc => ({
+                id: doc.id,
                 ...doc.data()
             }));
 
+            renderStock();
+            updateDashboard();
+            renderYears();
+            updateReports();
+            populateStockOutBrochures();
+            populateStockInBrochures();
+            updateLowStockAlerts();
 
-        renderStock();
+        }, error => {
 
-        updateDashboard();
+            console.error("Items listener error:", error);
 
-        renderYears();
-
-        updateReports();
-
-        populateStockOutBrochures();
-
-        populateStockInBrochures();
-
-        updateLowStockAlerts();
-
-    }, error => {
-
-        console.error(error);
-
-        document.getElementById(
-            "stockContent"
-        ).innerHTML = `
-
-            <div class="empty">
-
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <h3>
-                    មិនអាចភ្ជាប់ Firebase
-                </h3>
-
-                <p>
-                    សូមពិនិត្យ Firestore Rules
-                </p>
-
-            </div>
-
-        `;
-
-    });
-
+        });
 }
 
 
 /* =====================================================
    DEPARTMENTS + STOCK OUT LISTENERS
 ===================================================== */
-function listenDepartments(){
-    db.collection("departments").orderBy("createdAt","asc").onSnapshot(snapshot=>{
-        departments=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-        renderDepartments();
-        populateDepartmentSelects();
-    },error=>console.error("Department listener error:",error));
+let _unsubDepartments = null;
+
+function listenDepartments() {
+
+    // Stop previous listener
+    if (_unsubDepartments) {
+        _unsubDepartments();
+        _unsubDepartments = null;
+    }
+
+    console.log("Starting Departments listener...");
+
+    _unsubDepartments = db.collection("departments")
+        .orderBy("createdAt", "asc")
+        .limit(200)
+        .onSnapshot(snapshot => {
+
+            departments = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            renderDepartments();
+            populateDepartmentSelects();
+
+        }, error => {
+
+            console.error(
+                "Department listener error:",
+                error
+            );
+
+        });
 }
-function listenStockOuts(){
-    db.collection("stockOuts")
-      .orderBy("createdAt","desc")
-      .limit(200)
-      .onSnapshot(snapshot=>{
-          stockOuts=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-          renderStockOut();
-          if(document.getElementById("reports")?.classList.contains("active")){
-              updateReports();
-          }
-      },error=>console.error("Stock Out listener error:",error));
+let _unsubStockOuts = null;
+
+function listenStockOuts() {
+
+    if (_unsubStockOuts) {
+        _unsubStockOuts();
+        _unsubStockOuts = null;
+    }
+
+    _unsubStockOuts = db.collection("stockOuts")
+        .orderBy("createdAt", "desc")
+        .limit(200)
+        .onSnapshot(snapshot => {
+
+            stockOuts = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            renderStockOut();
+
+            if (
+                document
+                    .getElementById("reports")
+                    ?.classList.contains("active")
+            ) {
+                updateReports();
+            }
+
+        }, error => {
+            console.error(
+                "Stock Out listener error:",
+                error
+            );
+        });
 }
-function listenStockOutRequests(){
+function listenStockOutRequests() {
+
+    // Remove previous listener first
     if (window._unsubStockOutRequests) {
         window._unsubStockOutRequests();
         window._unsubStockOutRequests = null;
     }
 
-    window._unsubStockOutRequests = db.collection("stockOutRequests")
-        .where("status", "==", "pending")
-        .orderBy("requestedAt", "desc")
-        .limit(50)
-        .onSnapshot(snapshot => {
-            stockOutRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            updateStockOutRequestBadges();
-            if (document.getElementById("stockout")?.classList.contains("active") && stockOutActiveTab === "requests") {
-                renderStockOutRequests();
+    console.log("Starting Stock Out Requests listener...");
+
+    window._unsubStockOutRequests =
+        db.collection("stockOutRequests")
+          .where("status", "==", "pending")
+          .orderBy("requestedAt", "desc")
+          .limit(50)
+          .onSnapshot(
+
+            snapshot => {
+
+                stockOutRequests = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                console.log(
+                    "Stock Out Requests:",
+                    stockOutRequests.length
+                );
+
+                updateStockOutRequestBadges();
+
+                if (
+                    document
+                        .getElementById("stockout")
+                        ?.classList
+                        .contains("active") &&
+                    stockOutActiveTab === "requests"
+                ) {
+                    renderStockOutRequests();
+                }
+            },
+
+            error => {
+
+                console.error(
+                    "Stock Out Requests listener error:",
+                    error
+                );
+
+                // Firebase quota exceeded
+                if (
+                    error.code === "resource-exhausted" ||
+                    error.code === "quota-exceeded"
+                ) {
+                    console.error(
+                        "Firestore quota exceeded. Stop realtime listener."
+                    );
+
+                    // IMPORTANT:
+                    // Stop retrying this listener
+                    if (window._unsubStockOutRequests) {
+                        window._unsubStockOutRequests();
+                        window._unsubStockOutRequests = null;
+                    }
+
+                    return;
+                }
+
+                // Missing composite index
+                if (error.code === "failed-precondition") {
+
+                    console.warn(
+                        "Firestore composite index is required."
+                    );
+
+                    return;
+                }
+
+                console.error(
+                    "Unknown Firestore error:",
+                    error.code,
+                    error.message
+                );
             }
-        }, error => {
-            console.error("Stock Out Requests listener error:", error);
-            // បើ index មិនទាន់មាន → fallback
-            if (error.code === "failed-precondition") {
-                window._unsubStockOutRequests = db.collection("stockOutRequests")
-                    .orderBy("requestedAt", "desc")
-                    .limit(30)
-                    .onSnapshot(snap => {
-                        stockOutRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                        updateStockOutRequestBadges();
-                        if (document.getElementById("stockout")?.classList.contains("active") && stockOutActiveTab === "requests") {
-                            renderStockOutRequests();
-                        }
-                    }, e => console.error(e));
-            }
-        });
+          );
 }
 function updateStockOutRequestBadges(){
     const pendingAll = stockOutRequests.filter(r=>r.status==="pending").length;
