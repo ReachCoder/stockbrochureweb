@@ -14,7 +14,7 @@
     --card2:#EADFBE;
 
     --text:#26323D;
-    --text-soft:#68737D;
+    --text-soft:#262829;
 
     --border:#D3C393;
 
@@ -1047,7 +1047,7 @@ tbody tr:last-child td{
 .action-btn{
     border:none;
 
-    background:transparent;
+    background:#30c777;
 
     padding:7px 9px;
 
@@ -1057,7 +1057,25 @@ tbody tr:last-child td{
 
     color:var(--text-soft);
 
-    transition:.2s;
+    transition:.3s;
+}
+
+.action-btn.reject {
+    border:none;
+
+    background: var(--danger);
+
+    padding:7px 9px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    color:var(--text-soft);
+
+    transition:.3s;
+    margin-left: 25px;
+
 }
 
 .action-btn:hover{
@@ -1077,7 +1095,7 @@ tbody tr:last-child td{
 }
 
 .action-btn.delete:hover{
-    background:var(--danger-light);
+    background:var(--danger);
 
     color:var(--danger);
 }
@@ -2570,7 +2588,7 @@ body.dark .audit-badge.delete{ background:#3A2524; color:#F8B4B4; }
     white-space:nowrap;
 }
 .request-status-badge.pending{ background:#FFF3CD; color:#856404; }
-.request-status-badge.approved{ background:#E4F0E9; color:#2F6D4C; }
+.request-status-badge.approved{ background:#32f081; color:#151616; }
 .request-status-badge.rejected{ background:#F8E3E1; color:#B94A48; }
 body.dark .request-status-badge.pending{ background:#3A3520; color:#E6C876; }
 body.dark .request-status-badge.approved{ background:#263B31; color:#B8D8C7; }

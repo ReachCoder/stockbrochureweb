@@ -239,12 +239,13 @@ async function logoutUser(){
 function startDataListenersOnce(){
     if(dataListenersStarted) return;
     dataListenersStarted = true;
+
+    // Listen ភ្លាមៗ (ត្រូវការ Dashboard + badge)
     listenItems();
     listenDepartments();
-    listenStockOuts();
-    listenStockIns();
-    listenStockOutRequests();
-    listenAuditLogs();
+    listenStockOutRequests();   // សម្រាប់ badge
+
+    // ទុក Stock Out / Stock In / Audit ឲ្យ listen ពេលចូល page
 }
 
 function initAuth(){
@@ -527,11 +528,27 @@ function goPage(page){
 
     }
 
-    if(page === "stockout") renderStockOut();
-    if(page === "stockin") renderStockIn();
-    if(page === "departments") renderDepartments();
-    if(page === "audit") renderAuditLog();
-    if(page === "reports") updateReports();
+    if(page === "stockout"){
+    if(!window._stockOutsListening){
+        listenStockOuts();
+        window._stockOutsListening = true;
+    }
+    renderStockOut();
+    }
+    if(page === "stockin"){
+        if(!window._stockInsListening){
+            listenStockIns();
+            window._stockInsListening = true;
+        }
+        renderStockIn();
+    }
+    if(page === "audit"){
+        if(!window._auditListening){
+            listenAuditLogs();
+            window._auditListening = true;
+        }
+        renderAuditLog();
+    }
 
 }
 
@@ -731,22 +748,49 @@ function listenDepartments(){
     },error=>console.error("Department listener error:",error));
 }
 function listenStockOuts(){
-    db.collection("stockOuts").orderBy("createdAt","desc").onSnapshot(snapshot=>{
-        stockOuts=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-        renderStockOut();
-        if(document.getElementById("reports")?.classList.contains("active")){
-            updateReports();
-        }
-    },error=>console.error("Stock Out listener error:",error));
+    db.collection("stockOuts")
+      .orderBy("createdAt","desc")
+      .limit(200)
+      .onSnapshot(snapshot=>{
+          stockOuts=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+          renderStockOut();
+          if(document.getElementById("reports")?.classList.contains("active")){
+              updateReports();
+          }
+      },error=>console.error("Stock Out listener error:",error));
 }
 function listenStockOutRequests(){
-    db.collection("stockOutRequests").orderBy("requestedAt","desc").onSnapshot(snapshot=>{
-        stockOutRequests=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-        updateStockOutRequestBadges();
-        if(document.getElementById("stockout")?.classList.contains("active") && stockOutActiveTab==="requests"){
-            renderStockOutRequests();
-        }
-    },error=>console.error("Stock Out Requests listener error:",error));
+    if (window._unsubStockOutRequests) {
+        window._unsubStockOutRequests();
+        window._unsubStockOutRequests = null;
+    }
+
+    window._unsubStockOutRequests = db.collection("stockOutRequests")
+        .where("status", "==", "pending")
+        .orderBy("requestedAt", "desc")
+        .limit(50)
+        .onSnapshot(snapshot => {
+            stockOutRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateStockOutRequestBadges();
+            if (document.getElementById("stockout")?.classList.contains("active") && stockOutActiveTab === "requests") {
+                renderStockOutRequests();
+            }
+        }, error => {
+            console.error("Stock Out Requests listener error:", error);
+            // បើ index មិនទាន់មាន → fallback
+            if (error.code === "failed-precondition") {
+                window._unsubStockOutRequests = db.collection("stockOutRequests")
+                    .orderBy("requestedAt", "desc")
+                    .limit(30)
+                    .onSnapshot(snap => {
+                        stockOutRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        updateStockOutRequestBadges();
+                        if (document.getElementById("stockout")?.classList.contains("active") && stockOutActiveTab === "requests") {
+                            renderStockOutRequests();
+                        }
+                    }, e => console.error(e));
+            }
+        });
 }
 function updateStockOutRequestBadges(){
     const pendingAll = stockOutRequests.filter(r=>r.status==="pending").length;
@@ -766,10 +810,13 @@ function updateStockOutRequestBadges(){
     }
 }
 function listenStockIns(){
-    db.collection("stockIns").orderBy("createdAt","desc").onSnapshot(snapshot=>{
-        stockIns=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-        renderStockIn();
-    },error=>console.error("Stock In listener error:",error));
+    db.collection("stockIns")
+      .orderBy("createdAt","desc")
+      .limit(200)
+      .onSnapshot(snapshot=>{
+          stockIns=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+          renderStockIn();
+      },error=>console.error("Stock In listener error:",error));
 }
 
 
@@ -2141,9 +2188,12 @@ async function approveStockOutRequest(id){
             details:`អនុម័តសំណើ Stock Out | ចំនួន ${result.quantity.toLocaleString()} | ផ្នែក ${request.departmentName} | អ្នកយក ${request.employeeName}`
         });
         alert(`អនុម័តសំណើបានជោគជ័យ! ស្តុកនៅសល់: ${result.remaining.toLocaleString()} ក្បាល`);
-    }catch(e){
+        }catch(e){
         console.error(e);
-        if(e.message==="NOT_ENOUGH_STOCK") alert(`Not enough stock! ស្តុកមិនគ្រប់សម្រាប់អនុម័តទេ។ ស្តុកដែលមាន: ${Number(e.available||0).toLocaleString()} ក្បាល`);
+        if(e.code === "resource-exhausted" || (e.message && e.message.includes("Quota"))){
+            alert("Firestore Quota លើសហើយ។ សូមរង់ចាំបន្តិច ឬកាត់បន្ថយចំនួន tab App ដែលបើក។");
+        }
+        else if(e.message==="NOT_ENOUGH_STOCK") alert(`Not enough stock! ស្តុកមិនគ្រប់សម្រាប់អនុម័តទេ។ ស្តុកដែលមាន: ${Number(e.available||0).toLocaleString()} ក្បាល`);
         else if(e.message==="ALREADY_HANDLED") alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");
         else if(e.message==="REQUEST_NOT_FOUND") alert("រកមិនឃើញសំណើនេះទេ។");
         else if(e.message==="EMPLOYEE_NOT_FOUND") alert("បុគ្គលិកនេះលែងស្ថិតនៅក្នុងផ្នែកនេះទៀតហើយ។");
@@ -2181,9 +2231,12 @@ async function rejectStockOutRequest(id){
             details:`បដិសេធសំណើ Stock Out | ផ្នែក ${request.departmentName} | អ្នកយក ${request.employeeName}${note.trim()?` | មូលហេតុ: ${note.trim()}`:""}`
         });
         alert("បានបដិសេធសំណើនេះ។");
-    }catch(e){
+        }catch(e){
         console.error(e);
-        if(e.message==="ALREADY_HANDLED") alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");
+        if(e.code === "resource-exhausted" || (e.message && e.message.includes("Quota"))){
+            alert("Firestore Quota លើសហើយ។ សូមរង់ចាំបន្តិច ឬកាត់បន្ថយចំនួន tab App ដែលបើក។");
+        }
+        else if(e.message==="ALREADY_HANDLED") alert("សំណើនេះត្រូវបានដោះស្រាយរួចហើយ។");
         else if(e.message==="REQUEST_NOT_FOUND") alert("រកមិនឃើញសំណើនេះទេ។");
         else alert("មិនអាចបដិសេធសំណើនេះបានទេ។ សូមព្យាយាមម្តងទៀត។");
     }
