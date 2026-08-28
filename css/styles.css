@@ -1058,6 +1058,7 @@ tbody tr:last-child td{
     color:var(--text-soft);
 
     transition:.3s;
+    margin-left: 20px;
 }
 
 .action-btn.reject {
@@ -1074,8 +1075,23 @@ tbody tr:last-child td{
     color:var(--text-soft);
 
     transition:.3s;
-    margin-left: 25px;
 
+}
+
+.action-btn.delete{
+    border:none;
+
+    background: var(--danger);
+
+    padding:7px 9px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    color:var(--text-soft);
+
+    transition:.3s;
 }
 
 .action-btn:hover{
