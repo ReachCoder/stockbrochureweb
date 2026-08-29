@@ -126,6 +126,9 @@ async function ensureUserProfile(user){
         return { id: user.uid, ...snap.data() };
     }
     // អ្នកប្រើថ្មី — បង្កើតជា staff (Admin ត្រូវកែ role ក្នុង Firestore)
+    // ចំណាំ: Firestore rules ឥឡូវអនុញ្ញាតតែ email ដែល admin បាន invite
+    // ជាមុន (collection "invitedEmails") ទើបបង្កើត user doc ថ្មីបាន។
+    // បើមិនមាននៅក្នុង invitedEmails ទេ ការសរសេរនេះនឹងបរាជ័យដោយចេតនា។
     const profile = {
         email: user.email || "",
         displayName: user.displayName || (user.email ? user.email.split("@")[0] : "User"),
@@ -135,8 +138,12 @@ async function ensureUserProfile(user){
     try{
         await ref.set(profile, { merge: true });
     }catch(e){
-        console.warn("Could not create user profile (check Firestore rules):", e);
-        // បើ rules មិនអនុញ្ញាត នៅតែប្រើ profile មូលដ្ឋានក្នុង memory
+        if(e.code === "permission-denied"){
+            const err = new Error("NOT_INVITED");
+            err.code = "NOT_INVITED";
+            throw err;
+        }
+        throw e;
     }
     return { id: user.uid, ...profile };
 }
@@ -329,6 +336,15 @@ function initAuth(){
             currentUserProfile = await ensureUserProfile(user);
         }catch(e){
             console.error(e);
+            if(e.code === "NOT_INVITED"){
+                await auth.signOut();
+                currentUser = null;
+                currentUserProfile = null;
+                showLogin();
+                showLoginError("គណនីនេះមិនទាន់ត្រូវបាន Admin អនុញ្ញាតទេ។ សូមទាក់ទង Admin ដើម្បីបន្ថែម email របស់អ្នកចូលក្នុងបញ្ជីអនុញ្ញាត។");
+                setLoginLoading(false);
+                return;
+            }
             currentUserProfile = {
                 id: user.uid,
                 email: user.email || "",
