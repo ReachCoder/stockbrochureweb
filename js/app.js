@@ -1221,6 +1221,12 @@ function resizeImageToBlob(file){
                 canvas.height = height;
 
                 const ctx = canvas.getContext("2d");
+
+                // ✅ បំពេញ background ពណ៌សមុននឹង draw រូបភាព
+                // ដើម្បីកុំឲ្យផ្នែក透明ក្លាយជាខ្មៅពេលបម្លែងទៅ JPEG
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(0,0,width,height);
+
                 ctx.drawImage(img,0,0,width,height);
 
                 canvas.toBlob(
