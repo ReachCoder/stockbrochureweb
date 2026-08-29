@@ -23,18 +23,29 @@
     --shadow:0 8px 25px rgba(38,50,61,.08);
 
     /* ambient background glows */
-    --glow-gold:rgba(200,155,60,.16);
-    --glow-green:rgba(47,109,76,.14);
-    --glow-green-soft:rgba(47,109,76,.08);
+    --glow-gold:rgba(200,155,60,.22);
+    --glow-green:rgba(47,109,76,.20);
+    --glow-green-soft:rgba(47,109,76,.12);
 
     --bg-gradient:
-        radial-gradient(circle at 10% 0%, var(--glow-gold), transparent 42%),
-        radial-gradient(circle at 92% 12%, var(--glow-green), transparent 45%),
-        radial-gradient(circle at 50% 100%, var(--glow-green-soft), transparent 55%),
-        linear-gradient(160deg, #F6EFD9 0%, var(--bg) 55%, #EADFC0 100%);
+        radial-gradient(circle at 10% 0%, var(--glow-gold), transparent 45%),
+        radial-gradient(circle at 92% 8%, var(--glow-green), transparent 48%),
+        radial-gradient(circle at 25% 100%, var(--glow-gold), transparent 40%),
+        radial-gradient(circle at 80% 90%, var(--glow-green-soft), transparent 55%),
+        linear-gradient(160deg, #F8F1DE 0%, var(--bg) 50%, #E7D9AE 100%);
 
     --card-gradient:linear-gradient(160deg, var(--card) 0%, var(--card2) 100%);
     --topbar-gradient:linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
+
+    /* button gradients */
+    --btn-primary-gradient:linear-gradient(135deg, #3C8562 0%, var(--primary) 55%, var(--primary-dark) 100%);
+    --btn-approve-gradient:linear-gradient(135deg, #3FCB86 0%, #279A5C 100%);
+    --btn-gold-gradient:linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+    --btn-danger-gradient:linear-gradient(135deg, #D9726F 0%, var(--danger) 100%);
+
+    --btn-shadow-primary:0 6px 16px rgba(47,109,76,.30);
+    --btn-shadow-gold:0 6px 16px rgba(200,155,60,.32);
+    --btn-shadow-danger:0 6px 16px rgba(185,74,72,.30);
 }
 
 /* =========================
@@ -57,18 +68,28 @@ body.dark{
 
     --shadow:0 8px 25px rgba(0,0,0,.30);
 
-    --glow-gold:rgba(200,155,60,.10);
-    --glow-green:rgba(47,109,76,.22);
-    --glow-green-soft:rgba(47,109,76,.12);
+    --glow-gold:rgba(200,155,60,.16);
+    --glow-green:rgba(47,109,76,.30);
+    --glow-green-soft:rgba(47,109,76,.18);
 
     --bg-gradient:
-        radial-gradient(circle at 10% 0%, var(--glow-gold), transparent 42%),
-        radial-gradient(circle at 92% 12%, var(--glow-green), transparent 45%),
-        radial-gradient(circle at 50% 100%, var(--glow-green-soft), transparent 55%),
-        linear-gradient(160deg, #121A17 0%, var(--bg) 55%, #0D1210 100%);
+        radial-gradient(circle at 10% 0%, var(--glow-gold), transparent 45%),
+        radial-gradient(circle at 92% 8%, var(--glow-green), transparent 48%),
+        radial-gradient(circle at 25% 100%, var(--glow-gold), transparent 40%),
+        radial-gradient(circle at 80% 90%, var(--glow-green-soft), transparent 55%),
+        linear-gradient(160deg, #131C19 0%, var(--bg) 55%, #0B100E 100%);
 
     --card-gradient:linear-gradient(160deg, var(--card) 0%, var(--card2) 100%);
     --topbar-gradient:linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
+
+    --btn-primary-gradient:linear-gradient(135deg, #4CA37A 0%, var(--primary) 55%, var(--primary-dark) 100%);
+    --btn-approve-gradient:linear-gradient(135deg, #45E29A 0%, #2C7D53 100%);
+    --btn-gold-gradient:linear-gradient(135deg, #F0CE86 0%, var(--gold) 100%);
+    --btn-danger-gradient:linear-gradient(135deg, #E1857F 0%, var(--danger) 100%);
+
+    --btn-shadow-primary:0 6px 18px rgba(47,109,76,.45);
+    --btn-shadow-gold:0 6px 18px rgba(200,155,60,.40);
+    --btn-shadow-danger:0 6px 18px rgba(185,74,72,.40);
 }
 
 /* =========================
@@ -188,7 +209,7 @@ button{
     align-items:center;
     justify-content:center;
 
-    background:var(--gold);
+    background:var(--btn-gold-gradient);
 
     color:var(--primary-dark);
 
@@ -198,7 +219,7 @@ button{
 
     font-size:20px;
 
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
+    box-shadow:0 5px 15px rgba(0,0,0,.2), 0 3px 10px rgba(200,155,60,.30);
 }
 
 .logo-text{
@@ -805,7 +826,9 @@ body.dark .card-header h3{
 .btn-add{
     border:none;
 
-    background:var(--gold);
+    background:var(--btn-gold-gradient);
+    background-size:160% 160%;
+    background-position:0% 50%;
 
     color:var(--primary-dark);
 
@@ -819,15 +842,21 @@ body.dark .card-header h3{
 
     font-weight:700;
 
-    transition:.25s;
+    transition:background-position .35s ease, transform .25s ease, box-shadow .25s ease;
+
+    box-shadow:0 3px 10px rgba(200,155,60,.20);
 }
 
 .btn-add:hover{
-    background:var(--gold-light);
+    background-position:100% 50%;
 
     transform:translateY(-2px);
 
-    box-shadow:0 5px 12px rgba(200,155,60,.25);
+    box-shadow:var(--btn-shadow-gold);
+}
+
+.btn-add:active{
+    transform:translateY(0);
 }
 
 /* =========================
@@ -1047,7 +1076,7 @@ tbody tr:last-child td{
 .action-btn{
     border:none;
 
-    background:#30c777;
+    background:var(--btn-approve-gradient);
 
     padding:7px 9px;
 
@@ -1055,16 +1084,16 @@ tbody tr:last-child td{
 
     cursor:pointer;
 
-    color:var(--text-soft);
+    color:#fff;
 
-    transition:.3s;
+    transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
     margin-left: 20px;
 }
 
 .action-btn.reject {
     border:none;
 
-    background: var(--danger);
+    background:var(--btn-danger-gradient);
 
     padding:7px 9px;
 
@@ -1072,16 +1101,16 @@ tbody tr:last-child td{
 
     cursor:pointer;
 
-    color:var(--text-soft);
+    color:#fff;
 
-    transition:.3s;
+    transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
 
 }
 
 .action-btn.delete{
     border:none;
 
-    background: var(--danger);
+    background:var(--btn-danger-gradient);
 
     padding:7px 9px;
 
@@ -1089,41 +1118,49 @@ tbody tr:last-child td{
 
     cursor:pointer;
 
-    color:var(--text-soft);
+    color:#fff;
 
-    transition:.3s;
+    transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
 }
 
 .action-btn:hover{
-    background:var(--card2);
-
-    color:var(--primary);
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+    box-shadow:var(--btn-shadow-primary);
 }
 
 .action-btn.withdraw:hover{
-    background:var(--gold-light);
+    background:var(--btn-gold-gradient);
     color:var(--primary-dark);
+    box-shadow:var(--btn-shadow-gold);
 }
 
 .action-btn.stockin:hover{
-    background:var(--primary-light);
-    color:var(--primary);
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+    box-shadow:var(--btn-shadow-primary);
 }
 
 .action-btn.delete:hover{
-    background:var(--danger);
-
-    color:var(--danger);
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+    box-shadow:var(--btn-shadow-danger);
 }
 
 .action-btn.approve:hover{
-    background:var(--primary-light);
-    color:var(--primary);
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+    box-shadow:var(--btn-shadow-primary);
 }
 
 .action-btn.reject:hover{
-    background:var(--danger-light);
-    color:var(--danger);
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+    box-shadow:var(--btn-shadow-danger);
+}
+
+.action-btn:active{
+    transform:translateY(0);
 }
 
 /* =========================
@@ -1787,8 +1824,9 @@ th.sortable.active .sort-icon{opacity:1;color:var(--primary);}
    STOCK OUT / DEPARTMENT
 ========================= */
 .page-hint{margin-top:4px;color:var(--text-soft);font-size:11px;}
-.btn-secondary{border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;font-family:'Kantumruy Pro';font-weight:700;transition:.25s;}
-.btn-secondary:hover{background:var(--primary-light);color:var(--primary);transform:translateY(-2px);}
+.btn-secondary{border:1px solid var(--border);background:var(--card-gradient);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;font-family:'Kantumruy Pro';font-weight:700;transition:.25s;}
+.btn-secondary:hover{background:var(--primary-light);color:var(--primary);border-color:var(--primary);transform:translateY(-2px);box-shadow:0 5px 14px rgba(47,109,76,.18);}
+.btn-secondary:active{transform:translateY(0);}
 .stockout-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:18px 20px 0;}
 .stockout-summary-card{background:var(--primary-light);border:1px solid var(--border);border-radius:10px;padding:13px 15px;}
 .stockout-summary-card small{color:var(--text-soft);font-size:11px;}
@@ -2027,7 +2065,9 @@ body.dark .modal h2{
 .btn-save{
     border:none;
 
-    background:var(--primary);
+    background:var(--btn-primary-gradient);
+    background-size:160% 160%;
+    background-position:0% 50%;
 
     color:white;
 
@@ -2040,10 +2080,22 @@ body.dark .modal h2{
     font-family:'Kantumruy Pro';
 
     font-weight:700;
+
+    transition:background-position .35s ease, transform .25s ease, box-shadow .25s ease;
+
+    box-shadow:0 3px 10px rgba(47,109,76,.22);
 }
 
 .btn-save:hover{
-    background:var(--primary-dark);
+    background-position:100% 50%;
+
+    transform:translateY(-2px);
+
+    box-shadow:var(--btn-shadow-primary);
+}
+
+.btn-save:active{
+    transform:translateY(0);
 }
 
 .err{
