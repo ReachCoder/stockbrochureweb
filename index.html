@@ -1190,6 +1190,14 @@
 
     <div class="modal">
 
+        <button
+            type="button"
+            class="modal-close"
+            id="modalCloseBtn"
+            title="បិទ">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
         <h2 id="modalTitle">
             បន្ថែមធាតុថ្មី
         </h2>
@@ -1239,7 +1247,9 @@
                 <img
                     id="imagePreview"
                     class="image-preview"
-                    alt="Brochure preview">
+                    alt="Brochure preview"
+                    style="cursor:zoom-in;"
+                    onclick="if(this.src){ viewImage(this.src, document.getElementById('fName').value || 'Brochure'); }">
 
                 <div class="image-help">
                     ជ្រើសរើសរូបភាព Brochure របស់អ្នក។<br>

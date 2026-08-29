@@ -4309,6 +4309,12 @@ document
 );
 
 
+const modalCloseBtn = document.getElementById("modalCloseBtn");
+if(modalCloseBtn){
+    modalCloseBtn.addEventListener("click", closeModal);
+}
+
+
 document
 .getElementById("btnSave")
 .addEventListener(

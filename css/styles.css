@@ -998,7 +998,7 @@ tbody tr:last-child td{
     padding:8px;
     border-radius:16px;
     border:1px solid var(--border);
-    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    background:var(--card);
     box-shadow:0 2px 6px rgba(38,50,61,.08), inset 0 0 0 1px rgba(255,255,255,.35);
     display:block;
     margin:auto;
@@ -1044,7 +1044,7 @@ tbody tr:last-child td{
     padding:5px;
     border-radius:14px;
     border:1px solid var(--border);
-    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    background:var(--card);
     box-shadow:0 2px 8px rgba(38,50,61,.10);
     display:none;
     cursor:zoom-in;
@@ -1431,7 +1431,7 @@ tbody tr:last-child td{
     object-fit:contain;
     border-radius:10px;
     box-shadow:0 20px 70px rgba(0,0,0,.45);
-    background:white;
+    background:var(--card);
 }
 
 .image-lightbox-title{
@@ -1465,6 +1465,30 @@ tbody tr:last-child td{
 
 .image-lightbox-close:hover{
     background:var(--danger);
+}
+
+.modal-close{
+    position:absolute;
+    top:12px;
+    right:12px;
+    width:34px;
+    height:34px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    background:var(--card2);
+    color:var(--text);
+    font-size:16px;
+    cursor:pointer;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background .2s ease, color .2s ease;
+}
+
+.modal-close:hover{
+    background:var(--danger);
+    color:white;
 }
 
 /* =========================
@@ -1901,6 +1925,7 @@ body.dark .department-card-head h3{color:#B8D8C7;}
 }
 
 .modal{
+    position:relative;
     width:100%;
     max-width:430px;
     max-height:min(92vh, 920px);
@@ -2022,7 +2047,7 @@ body.dark .modal h2{
     padding:4px;
     border-radius:12px;
     border:1px solid var(--border);
-    background:linear-gradient(145deg, var(--card) 0%, var(--card2) 100%);
+    background:var(--card);
     box-shadow:0 1px 4px rgba(38,50,61,.08);
     display:block;
     cursor:zoom-in;
