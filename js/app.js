@@ -267,8 +267,16 @@ function stopDataListeners() {
         window._unsubStockOutRequests = null;
     }
     if (_unsubStockOuts) {
-    _unsubStockOuts();
-    _unsubStockOuts = null;
+        _unsubStockOuts();
+        _unsubStockOuts = null;
+    }
+    if (_unsubStockIns) {
+        _unsubStockIns();
+        _unsubStockIns = null;
+    }
+    if (_unsubAuditLogs) {
+        _unsubAuditLogs();
+        _unsubAuditLogs = null;
     }
 
     // Reset page listener flags
@@ -937,8 +945,13 @@ function updateStockOutRequestBadges(){
         tabBadge.style.display = count>0 ? "inline-flex" : "none";
     }
 }
+let _unsubStockIns = null;
 function listenStockIns(){
-    db.collection("stockIns")
+    if (_unsubStockIns) {
+        _unsubStockIns();
+        _unsubStockIns = null;
+    }
+    _unsubStockIns = db.collection("stockIns")
       .orderBy("createdAt","desc")
       .limit(200)
       .onSnapshot(snapshot=>{
@@ -4416,8 +4429,13 @@ async function writeAuditLog({ action, entity, entityId = "", entityName = "", d
     }
 }
 
+let _unsubAuditLogs = null;
 function listenAuditLogs(){
-    db.collection(AUDIT_COLLECTION)
+    if (_unsubAuditLogs) {
+        _unsubAuditLogs();
+        _unsubAuditLogs = null;
+    }
+    _unsubAuditLogs = db.collection(AUDIT_COLLECTION)
       .orderBy("createdAt","desc")
       .limit(300)
       .onSnapshot(snapshot => {
