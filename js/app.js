@@ -32,6 +32,21 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
+// បើក Offline Persistence៖ ទិន្នន័យដែលធ្លាប់ទាញ នឹងនៅតែមើលឃើញ
+// ពេលគ្មាន internet ហើយ write ណាមួយពេល offline នឹងត្រូវ queue
+// ដោយស្វ័យប្រវត្តិ រួច sync ភ្លាមៗពេលមាន internet មកវិញ។
+db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+    if(err.code === "failed-precondition"){
+        // បើក app ច្រើន tab ក្នុងពេលតែមួយ — persistence អាចដំណើរការបានតែ tab តែមួយ
+        console.warn("Firestore persistence: multiple tabs open, persistence enabled in one tab only.");
+    }else if(err.code === "unimplemented"){
+        // browser មិន support IndexedDB persistence
+        console.warn("Firestore persistence not supported in this browser.");
+    }else{
+        console.warn("Firestore persistence error:", err);
+    }
+});
+
 const COLLECTION = "brochureItems";
 const USERS_COLLECTION = "users";
 
@@ -1465,6 +1480,24 @@ async function saveForm(){
                 const newTotal =
                     oldUnit + unit;
 
+                // ជូនដំណឹង admin ថា Brochure ឈ្មោះ+ឆ្នាំនេះមានរួចហើយ
+                // សុំការបញ្ជាក់មុននឹងបូកចំនួនចូលទៅស្តុកចាស់ (ជៀសវាងការច្រឡំ)
+                const confirmMerge = confirm(
+                    `Brochure "${existingItem.name}" ឆ្នាំ ${existingItem.year} មានរួចហើយ ` +
+                    `(ស្តុកបច្ចុប្បន្ន ${oldUnit.toLocaleString()} ក្បាល)។\n\n` +
+                    `តើអ្នកចង់បូកបន្ថែម ${unit.toLocaleString()} ក្បាល ទៅស្តុកមានស្រាប់ ` +
+                    `(សរុបថ្មី ${newTotal.toLocaleString()} ក្បាល) មែនទេ?\n\n` +
+                    `ចុច Cancel ប្រសិនបើអ្នកចង់កែឈ្មោះ/ឆ្នាំ ដើម្បីជៀសវាងការច្រឡំ។`
+                );
+
+                if(!confirmMerge){
+                    if(btnSave){
+                        btnSave.disabled = false;
+                        btnSave.innerHTML = btnSaveOriginalHtml;
+                    }
+                    return;
+                }
+
                 await updateItem(
                     existingItem.id,
                     {
@@ -1481,6 +1514,13 @@ async function saveForm(){
                     entityName: name,
                     details: `បូកស្តុកបន្ថែម ${unit.toLocaleString()} ក្បាល (សរុបថ្មី ${newTotal.toLocaleString()})`
                 });
+
+                closeModal();
+                alert(
+                    `បានបូកបន្ថែម ${unit.toLocaleString()} ក្បាល ទៅ Brochure "${existingItem.name}" ` +
+                    `(ឆ្នាំ ${existingItem.year})។\nស្តុកសរុបថ្មី: ${newTotal.toLocaleString()} ក្បាល។`
+                );
+                return;
 
             }else{
 
