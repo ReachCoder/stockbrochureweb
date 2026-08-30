@@ -3128,7 +3128,7 @@ function buildPrintTable(){
                     <thead>
                         <tr>
                             <th style="width: 40px; text-align:center;">ល.រ</th>
-                            <th style="width: 60px; text-align:center;">រូបភាព</th>
+                            <th style="width: 100px; text-align:center;">រូបភាព</th>
                             <th>ឈ្មោះ Brochure</th>
                             <th style="width: 80px; text-align:center;">ឆ្នាំ</th>
                             <th style="width: 100px; text-align:right;">ចំនួនស្តុក</th>
